@@ -61,7 +61,7 @@ def main():
         help="show debugging information")
     opter.add_option(
         "-r", "--recursive",
-        default = False, dest="recursive", action="store_true"
+        default = False, dest="recursive", action="store_true",
         help="Descend more than one level directories supplied as arguments")
 
     opts, args = opter.parse_args()
