@@ -7,7 +7,7 @@ end
 
 task :pep8 do
   title("pep8.py")
-  `python utils/pep8.py *.py`
+  puts `python tools/pep8.py *.py`
 end
 
 task :pylint do
