@@ -1,3 +1,5 @@
+# PyLint messages to disable
+pylint_disable = ["R0903"]
 task :default => [:pep8, :pylint]
 
 def title(text)
@@ -12,5 +14,5 @@ end
 
 task :pylint do
   title("PyLint")
-  puts `pylint --reports=n *.py`
+  puts `pylint --reports=n --disable-msg=#{pylint_disable.join(",")} *.py`
 end
