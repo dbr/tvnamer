@@ -12,24 +12,17 @@ Uses data from www.thetvdb.com (via tvdb_api) to rename TV episode files from
 "some.show.name.s01e01.blah.avi" to "Some Show Name - [01x01] - The First.avi"
 """
 
+import os
 import sys
 from optparse import OptionParser
-import tvdb_api
+
 from utils import ConfigManager, FileFinder, FileParser, EpisodeInfo, Renamer
-
-
-class InvalidPath(Exception):
-    """Raised when an argument is a non-existent file or directory path
-    """
-    pass
-
-
-class NoValidFilesFoundError(Exception):
-    """Raised when no valid files are found. Effectively exits tvnamer
-    """
+from tvnamer_exceptions import InvalidPath, NoValidFilesFoundError
 
 
 def warn(text):
+    """Displays message to sys.stdout
+    """
     sys.stderr.write("%s\n" % text)
 
 
@@ -39,9 +32,9 @@ def tvnamer(config, paths):
     valid_paths = []
 
     for cfile in paths:
-        cur = FileFinder(cfile, recursive = config.recursive)
+        cur = FileFinder(cfile, recursive = config['recursive'])
         try:
-            cur.findFiles()
+            cur.checkPath()
         except InvalidPath:
             warn("Invalid path: %s" % cfile)
         else:
@@ -49,6 +42,11 @@ def tvnamer(config, paths):
 
     if len(valid_paths) == 0:
         raise NoValidFilesFoundError()
+
+    for cfinder in valid_paths:
+        if os.path.isdir(cfinder.path):
+            print "Processing directory %s" % (cfinder.path)
+        print cfinder.findFiles()
 
 
 def main():
