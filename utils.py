@@ -41,13 +41,39 @@ class FileFinder(object):
     def checkPath(self):
         """Checks if path is valid file or folder, raises InvalidPath if not
         """
-        if not os.path.isfile(self.path) and not os.path.isdir(self.path):
+        if os.path.isfile(self.path) or os.path.isdir(self.path):
+            return True
+        else:
             raise InvalidPath(self.path)
 
     def findFiles(self):
-        """Returns list of files
+        """Returns list of files found at path
         """
-        pass
+        if os.path.isfile(self.path):
+            return [self.path]
+        else:
+            return self._findFilesInPath(self.startpath)
+
+    def _findFilesInPath(self, startpath):
+        """Finds files from startpath, could be called recursively
+        """
+        allfiles = []
+        if os.path.isfile(startpath):
+            allfiles.append(startpath)
+
+        elif os.path.isdir(startpath):
+            for sf in os.listdir(startpath):
+                newpath = os.path.join(startpath, sf)
+                if os.path.isfile(newpath):
+                    allfiles.append(newpath)
+                else:
+                    if recursive:
+                        allfiles.extend(self._findFilesInPath(newpath))
+                    #end if recursive
+                #end if isfile
+            #end for sf
+        #end if isdir
+        return allfiles
 
 
 class FileParser(object):
