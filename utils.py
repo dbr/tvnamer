@@ -52,7 +52,7 @@ class FileFinder(object):
         if os.path.isfile(self.path):
             return [self.path]
         else:
-            return self._findFilesInPath(self.startpath)
+            return self._findFilesInPath(self.path)
 
     def _findFilesInPath(self, startpath):
         """Finds files from startpath, could be called recursively
@@ -67,7 +67,7 @@ class FileFinder(object):
                 if os.path.isfile(newpath):
                     allfiles.append(newpath)
                 else:
-                    if recursive:
+                    if self.recursive:
                         allfiles.extend(self._findFilesInPath(newpath))
                     #end if recursive
                 #end if isfile
