@@ -89,14 +89,22 @@ class EpisodeInfo(object):
 
     def __init__(self,
         seriesname = None,
-        episodenumber = None,
         seasonnumber = None,
+        episodenumber = None,
         episodename = None):
 
         self.seriesname = seriesname
-        self.episodenumber = episodenumber
         self.seasonnumber = seasonnumber
+        self.episodenumber = episodenumber
         self.episodename = episodename
+
+    def __repr__(self):
+        return "<%s: %s - [%02dx%02d] - %s>" % (
+            self.__class__.__name__,
+            self.seriesname,
+            self.seasonnumber,
+            self.episodenumber,
+            self.episodename)
 
 
 class Renamer(object):
