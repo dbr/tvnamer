@@ -70,11 +70,13 @@ def main():
     config = ConfigManager()
     if opts.verbose:
         config['verbose'] = True
+    if opts.recursive:
+        config['recursive'] = True
 
     try:
         tvnamer(config, paths = args)
-    except NoValidFilesFoundError, error_msg:
-        warn("No valid files were supplied")
+    except NoValidFilesFoundError:
+        opter.error("No valid files were supplied")
 
 if __name__ == '__main__':
     main()
