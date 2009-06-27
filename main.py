@@ -43,10 +43,16 @@ def tvnamer(config, paths):
     if len(valid_paths) == 0:
         raise NoValidFilesFoundError()
 
+    valid_files = []
+
     for cfinder in valid_paths:
         if os.path.isdir(cfinder.path):
-            print "Processing directory %s" % (cfinder.path)
-        print cfinder.findFiles()
+            print "Processing directory \"%s\"" % (cfinder.path)
+        valid_files.extend(cfinder.findFiles())
+
+    for cfile in valid_files:
+        parser = FileParser(cfile)
+        print parser.parse()
 
 
 def main():

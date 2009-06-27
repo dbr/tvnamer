@@ -79,7 +79,12 @@ class FileFinder(object):
 class FileParser(object):
     """Deals with parsing of filenames
     """
-    pass
+
+    def __init__(self, path):
+        self.path = path
+
+    def parse(self):
+        return EpisodeInfo("A Show", 2, 12, "This is a test")
 
 
 class EpisodeInfo(object):
