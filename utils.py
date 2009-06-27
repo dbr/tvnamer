@@ -16,17 +16,21 @@ import tvdb_api
 from tvnamer_exceptions import InvalidPath
 
 
-class ConfigManager(dict):
+class _ConfigManager(dict):
     """Stores configuration options, deals with optional parsing and saving
     of options to disc.
     """
 
     def __init__(self):
-        super(ConfigManager, self).__init__(self)
+        super(_ConfigManager, self).__init__(self)
         # Default options
         self['verbose'] = False
         self['recursive'] = False
 
+    def loadFile(self, filename):
+        print "Loading config %s" % filename
+
+Config = _ConfigManager()
 
 class FileFinder(object):
     """Given a file, it will verify it exists, given a folder it will descend

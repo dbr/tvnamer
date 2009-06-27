@@ -16,7 +16,7 @@ import os
 import sys
 from optparse import OptionParser
 
-from utils import ConfigManager, FileFinder, FileParser, EpisodeInfo, Renamer
+from utils import Config, FileFinder, FileParser, EpisodeInfo, Renamer
 from tvnamer_exceptions import InvalidPath, NoValidFilesFoundError
 
 
@@ -73,14 +73,13 @@ def main():
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
 
-    config = ConfigManager()
     if opts.verbose:
-        config['verbose'] = True
+        Config['verbose'] = True
     if opts.recursive:
-        config['recursive'] = True
+        Config['recursive'] = True
 
     try:
-        tvnamer(config, paths = args)
+        tvnamer(Config, paths = args)
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
 
