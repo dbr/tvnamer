@@ -52,7 +52,12 @@ def tvnamer(config, paths):
 
     for cfile in valid_files:
         parser = FileParser(cfile)
-        print parser.parse()
+        try:
+            episode = parser.parse()
+        except InvalidFilename:
+            warn("Invalid filename %s" % cfile)
+        else:
+            print "valid file, %s" % (cfile)
 
 
 def main():
