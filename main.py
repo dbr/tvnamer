@@ -16,39 +16,32 @@ import os
 import sys
 from optparse import OptionParser
 
-from utils import Config, FileFinder, FileParser, EpisodeInfo, Renamer
-from tvnamer_exceptions import InvalidPath, NoValidFilesFoundError
+from utils import Config, FileFinder, FileParser, EpisodeInfo, Renamer, warn
+from tvnamer_exceptions import (InvalidPath, NoValidFilesFoundError,
+InvalidFilename, InvalidConfig)
 
 
-def warn(text):
-    """Displays message to sys.stdout
-    """
-    sys.stderr.write("%s\n" % text)
-
-
-def tvnamer(config, paths):
+def tvnamer(paths):
     """Main tvnamer function, takes a config and array of paths, does stuff.
     """
-    valid_paths = []
+    valid_files = []
 
     for cfile in paths:
-        cur = FileFinder(cfile, recursive = config['recursive'])
+        cur = FileFinder(cfile, recursive = Config['recursive'])
         try:
             cur.checkPath()
         except InvalidPath:
             warn("Invalid path: %s" % cfile)
         else:
-            valid_paths.append(cur)
+            valid_files.extend(cur.findFiles())
 
-    if len(valid_paths) == 0:
+    if len(valid_files) == 0:
         raise NoValidFilesFoundError()
 
-    valid_files = []
+    # Remove duplicate files (all paths from FileFinder are absolute)
+    valid_files = list(set(valid_files))
 
-    for cfinder in valid_paths:
-        if os.path.isdir(cfinder.path):
-            print "Processing directory \"%s\"" % (cfinder.path)
-        valid_files.extend(cfinder.findFiles())
+    episodes_found = []
 
     for cfile in valid_files:
         parser = FileParser(cfile)
@@ -57,13 +50,18 @@ def tvnamer(config, paths):
         except InvalidFilename:
             warn("Invalid filename %s" % cfile)
         else:
-            print "valid file, %s" % (cfile)
+            episodes_found.append(episode)
+
+    print episodes_found
 
 
 def main():
     """Parsers command line arguments, displays errors from tvnamer in terminal
     """
     opter = OptionParser()
+    opter.add_option(
+        "-c", "--config",
+        dest="config", help = "Override the config file path")
     opter.add_option(
         "-v", "--verbose",
         default=False, dest="verbose", action="store_true",
@@ -78,13 +76,20 @@ def main():
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
 
+    if opts.config is not None:
+        try:
+            Config.loadFile(opts.config)
+        except InvalidConfig:
+            warn("Invalid config file %s - using default configuration")
+            Config.useDefaultConfig()
+
     if opts.verbose:
         Config['verbose'] = True
     if opts.recursive:
         Config['recursive'] = True
 
     try:
-        tvnamer(Config, paths = args)
+        tvnamer(paths = args)
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
 

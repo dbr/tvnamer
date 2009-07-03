@@ -10,10 +10,18 @@
 """
 
 import os
+import sys
+import re
 
 import tvdb_api
 
-from tvnamer_exceptions import InvalidPath
+from tvnamer_exceptions import InvalidPath, InvalidConfig, InvalidFilename
+
+
+def warn(text):
+    """Displays message to sys.stdout
+    """
+    sys.stderr.write("%s\n" % text)
 
 
 class _ConfigManager(dict):
@@ -21,16 +29,77 @@ class _ConfigManager(dict):
     of options to disc.
     """
 
+    DEFAULT_CONFIG_FILE = os.path.expanduser("~/.tvnamer.conf")
+
     def __init__(self):
         super(_ConfigManager, self).__init__(self)
-        # Default options
-        self['verbose'] = False
-        self['recursive'] = False
+        if os.path.isfile(self.DEFAULT_CONFIG_FILE):
+            try:
+                self._loadConfig(self.DEFAULT_CONFIG_FILE)
+            except InvalidConfig:
+                warn("WARNING: Config file is invalid: %s\n" % (
+                    self.DEFAULT_CONFIG_FILE))
+                warn("Will use default configuration\n")
+                self.useDefaultConfig()
+        else:
+            self.useDefaultConfig()
+
+    def _clearConfig(self):
+        """Clears all config options, usually before loading a new config file
+        """
+        self.clear()
+
+    def _loadConfig(self, filename):
+        """Loads a config from a file
+        """
+        pass
+
+    def _setDefaults(self):
+        """If no config file is found, these are used. If the config file
+        skips any options, the missing settings are set to the defaults.
+        """
+        defaults = {
+            'verbose': False,
+            'recursive': False,
+            'episode_patterns': [
+                # foo_[s01]_[e01]
+                '''^(.+?)[ \._\-]\[[Ss]([0-9]+?)\]_\[[Ee]([0-9]+?)\]?[^\\/]*$''',
+                # foo.1x09*
+                '''^(.+?)[ \._\-]\[?([0-9]+)x([0-9]+)[^\\/]*$''',
+                # foo.s01.e01, foo.s01_e01
+                '''^(.+?)[ \._\-][Ss]([0-9]+)[\.\- ]?[Ee]([0-9]+)[^\\/]*$''',
+                # foo.103*
+                '''^(.+)[ \._\-]([0-9]{1})([0-9]{2})[\._ -][^\\/]*$''',
+                # foo.0103*
+                '''^(.+)[ \._\-]([0-9]{2})([0-9]{2,3})[\._ -][^\\/]*$'''],
+        }
+
+        # Updates defaults dict with current settings
+        for dkey, dvalue in defaults.items():
+            self.setdefault(dkey, dvalue)
 
     def loadFile(self, filename):
-        print "Loading config %s" % filename
+        """Use Config.loadFile("something") to load a new config files, clears
+        all existing options
+        """
+        self._clearConfig()
+        self._loadConfig(filename)
+        self._setDefaults() # Makes sure all config options are set
+
+    def useDefaultConfig(self):
+        """Uses only the default settings, works simialrly to Config.loadFile
+        """
+        self._clearConfig()
+        self._setDefaults()
+
+    def saveConfig(self, filename):
+        """Stores config options into a file
+        """
+        pass
+
 
 Config = _ConfigManager()
+
 
 class FileFinder(object):
     """Given a file, it will verify it exists, given a folder it will descend
@@ -54,7 +123,7 @@ class FileFinder(object):
         """Returns list of files found at path
         """
         if os.path.isfile(self.path):
-            return [self.path]
+            return [os.path.abspath(self.path)]
         else:
             return self._findFilesInPath(self.path)
 
@@ -63,11 +132,12 @@ class FileFinder(object):
         """
         allfiles = []
         if os.path.isfile(startpath):
-            allfiles.append(startpath)
+            allfiles.append(os.path.abspath(startpath))
 
         elif os.path.isdir(startpath):
             for sf in os.listdir(startpath):
                 newpath = os.path.join(startpath, sf)
+                newpath = os.path.abspath(newpath)
                 if os.path.isfile(newpath):
                     allfiles.append(newpath)
                 else:
@@ -86,9 +156,28 @@ class FileParser(object):
 
     def __init__(self, path):
         self.path = path
+        self.regexs = []
+        self._compileRegexs()
+
+    def _compileRegexs(self):
+        for cpattern in Config['episode_patterns']:
+            try:
+                cregex = re.compile(cpattern)
+            except re.error:
+                warn("WARNING: Invalid episode_patterns regex: %s" % (cregex))
+            else:
+                self.regexs.append(cregex)
 
     def parse(self):
-        return EpisodeInfo("A Show", 2, 12, "This is a test")
+        filepath, filename = os.path.split(self.path)
+
+        for cmatcher in self.regexs:
+            match = cmatcher.match(filename)
+            if match:
+                ep = EpisodeInfo(match.group(1), int(match.group(2)), int(match.group(3)))
+                return ep
+        else:
+            raise InvalidFilename(self.path)
 
 
 class EpisodeInfo(object):

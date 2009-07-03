@@ -9,10 +9,12 @@
 """Exceptions used through-out tvnamer
 """
 
+
 class BaseTvnamerException(Exception):
     """Base exception all tvnamers exceptions inherit from
     """
     pass
+
 
 class InvalidPath(BaseTvnamerException):
     """Raised when an argument is a non-existent file or directory path
@@ -25,7 +27,13 @@ class NoValidFilesFoundError(BaseTvnamerException):
     """
     pass
 
+
 class InvalidFilename(BaseTvnamerException):
     """Raised when a file is parsed, but no episode info can be found
     """
     pass
+
+
+class InvalidConfig(BaseTvnamerException):
+    """Raised if the config file is malformed or unreadable
+    """
