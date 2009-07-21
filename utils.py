@@ -217,26 +217,55 @@ class FileParser(object):
 
     def __init__(self, path):
         self.path = path
-        self.regexs = []
+        self.compiled_regexs = []
         self._compileRegexs()
 
     def _compileRegexs(self):
         for cpattern in Config['episode_patterns']:
             try:
-                cregex = re.compile(cpattern)
-            except re.error:
-                warn("WARNING: Invalid episode_patterns regex: %s" % (cregex))
+                cregex = re.compile(cpattern, re.VERBOSE)
+            except re.error, errormsg:
+                warn("WARNING: Invalid episode_pattern, %s. %s" % (
+                    errormsg, cregex.pattern))
             else:
-                self.regexs.append(cregex)
+                self.compiled_regexs.append(cregex)
 
     def parse(self):
         filepath, filename = os.path.split(self.path)
 
-        for cmatcher in self.regexs:
+        for cmatcher in self.compiled_regexs:
             match = cmatcher.match(filename)
             if match:
-                ep = EpisodeInfo(match.group(1), int(match.group(2)), int(match.group(3)))
-                return ep
+                groupdict = match.groupdict()
+
+                if 'episodenumber1' in groupdict.keys():
+                    # Multiple episodes, have episodenumber1 or 2 etc
+                    epnos = []
+                    for cur in groupdict.keys():
+                        epnomatch = re.match('episodenumber(\d+)', cur)
+                        if epnomatch:
+                            epnos.append(int(groupdict[cur]))
+                    epnos.sort()
+                    episodenumber = epnos
+                elif 'episodenumberstart' in groupdict.keys():
+                    # Multiple episodes, regex specifies start and end number
+                    start = int(match.group('episodenumberstart'))
+                    end = int(match.group('episodenumberend'))
+                    episodenumber = range(start, end + 1)
+                else:
+                    episodenumber = int(match.group('episodenumber'))
+
+                if 'seasonnumber' in groupdict.keys():
+                    seasonnumber = int(match.group('seasonnumber'))
+                else:
+                    # No season number specified, usually for Anime
+                    seasonnumber = None
+
+                episode = EpisodeInfo(
+                    showname = match.group('showname'),
+                    seasonnumber = seasonnumber,
+                    episodenumber = episodenumber)
+                return episode
         else:
             raise InvalidFilename(self.path)
 
@@ -247,12 +276,12 @@ class EpisodeInfo(object):
     """
 
     def __init__(self,
-        seasonname = None,
+        showname = None,
         seasonnumber = None,
         episodenumber = None,
         episodename = None):
 
-        self.seasonname = seasonname
+        self.showname = showname
         self.seasonnumber = seasonnumber
         self.episodenumber = episodenumber
         self.episodename = episodename
@@ -260,7 +289,7 @@ class EpisodeInfo(object):
     def __repr__(self):
         return "<%s: %s - [%02dx%02d] - %s>" % (
             self.__class__.__name__,
-            self.seasonname,
+            self.showname,
             self.seasonnumber,
             self.episodenumber,
             self.episodename)
