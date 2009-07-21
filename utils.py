@@ -62,17 +62,78 @@ class _ConfigManager(dict):
             'verbose': False,
             'recursive': False,
             'episode_patterns': [
+                # [group] Show - 01-02 [Etc]
+                '''^\[.+?\][ ]? # group name
+                (?P<showname>.*?)[ ]?[-_][ ]? # show name, padding, spaces?
+                (?P<episodenumberstart>\d+)   # first episode number
+                ([-_]\d+)*                    # optional repeating episodes
+                [-_](?P<episodenumberend>\d+) # last episode number
+                [^\/]*$''',
+
+                # [group] Show - 01 [Etc]
+                '''^\[.+?\][ ]? # group name
+                (?P<showname>.*) # show name
+                [ ]?[-_][ ]?(?P<episodenumber>\d+)
+                [^\/]*$''',
+
+                # foo.s01e23e24*
+                '''
+                ^(?P<showname>.+?)[ \._\-]               # show name
+                [Ss](?P<seasonnumber>[0-9]+)             # s01
+                [\.\- ]?                                 # seperator
+                [Ee](?P<episodenumberstart>[0-9]+)       # first e23
+                ([\.\- ]?[Ee][0-9]+)*                    # e24e25 etc
+                [\.\- ]?[Ee](?P<episodenumberend>[0-9]+) # final episode num
+                [^\/]*$''',
+
+                # foo.1x09-11*
+                '''^(?P<showname>.+?)[ \._\-]       # show name and padding
+                \[                                  # [
+                    ?(?P<seasonnumber>[0-9]+)       # season
+                x                                   # x
+                    (?P<episodenumberstart>[0-9]+)  # episode
+                -                                   # -
+                    (?P<episodenumberend>[0-9]+)    # episode
+                \]                                  # \]
+                [^\\/]*$''',
+
                 # foo_[s01]_[e01]
-                '''^(.+?)[ \._\-]\[[Ss]([0-9]+?)\]_\[[Ee]([0-9]+?)\]?[^\\/]*$''',
+                '''^(?P<showname>.+?)[ \._\-]       # show name and padding
+                \[                                  # [
+                    [Ss](?P<seasonnumber>[0-9]+?)   # season
+                \]                                  # ]
+                _                                   # _
+                \[                                  # [
+                    [Ee](?P<episodenumber>[0-9]+?)  # episode
+                \]?                                 # ]
+                [^\\/]*$''',
+
                 # foo.1x09*
-                '''^(.+?)[ \._\-]\[?([0-9]+)x([0-9]+)[^\\/]*$''',
+                '''^(?P<showname>.+?)[ \._\-]       # show name and padding
+                \[?                                 # [ optional
+                (?P<seasonnumber>[0-9]+)            # season
+                x                                   # x
+                (?P<episodenumber>[0-9]+)           # episode
+                \]?                                 # ] optional
+                [^\\/]*$''',
+
                 # foo.s01.e01, foo.s01_e01
-                '''^(.+?)[ \._\-][Ss]([0-9]+)[\.\- ]?[Ee]([0-9]+)[^\\/]*$''',
+                '''^(?P<showname>.+?)[ \._\-]
+                [Ss](?P<seasonnumber>[0-9]+)[\.\- ]?
+                [Ee](?P<episodenumber>[0-9]+)
+                [^\\/]*$''',
+
                 # foo.103*
-                '''^(.+)[ \._\-]([0-9]{1})([0-9]{2})[\._ -][^\\/]*$''',
+                '''^(?P<showname>.+)[ \._\-]
+                (?P<seasonnumber>[0-9]{1})
+                (?P<episodenumber>[0-9]{2})
+                [\._ -][^\\/]*$''',
+
                 # foo.0103*
-                '''^(.+)[ \._\-]([0-9]{2})([0-9]{2,3})[\._ -][^\\/]*$'''],
-        }
+                '''^(?P<showname>.+)[ \._\-]
+                (?P<seasonnumber>[0-9]{2})
+                (?P<episodenumber>[0-9]{2,3})
+                [\._ -][^\\/]*$''']}
 
         # Updates defaults dict with current settings
         for dkey, dvalue in defaults.items():
