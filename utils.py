@@ -181,17 +181,17 @@ class FileParser(object):
 
 
 class EpisodeInfo(object):
-    """Stores information (series, episode number, episode name), and contains
+    """Stores information (season, episode number, episode name), and contains
     logic to generate new name
     """
 
     def __init__(self,
-        seriesname = None,
+        seasonname = None,
         seasonnumber = None,
         episodenumber = None,
         episodename = None):
 
-        self.seriesname = seriesname
+        self.seasonname = seasonname
         self.seasonnumber = seasonnumber
         self.episodenumber = episodenumber
         self.episodename = episodename
@@ -199,7 +199,7 @@ class EpisodeInfo(object):
     def __repr__(self):
         return "<%s: %s - [%02dx%02d] - %s>" % (
             self.__class__.__name__,
-            self.seriesname,
+            self.seasonname,
             self.seasonnumber,
             self.episodenumber,
             self.episodename)

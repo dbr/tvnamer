@@ -1,9 +1,9 @@
 ## Class for generating filenames
 
 ep = Episode()
-# or ep = Episode(series="Scrubs", season=1)
+# or ep = Episode(season="Scrubs", season=1)
 
-ep.series = "Scrubs"
+ep.season = "Scrubs"
 ep.season = 1
 ep.episode = 1
 ep.extension = "avi"
@@ -26,14 +26,14 @@ print ep.toString() #-> Scrubs - [01x01-02] - My First Day
 fi = File("scrubs.s01e01.fake.avi")
 fi.parse()
 
-print fi.series #-> scrubs
+print fi.season #-> scrubs
 print fi.season #-> 1
 print fi.episode #-> 1
 
 fi = File("scrubs.s01e01e02.fake.avi")
 fi.parse() # may rase invalid name exceptions
 
-print fi.series #-> scrubs
+print fi.season #-> scrubs
 print fi.episode #-> [1, 2]
 
 ## Renaming
