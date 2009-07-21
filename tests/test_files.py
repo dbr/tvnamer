@@ -27,8 +27,8 @@ files['s01e01_format'] = [
     {'input': 'my.name.is.earl.s01e01',
     'seasonnumber': 1, 'episodenumber': 1
     },
-    {'input': 'scrubs.s0e24.blah.fake',
-    'seasonnumber': 1, 'episodenumber': 1
+    {'input': 'scrubs.s01e24.blah.fake',
+    'seasonnumber': 1, 'episodenumber': 24
     },
 ]
 
