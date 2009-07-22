@@ -10,12 +10,15 @@
 """
 
 import os
-import sys
 import re
+import sys
+import xml
+import elementtree.ElementTree as ET
 
 import tvdb_api
 
-from tvnamer_exceptions import InvalidPath, InvalidConfig, InvalidFilename
+from tvnamer_exceptions import (InvalidPath, InvalidConfigFile,
+InvalidFilename, WrongConfigVersion, InvalidConfigFile)
 
 
 def warn(text):
@@ -24,12 +27,73 @@ def warn(text):
     sys.stderr.write("%s\n" % text)
 
 
+def _serialiseElement(root, name, elem, type='option'):
+    """Used for config XML saving, currently supports strings, integers
+    and lists contains the any of these
+    """
+    celem = ET.SubElement(root, type)
+    if name is not None:
+        celem.set('name', name)
+
+    if isinstance(elem, bool):
+        celem.set('type', 'bool')
+        celem.text = str(elem)
+        return
+    elif isinstance(elem, int):
+        celem.set('type', 'int')
+        celem.text = str(elem)
+        return
+    elif isinstance(elem, basestring):
+        celem.set('type', 'string')
+        celem.text = elem
+        return
+    elif isinstance(elem, list):
+        celem.set('type', 'list')
+        for subelem in elem:
+            _serialiseElement(celem, None, subelem, 'value')
+        return
+
+
+def _deserialiseItem(ctype, citem):
+    """Used for config XML loading, currently supports strings, integers
+    and lists contains the any of these
+    """
+    if ctype == 'int':
+        return int(citem.text)
+    elif ctype == 'string':
+        return citem.text
+    elif ctype == 'bool':
+        return citem.text == 'True'
+    elif ctype == 'list':
+        ret = []
+        for subitem in citem:
+            ret.append(_deserialiseItem(subitem.attrib['type'], subitem))
+        return ret
+
+
+def indentTree(elem, level=0):
+    i = "\n" + "  " * level
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for elem in elem:
+            indentTree(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+
+
 class _ConfigManager(dict):
     """Stores configuration options, deals with optional parsing and saving
     of options to disc.
     """
 
-    DEFAULT_CONFIG_FILE = os.path.expanduser("~/.tvnamer.conf")
+    VERSION = 1
+    DEFAULT_CONFIG_FILE = os.path.expanduser("~/.tvnamer.xml")
 
     def __init__(self):
         super(_ConfigManager, self).__init__(self)
@@ -43,16 +107,6 @@ class _ConfigManager(dict):
                 self.useDefaultConfig()
         else:
             self.useDefaultConfig()
-
-    def _clearConfig(self):
-        """Clears all config options, usually before loading a new config file
-        """
-        self.clear()
-
-    def _loadConfig(self, filename):
-        """Loads a config from a file
-        """
-        pass
 
     def _setDefaults(self):
         """If no config file is found, these are used. If the config file
@@ -133,30 +187,80 @@ class _ConfigManager(dict):
                 '''^(?P<showname>.+)[ \._\-]
                 (?P<seasonnumber>[0-9]{2})
                 (?P<episodenumber>[0-9]{2,3})
-                [\._ -][^\\/]*$''']}
+                [\._ -][^\\/]*$'''],
+
+            'filename_with_episode': '$(showname) - [%(season)02dx]',
+            'filename_with_episode': 'b',
+            }
 
         # Updates defaults dict with current settings
         for dkey, dvalue in defaults.items():
             self.setdefault(dkey, dvalue)
 
-    def loadFile(self, filename):
+    def _clearConfig(self):
+        """Clears all config options, usually before loading a new config file
+        """
+        self.clear()
+
+    def _loadConfig(self, xml):
+        """Loads a config from a file
+        """
+        try:
+            root = ET.fromstring(xml)
+        except xml.parsers.expat.ExpatError, errormsg:
+            raise InvalidConfigFile(errormsg)
+
+        if int(root.attrib['version']) != 1:
+            raise WrongConfigVersion(
+            'Expected version %d, got version %d' % (self.VERSION, -1))
+
+        conf = {}
+        for citem in root:
+            value = _deserialiseItem(citem.attrib['type'], citem)
+            conf[citem.attrib['name']] = value
+
+        return conf
+
+    def _saveConfig(self, config):
+        root = ET.Element('tvnamer')
+        root.set('version', str(self.VERSION))
+
+        for ckey, cvalue in config.items():
+            _serialiseElement(root, ckey, cvalue)
+
+        indentTree(root)
+        return ET.tostring(root).strip()
+
+    def loadConfig(self, filename):
         """Use Config.loadFile("something") to load a new config files, clears
         all existing options
         """
         self._clearConfig()
-        self._loadConfig(filename)
-        self._setDefaults() # Makes sure all config options are set
-
-    def useDefaultConfig(self):
-        """Uses only the default settings, works simialrly to Config.loadFile
-        """
-        self._clearConfig()
-        self._setDefaults()
+        try:
+            xml = open(filename).read()
+        except IOError, errormsg:
+            raise InvalidConfigFile(errormsg)
+        else:
+            self._loadConfig(xml)
+            self._setDefaults() # Makes sure all config options are set
 
     def saveConfig(self, filename):
         """Stores config options into a file
         """
-        pass
+        xml = self._saveConfig(self)
+        try:
+            f = open(filename, 'w')
+        except IOError, errormsg:
+            raise InvalidConfigFile(errormsg)
+        else:
+            f.write(xml)
+            f.close()
+
+    def useDefaultConfig(self):
+        """Uses only the default settings, works similarly to Config.loadFile
+        """
+        self._clearConfig()
+        self._setDefaults()
 
 
 Config = _ConfigManager()
@@ -236,26 +340,28 @@ class FileParser(object):
         for cmatcher in self.compiled_regexs:
             match = cmatcher.match(filename)
             if match:
-                groupdict = match.groupdict()
+                namedgroups = match.groupdict().keys()
 
-                if 'episodenumber1' in groupdict.keys():
+                if 'episodenumber1' in namedgroups:
                     # Multiple episodes, have episodenumber1 or 2 etc
                     epnos = []
-                    for cur in groupdict.keys():
+                    for cur in namedgroups:
                         epnomatch = re.match('episodenumber(\d+)', cur)
                         if epnomatch:
                             epnos.append(int(match.group(cur)))
                     epnos.sort()
                     episodenumber = epnos
-                elif 'episodenumberstart' in groupdict.keys():
+
+                elif 'episodenumberstart' in namedgroups:
                     # Multiple episodes, regex specifies start and end number
                     start = int(match.group('episodenumberstart'))
                     end = int(match.group('episodenumberend'))
                     episodenumber = range(start, end + 1)
+
                 else:
                     episodenumber = int(match.group('episodenumber'))
 
-                if 'seasonnumber' in groupdict.keys():
+                if 'seasonnumber' in namedgroups:
                     seasonnumber = int(match.group('seasonnumber'))
                 else:
                     # No season number specified, usually for Anime
