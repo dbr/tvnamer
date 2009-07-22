@@ -16,7 +16,7 @@ from optparse import OptionParser
 
 from utils import Config, FileFinder, FileParser, EpisodeInfo, Renamer, warn
 from tvnamer_exceptions import (InvalidPath, NoValidFilesFoundError,
-InvalidFilename, InvalidConfig)
+InvalidFilename, InvalidConfigFile)
 
 
 def tvnamer(paths):
