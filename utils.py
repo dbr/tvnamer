@@ -286,13 +286,29 @@ class EpisodeInfo(object):
         self.episodenumber = episodenumber
         self.episodename = episodename
 
+    def _generateFilename(self):
+        # Format episode number into string, or a list
+        if isinstance(self.episodenumber, list):
+            epno = "-".join("%02d" % x for x in self.episodenumber)
+        else:
+            epno = "%02d" % (self.episodenumber)
+
+        if self.episodenumber is None:
+            return "%s - [%02dx%s]" % (
+                self.showname,
+                self.seasonnumber,
+                epno)
+        else:
+            return "%s - [%02dx%s] - %s" % (
+                self.showname,
+                self.seasonnumber,
+                epno,
+                self.episodename)
+
     def __repr__(self):
-        return "<%s: %s - [%02dx%02d] - %s>" % (
+        return "<%s: %s>" % (
             self.__class__.__name__,
-            self.showname,
-            self.seasonnumber,
-            self.episodenumber,
-            self.episodename)
+            self._generateFilename())
 
 
 class Renamer(object):
