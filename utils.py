@@ -63,7 +63,14 @@ def _deserialiseItem(ctype, citem):
     elif ctype == 'string':
         return citem.text
     elif ctype == 'bool':
-        return citem.text == 'True'
+        if citem.text == 'True':
+            return True
+        elif citem.text == 'False':
+            return False
+        else:
+            raise InvalidConfigFile(
+                "Boolean value for %s was not 'True' or ', was %r" % (
+                    citem.text))
     elif ctype == 'list':
         ret = []
         for subitem in citem:
@@ -71,7 +78,7 @@ def _deserialiseItem(ctype, citem):
         return ret
 
 
-def indentTree(elem, level=0):
+def _indentTree(elem, level=0):
     i = "\n" + "  " * level
     if len(elem):
         if not elem.text or not elem.text.strip():
@@ -79,7 +86,7 @@ def indentTree(elem, level=0):
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
         for elem in elem:
-            indentTree(elem, level+1)
+            _indentTree(elem, level+1)
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:
@@ -210,9 +217,11 @@ class _ConfigManager(dict):
         except xml.parsers.expat.ExpatError, errormsg:
             raise InvalidConfigFile(errormsg)
 
-        if int(root.attrib['version']) != 1:
+        version = int(root.attrib['version'])
+        if version != 1:
             raise WrongConfigVersion(
-            'Expected version %d, got version %d' % (self.VERSION, -1))
+                'Expected version %d, got version %d' % (
+                    self.VERSION, version))
 
         conf = {}
         for citem in root:
@@ -228,7 +237,7 @@ class _ConfigManager(dict):
         for ckey, cvalue in config.items():
             _serialiseElement(root, ckey, cvalue)
 
-        indentTree(root)
+        _indentTree(root)
         return ET.tostring(root).strip()
 
     def loadConfig(self, filename):
@@ -241,8 +250,9 @@ class _ConfigManager(dict):
         except IOError, errormsg:
             raise InvalidConfigFile(errormsg)
         else:
-            self._loadConfig(xml)
+            loaded_conf = self._loadConfig(xml)
             self._setDefaults() # Makes sure all config options are set
+            self.update(loaded_conf)
 
     def saveConfig(self, filename):
         """Stores config options into a file
