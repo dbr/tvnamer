@@ -244,7 +244,7 @@ class FileParser(object):
                     for cur in groupdict.keys():
                         epnomatch = re.match('episodenumber(\d+)', cur)
                         if epnomatch:
-                            epnos.append(int(groupdict[cur]))
+                            epnos.append(int(match.group(cur)))
                     epnos.sort()
                     episodenumber = epnos
                 elif 'episodenumberstart' in groupdict.keys():
