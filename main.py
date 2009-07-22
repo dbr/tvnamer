@@ -56,7 +56,7 @@ def tvnamer(paths):
 
 
 def main():
-    """Parsers command line arguments, displays errors from tvnamer in terminal
+    """Parses command line arguments, displays errors from tvnamer in terminal
     """
     opter = OptionParser()
     opter.add_option(
