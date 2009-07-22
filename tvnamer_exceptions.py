@@ -33,7 +33,17 @@ class InvalidFilename(BaseTvnamerException):
     """
     pass
 
+class BaseConfigError(BaseTvnamerException):
+    """Base exception for config errors
+    """
+    pass
 
-class InvalidConfig(BaseTvnamerException):
+
+class InvalidConfigFile(BaseConfigError):
     """Raised if the config file is malformed or unreadable
     """
+    pass
+
+class WrongConfigVersion(BaseTvnamerException):
+    """Config versions do not match"""
+    pass
