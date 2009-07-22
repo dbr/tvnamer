@@ -196,8 +196,10 @@ class _ConfigManager(dict):
                 (?P<episodenumber>[0-9]{2,3})
                 [\._ -][^\\/]*$'''],
 
-            'filename_with_episode': '$(showname) - [%(season)02dx]',
-            'filename_with_episode': 'b',
+            'filename_with_episode': '%(showname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s',
+            'filename_without_episode': '%(showname)s - [%(seasonno)02dx%(episode)s]',
+            'episode_single': '%02d',
+            'episode_seperator': '-',
             }
 
         # Updates defaults dict with current settings
@@ -403,23 +405,31 @@ class EpisodeInfo(object):
         self.episodename = episodename
 
     def _generateFilename(self):
+        """
+        Uses the following config options:
+        filename_with_episode # Filename when episode name is found
+        filename_without_episode # Filename when no episode can be found
+        episode_single # formatting for a single episode number
+        episode_seperator # used to join multiple episode numbers
+        """
         # Format episode number into string, or a list
         if isinstance(self.episodenumber, list):
-            epno = "-".join("%02d" % x for x in self.episodenumber)
+            epno = Config['episode_seperator'].join(
+                Config['episode_single'] % x for x in self.episodenumber)
         else:
-            epno = "%02d" % (self.episodenumber)
+            epno = Config['episode_single'] % self.episodenumber
 
-        if self.episodenumber is None:
-            return "%s - [%02dx%s]" % (
-                self.showname,
-                self.seasonnumber,
-                epno)
+        epdata = {
+            'showname': self.showname,
+            'seasonno': self.seasonnumber,
+            'episode': epno,
+            'episodename': self.episodename
+        }
+
+        if self.episodename is None:
+            return Config['filename_with_episode'] % epdata
         else:
-            return "%s - [%02dx%s] - %s" % (
-                self.showname,
-                self.seasonnumber,
-                epno,
-                self.episodename)
+            return Config['filename_without_episode'] % epdata
 
     def __repr__(self):
         return "<%s: %s>" % (
