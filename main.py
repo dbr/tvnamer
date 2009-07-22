@@ -50,7 +50,13 @@ def tvnamer(paths):
         else:
             episodes_found.append(episode)
 
-    print episodes_found
+    if len(valid_files) == 0:
+        raise NoValidFilesFoundError()
+
+    for episode in episodes_found:
+        print episode.filename
+        cnamer = Renamer(episode.filename)
+        cnamer.newName(episode.generateFilename)
 
 
 def main():

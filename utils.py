@@ -27,11 +27,11 @@ def warn(text):
     sys.stderr.write("%s\n" % text)
 
 
-def _serialiseElement(root, name, elem, type='option'):
+def _serialiseElement(root, name, elem, etype='option'):
     """Used for config XML saving, currently supports strings, integers
     and lists contains the any of these
     """
-    celem = ET.SubElement(root, type)
+    celem = ET.SubElement(root, etype)
     if name is not None:
         celem.set('name', name)
 
@@ -79,6 +79,8 @@ def _deserialiseItem(ctype, citem):
 
 
 def _indentTree(elem, level=0):
+    """Inline-modification of ElementTree to "pretty-print" the XML
+    """
     i = "\n" + "  " * level
     if len(elem):
         if not elem.text or not elem.text.strip():
@@ -107,7 +109,7 @@ class _ConfigManager(dict):
         if os.path.isfile(self.DEFAULT_CONFIG_FILE):
             try:
                 self._loadConfig(self.DEFAULT_CONFIG_FILE)
-            except InvalidConfig:
+            except InvalidConfigFile:
                 warn("WARNING: Config file is invalid: %s\n" % (
                     self.DEFAULT_CONFIG_FILE))
                 warn("Will use default configuration\n")
@@ -196,10 +198,10 @@ class _ConfigManager(dict):
                 (?P<episodenumber>[0-9]{2,3})
                 [\._ -][^\\/]*$'''],
 
-            'filename_with_episode': '%(showname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s',
-            'filename_without_episode': '%(showname)s - [%(seasonno)02dx%(episode)s]',
-            'episode_single': '%02d',
-            'episode_seperator': '-',
+            'filename_with_episode': '%(showname)s.s%(seasonno)02d%(episode)s.%(episodename)s',
+            'filename_with_episode': '%(showname)s.s%(seasonno)02d%(episode)s',
+            'episode_single': 'e%02d',
+            'episode_seperator': ''
             }
 
         # Updates defaults dict with current settings
@@ -211,11 +213,11 @@ class _ConfigManager(dict):
         """
         self.clear()
 
-    def _loadConfig(self, xml):
+    def _loadConfig(self, xmlsrc):
         """Loads a config from a file
         """
         try:
-            root = ET.fromstring(xml)
+            root = ET.fromstring(xmlsrc)
         except xml.parsers.expat.ExpatError, errormsg:
             raise InvalidConfigFile(errormsg)
 
@@ -232,11 +234,11 @@ class _ConfigManager(dict):
 
         return conf
 
-    def _saveConfig(self, config):
+    def _saveConfig(self, configdict):
         root = ET.Element('tvnamer')
         root.set('version', str(self.VERSION))
 
-        for ckey, cvalue in config.items():
+        for ckey, cvalue in configdict.items():
             _serialiseElement(root, ckey, cvalue)
 
         _indentTree(root)
@@ -259,14 +261,14 @@ class _ConfigManager(dict):
     def saveConfig(self, filename):
         """Stores config options into a file
         """
-        xml = self._saveConfig(self)
+        xmlsrc = self._saveConfig(self)
         try:
-            f = open(filename, 'w')
+            fhandle = open(filename, 'w')
         except IOError, errormsg:
             raise InvalidConfigFile(errormsg)
         else:
-            f.write(xml)
-            f.close()
+            fhandle.write(xmlsrc)
+            fhandle.close()
 
     def useDefaultConfig(self):
         """Uses only the default settings, works similarly to Config.loadFile
@@ -312,8 +314,8 @@ class FileFinder(object):
             allfiles.append(os.path.abspath(startpath))
 
         elif os.path.isdir(startpath):
-            for sf in os.listdir(startpath):
-                newpath = os.path.join(startpath, sf)
+            for subf in os.listdir(startpath):
+                newpath = os.path.join(startpath, subf)
                 newpath = os.path.abspath(newpath)
                 if os.path.isfile(newpath):
                     allfiles.append(newpath)
@@ -382,7 +384,8 @@ class FileParser(object):
                 episode = EpisodeInfo(
                     showname = match.group('showname'),
                     seasonnumber = seasonnumber,
-                    episodenumber = episodenumber)
+                    episodenumber = episodenumber,
+                    filename = self.path)
                 return episode
         else:
             raise InvalidFilename(self.path)
@@ -397,14 +400,16 @@ class EpisodeInfo(object):
         showname = None,
         seasonnumber = None,
         episodenumber = None,
-        episodename = None):
+        episodename = None,
+        filename = None):
 
         self.showname = showname
         self.seasonnumber = seasonnumber
         self.episodenumber = episodenumber
         self.episodename = episodename
+        self.filename = filename
 
-    def _generateFilename(self):
+    def generateFilename(self):
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found
@@ -434,10 +439,37 @@ class EpisodeInfo(object):
     def __repr__(self):
         return "<%s: %s>" % (
             self.__class__.__name__,
-            self._generateFilename())
+            self.generateFilename())
 
 
 class Renamer(object):
     """Deals with renaming of files
     """
-    pass
+    def __init__(self, filename):
+        self.filename = filename
+
+    def newPath(self, newPath):
+        """Moves a file
+        """
+        #FIXME: Need to impliment this
+        raise NotImplementedError()
+
+    def newName(self, newName, keepExtension=True):
+        """Renames a file, keeping the path the same.
+
+        If keepExtension is True (default), the existing extension (if any) is
+        retained. If False, the existing extension is removed, and the one in
+        newName is used if it is supplied.
+        
+        If keepExtension is False, the extension in newName will be used
+        """
+        filepath, filename = os.path.split(self.filename)
+        filename, fileext = os.path.splitext(filename)
+        
+        if keepExtension:
+            newName = newName + fileext
+
+        newpath = os.path.join(filepath, newName)
+        print newpath #FIXME: Doesn't rename files yet
+        self.filename = newpath
+        
