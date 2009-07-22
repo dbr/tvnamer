@@ -12,8 +12,6 @@ Uses data from www.thetvdb.com (via tvdb_api) to rename TV episode files from
 "some.show.name.s01e01.blah.avi" to "Some Show Name - [01x01] - The First.avi"
 """
 
-import os
-import sys
 from optparse import OptionParser
 
 from utils import Config, FileFinder, FileParser, EpisodeInfo, Renamer, warn
