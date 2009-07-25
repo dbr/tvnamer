@@ -250,11 +250,11 @@ class _ConfigManager(dict):
         """
         self._clearConfig()
         try:
-            xml = open(filename).read()
+            xmlsrc = open(filename).read()
         except IOError, errormsg:
             raise InvalidConfigFile(errormsg)
         else:
-            loaded_conf = self._loadConfig(xml)
+            loaded_conf = self._loadConfig(xmlsrc)
             self._setDefaults() # Makes sure all config options are set
             self.update(loaded_conf)
 
