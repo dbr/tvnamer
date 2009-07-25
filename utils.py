@@ -422,8 +422,7 @@ class EpisodeInfo(object):
             'showname': self.showname,
             'seasonno': self.seasonnumber,
             'episode': epno,
-            'episodename': self.episodename
-        }
+            'episodename': self.episodename}
 
         if self.episodename is None:
             return Config['filename_with_episode'] % epdata
@@ -436,9 +435,10 @@ class EpisodeInfo(object):
             self.generateFilename())
 
 
-class Renamer(object):
+class Renamer:
     """Deals with renaming of files
     """
+
     def __init__(self, filename):
         self.filename = filename
 
@@ -454,16 +454,15 @@ class Renamer(object):
         If keepExtension is True (default), the existing extension (if any) is
         retained. If False, the existing extension is removed, and the one in
         newName is used if it is supplied.
-        
+
         If keepExtension is False, the extension in newName will be used
         """
         filepath, filename = os.path.split(self.filename)
         filename, fileext = os.path.splitext(filename)
-        
+
         if keepExtension:
             newName = newName + fileext
 
         newpath = os.path.join(filepath, newName)
         print newpath #FIXME: Doesn't rename files yet
         self.filename = newpath
-        
