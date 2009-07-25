@@ -54,7 +54,7 @@ def tvnamer(paths):
     for episode in episodes_found:
         print episode.filename
         cnamer = Renamer(episode.filename)
-        cnamer.newName(episode.generateFilename)
+        cnamer.newName(episode.generateFilename())
 
 
 def main():
