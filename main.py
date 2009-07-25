@@ -65,6 +65,10 @@ def main():
         "-c", "--config",
         dest="config", help = "Override the config file path")
     opter.add_option(
+        "-s", "--save",
+        dest="saveconfig", help = "Save (default) config to file")
+
+    opter.add_option(
         "-v", "--verbose",
         default=False, dest="verbose", action="store_true",
         help="show debugging information")
@@ -75,15 +79,27 @@ def main():
 
     opts, args = opter.parse_args()
 
-    if len(args) == 0:
-        opter.error("No filenames or directories supplied")
-
     if opts.config is not None:
+        print "Loading config from: %s" % (opts.config)
         try:
             Config.loadConfig(opts.config)
         except InvalidConfigFile:
-            warn("Invalid config file %s - using default configuration")
+            warn("Invalid config file %s - using default configuration" % (
+                opts.config))
             Config.useDefaultConfig()
+
+    if opts.saveconfig is not None:
+        print "Saving current config to %s" % (opts.saveconfig)
+        try:
+            Config.saveConfig(opts.saveconfig)
+        except InvalidConfigFile:
+            opter.error("Could not save config to %s" % opts.saveconfig)
+        else:
+            print "Done, exiting"
+            opter.exit(0)
+
+    if len(args) == 0:
+        opter.error("No filenames or directories supplied")
 
     if opts.verbose:
         Config['verbose'] = True
