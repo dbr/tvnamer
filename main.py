@@ -20,7 +20,7 @@ InvalidFilename, InvalidConfigFile)
 
 
 def tvnamer(paths):
-    """Main tvnamer function, takes a config and array of paths, does stuff.
+    """Main tvnamer function, takes an array of paths, does stuff.
     """
     valid_files = []
 
