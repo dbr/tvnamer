@@ -198,11 +198,12 @@ class _ConfigManager(dict):
                 (?P<episodenumber>[0-9]{2,3})
                 [\._ -][^\\/]*$'''],
 
-            'filename_with_episode': '%(showname)s.s%(seasonno)02d%(episode)s.%(episodename)s',
-            'filename_with_episode': '%(showname)s.s%(seasonno)02d%(episode)s',
+            'filename_with_episode':
+              '%(showname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s',
+            'filename_without_episode':
+              '%(showname)s - [%(seasonno)02dx%(episode)s]',
             'episode_single': 'e%02d',
-            'episode_seperator': ''
-            }
+            'episode_seperator': ''}
 
         # Updates defaults dict with current settings
         for dkey, dvalue in defaults.items():
