@@ -27,11 +27,9 @@ def tvnamer(paths):
     for cfile in paths:
         cur = FileFinder(cfile, recursive = Config['recursive'])
         try:
-            cur.checkPath()
+            valid_files.extend(cur.findFiles())
         except InvalidPath:
             warn("Invalid path: %s" % cfile)
-        else:
-            valid_files.extend(cur.findFiles())
 
     if len(valid_files) == 0:
         raise NoValidFilesFoundError()

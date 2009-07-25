@@ -290,21 +290,15 @@ class FileFinder(object):
         self.path = path
         self.recursive = recursive
 
-    def checkPath(self):
-        """Checks if path is valid file or folder, raises InvalidPath if not
-        """
-        if os.path.isfile(self.path) or os.path.isdir(self.path):
-            return True
-        else:
-            raise InvalidPath(self.path)
-
     def findFiles(self):
         """Returns list of files found at path
         """
         if os.path.isfile(self.path):
             return [os.path.abspath(self.path)]
-        else:
+        elif os.path.isdir(self.path):
             return self._findFilesInPath(self.path)
+        else:
+            raise InvalidPath("%s is not a valid file/directory" % self.path)
 
     def _findFilesInPath(self, startpath):
         """Finds files from startpath, could be called recursively
