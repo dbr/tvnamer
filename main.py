@@ -80,8 +80,8 @@ def main():
 
     if opts.config is not None:
         try:
-            Config.loadFile(opts.config)
-        except InvalidConfig:
+            Config.loadConfig(opts.config)
+        except InvalidConfigFile:
             warn("Invalid config file %s - using default configuration")
             Config.useDefaultConfig()
 
