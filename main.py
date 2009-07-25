@@ -14,7 +14,7 @@ Uses data from www.thetvdb.com (via tvdb_api) to rename TV episode files from
 
 from optparse import OptionParser
 
-from utils import Config, FileFinder, FileParser, EpisodeInfo, Renamer, warn
+from utils import Config, FileFinder, FileParser, Renamer, warn
 from tvnamer_exceptions import (InvalidPath, NoValidFilesFoundError,
 InvalidFilename, InvalidConfigFile)
 
