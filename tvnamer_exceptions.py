@@ -34,6 +34,12 @@ class InvalidFilename(BaseTvnamerException):
     pass
 
 
+class UserAbort(BaseTvnamerException):
+    """Base exception for config errors
+    """
+    pass
+
+
 class BaseConfigError(BaseTvnamerException):
     """Base exception for config errors
     """

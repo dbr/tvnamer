@@ -14,9 +14,12 @@ import re
 import sys
 
 import tvdb_api
+from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
+tvdb_episodenotfound, tvdb_episodenotfound, tvdb_attributenotfound,
+tvdb_userabort)
 
 from config import Config
-from tvnamer_exceptions import (InvalidPath, InvalidFilename)
+from tvnamer_exceptions import (InvalidPath, InvalidFilename, UserAbort)
 
 
 def warn(text):
@@ -30,6 +33,36 @@ def verbose(text):
     """
     if Config['verbose']:
         print text
+
+
+def getEpisodeName(tvdb_instance, episode):
+    try:
+        # Ask for episode name from tvdb_api
+        epinfo = tvdb_instance[episode.showname]\
+        [episode.seasonnumber]\
+        [episode.episodenumber]
+    except tvdb_shownotfound:
+        # No such show found.
+        # Use the show-name from the files name, and None as the ep name
+        warn("Show %s not found on www.thetvdb.com" % episode.showname)
+    except (tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound):
+        # The season, episode or name wasn't found, but the show was.
+        # Use the corrected show-name, but no episode name.
+        episode.showname = tvdb_instance[episode.showname]['seriesname']
+    except tvdb_error, errormsg:
+        # Error communicating with thetvdb.com
+        sys.stderr.write(
+            "! Warning: Error contacting www.thetvdb.com:\n%s\n" % (errormsg))
+    except tvdb_userabort, errormsg:
+        # User aborted selection (q or ^c)
+        print "\n", errormsg
+        raise UserAbort(errormsg)
+    else:
+        # get the corrected seriesname
+        episode.showname = tvdb_instance[episode.showname]['seriesname']
+        episode.episodename = epinfo['episodename']
+
+    return episode
 
 
 class FileFinder(object):

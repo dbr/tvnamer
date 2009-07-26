@@ -14,7 +14,10 @@ Uses data from www.thetvdb.com (via tvdb_api) to rename TV episode files from
 
 from optparse import OptionParser
 
-from utils import Config, FileFinder, FileParser, Renamer, warn
+from tvdb_api import Tvdb
+
+from utils import (Config, FileFinder, FileParser, Renamer, warn,
+getEpisodeName)
 from tvnamer_exceptions import (InvalidPath, NoValidFilesFoundError,
 InvalidFilename, InvalidConfigFile)
 
@@ -52,9 +55,14 @@ def tvnamer(paths):
         raise NoValidFilesFoundError()
 
     for episode in episodes_found:
-        print episode.filename
-        cnamer = Renamer(episode.filename)
-        cnamer.newName(episode.generateFilename())
+        print "Processing %s" % (episode.filename)
+        t = Tvdb(interactive=True, debug = Config['verbose'])
+        print getEpisodeName(t, episode)
+        if raw_input().strip() == "y":
+            cnamer = Renamer(episode.filename)
+            print cnamer
+            print "new episode name %s" % episode.generateFilename()
+            # cnamer.newName(episode.generateFilename())
 
 
 def main():
