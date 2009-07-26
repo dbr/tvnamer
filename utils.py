@@ -13,7 +13,6 @@ import os
 import re
 import sys
 
-import tvdb_api
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_episodenotfound, tvdb_attributenotfound,
 tvdb_userabort)
@@ -38,17 +37,17 @@ def verbose(text):
 def getEpisodeName(tvdb_instance, episode):
     try:
         # Ask for episode name from tvdb_api
-        epinfo = tvdb_instance[episode.showname]\
+        epinfo = tvdb_instance[episode.seriesname]\
         [episode.seasonnumber]\
         [episode.episodenumber]
     except tvdb_shownotfound:
         # No such show found.
         # Use the show-name from the files name, and None as the ep name
-        warn("Show %s not found on www.thetvdb.com" % episode.showname)
+        warn("Show %s not found on www.thetvdb.com" % episode.seriesname)
     except (tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound):
         # The season, episode or name wasn't found, but the show was.
         # Use the corrected show-name, but no episode name.
-        episode.showname = tvdb_instance[episode.showname]['seriesname']
+        episode.seriesname = tvdb_instance[episode.seriesname]['seriesname']
     except tvdb_error, errormsg:
         # Error communicating with thetvdb.com
         sys.stderr.write(
@@ -59,7 +58,7 @@ def getEpisodeName(tvdb_instance, episode):
         raise UserAbort(errormsg)
     else:
         # get the corrected seriesname
-        episode.showname = tvdb_instance[episode.showname]['seriesname']
+        episode.seriesname = tvdb_instance[episode.seriesname]['seriesname']
         episode.episodename = epinfo['episodename']
 
     return episode
@@ -167,7 +166,7 @@ class FileParser(object):
                     seasonnumber = None
 
                 episode = EpisodeInfo(
-                    showname = match.group('showname'),
+                    seriesname = match.group('seriesname'),
                     seasonnumber = seasonnumber,
                     episodenumber = episodenumber,
                     filename = self.path)
@@ -182,13 +181,13 @@ class EpisodeInfo(object):
     """
 
     def __init__(self,
-        showname = None,
+        seriesname = None,
         seasonnumber = None,
         episodenumber = None,
         episodename = None,
         filename = None):
 
-        self.showname = showname
+        self.seriesname = seriesname
         self.seasonnumber = seasonnumber
         self.episodenumber = episodenumber
         self.episodename = episodename
@@ -211,7 +210,7 @@ class EpisodeInfo(object):
 
         # Data made available to config'd output file format
         epdata = {
-            'showname': self.showname,
+            'seriesname': self.seriesname,
             'seasonno': self.seasonnumber,
             'episode': epno,
             'episodename': self.episodename}
