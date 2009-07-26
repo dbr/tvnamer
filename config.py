@@ -188,8 +188,8 @@ class _ConfigManager(dict):
               '%(showname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s',
             'filename_without_episode':
               '%(showname)s - [%(seasonno)02dx%(episode)s]',
-            'episode_single': 'e%02d',
-            'episode_seperator': ''}
+            'episode_single': '%02d',
+            'episode_seperator': '-'}
 
         # Updates defaults dict with current settings
         for dkey, dvalue in defaults.items():
