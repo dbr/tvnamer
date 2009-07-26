@@ -7,6 +7,10 @@ def title(text)
   puts "#{padding} #{text}"
 end
 
+task :clean do
+  `rm *.pyc`
+end
+
 task :pep8 do
   title("pep8.py")
   puts `python tools/pep8.py *.py`
