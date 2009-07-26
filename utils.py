@@ -131,6 +131,9 @@ class FileParser(object):
                 self.compiled_regexs.append(cregex)
 
     def parse(self):
+        """Runs path via configured regex, extracting data from groups.
+        Returns an EpisodeInfo instance containing extracted data.
+        """
         _, filename = os.path.split(self.path)
 
         for cmatcher in self.compiled_regexs:
@@ -206,6 +209,7 @@ class EpisodeInfo(object):
         else:
             epno = Config['episode_single'] % self.episodenumber
 
+        # Data made available to config'd output file format
         epdata = {
             'showname': self.showname,
             'seasonno': self.seasonnumber,
@@ -213,9 +217,9 @@ class EpisodeInfo(object):
             'episodename': self.episodename}
 
         if self.episodename is None:
-            return Config['filename_with_episode'] % epdata
-        else:
             return Config['filename_without_episode'] % epdata
+        else:
+            return Config['filename_with_episode'] % epdata
 
     def __repr__(self):
         return "<%s: %s>" % (
@@ -229,12 +233,6 @@ class Renamer(object):
 
     def __init__(self, filename):
         self.filename = filename
-
-    def newPath(self, newPath):
-        """Moves a file
-        """
-        #FIXME: Need to impliment this
-        raise NotImplementedError()
 
     def newName(self, newName, keepExtension=True):
         """Renames a file, keeping the path the same.
