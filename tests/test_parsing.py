@@ -11,13 +11,12 @@
 
 import os
 import sys
-from copy import copy
-import unittest
 
 sys.path.append(os.path.join(os.path.abspath(sys.path[0]), ".."))
 from utils import FileParser
 
 from test_files import files
+
 
 def check_case(curtest):
     """Runs test case, used by test_generator
@@ -32,6 +31,7 @@ def check_case(curtest):
 
     assert (theep.episodenumber == curtest['episodenumber'],
         "%s == %s" % (theep.episodenumber, curtest['episodenumber']))
+
 
 def test_generator():
     """Generates test for each test case in test_files.py

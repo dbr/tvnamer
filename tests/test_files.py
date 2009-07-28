@@ -35,7 +35,7 @@ files['s01e01_format'] = [
 files['misc'] = [
     {'input': 'Six.Feet.Under.S0201.test_testing-yay',
     'seriesname': 'six feet under',
-    'seasonnumber': 2, 'episodenumber': 1}
+    'seasonnumber': 2, 'episodenumber': 1},
 ]
 
 files['multiple_episodes'] = [
