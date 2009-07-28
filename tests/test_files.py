@@ -15,7 +15,7 @@ files['default_format'] = [
     {'input': 'Scrubs - [04x19] - My Best Laid Plans',
     'seriesname': 'scrubs',
     'seasonnumber': 4, 'episodenumber': 19},
-    {'input': 'Scrus - [02x11]',
+    {'input': 'Scrubs - [02x11]',
     'seriesname': 'scrubs',
     'seasonnumber': 2, 'episodenumber': 11},
 ]
@@ -58,7 +58,7 @@ files['multiple_episodes'] = [
 
 files['unicode'] = [
     {'input': 'DARKER THAN BLACK -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85- - S01E01 (21st copy)',
-    'seriesname': 'darker than black',
+    'seriesname': 'darker than black -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85-',
     'seasonnumber': 1, 'episodenumber': 1},
     {'input': 'Carniv\xc3\xa0le 1x11 - The Day of the Dead',
     'seriesname': 'Carniv\xc3\xa0le',
