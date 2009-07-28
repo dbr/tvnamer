@@ -35,6 +35,13 @@ def verbose(text):
 
 
 def getEpisodeName(tvdb_instance, episode):
+    """Queries the tvdb_api.Tvdb instance for episode name and corrected
+    series name.
+    If series cannot be found, it will warn the user. If the episode is not
+    found, it will use the corrected show name and not set an episode name.
+    If the site is unreachable, it will warn the user. If the user aborts
+    it will catch tvdb_api's user abort error and raise tvnamer's
+    """
     try:
         # Ask for episode name from tvdb_api
         epinfo = tvdb_instance[episode.seriesname]\
