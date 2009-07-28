@@ -165,8 +165,14 @@ class FileParser(object):
                     # No season number specified, usually for Anime
                     seasonnumber = None
 
+                seriesname = match.group('seriesname')
+
+                #remove ._- characters from name (- removed only if next to
+                # end of line)
+                seriesname = re.sub("[\._]|\-(?=$)", " ", seriesname).strip()
+
                 episode = EpisodeInfo(
-                    seriesname = match.group('seriesname'),
+                    seriesname = seriesname,
                     seasonnumber = seasonnumber,
                     episodenumber = episodenumber,
                     filename = self.path)
