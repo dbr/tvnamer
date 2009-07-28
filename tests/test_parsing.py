@@ -19,21 +19,26 @@ from utils import FileParser
 
 from test_files import files
 
-def check_test(curtest):
+def check_case(curtest):
     """Runs test case, used by test_generator
     """
     parser = FileParser(curtest['input'])
     theep = parser.parse()
-    assert theep.seriesname.lower() == curtest['seriesname'].lower()
-    assert theep.seasonnumber == curtest['seasonnumber']
-    assert theep.episodenumber == curtest['episodenumber']
+    assert(theep.seriesname.lower() == curtest['seriesname'].lower(),
+        "%s == %s" % (theep.seriesname.lower(), curtest['seriesname'].lower()))
+
+    assert (theep.seasonnumber == curtest['seasonnumber'],
+        "%s == %s" % (theep.seasonnumber, curtest['seasonnumber']))
+
+    assert (theep.episodenumber == curtest['episodenumber'],
+        "%s == %s" % (theep.episodenumber, curtest['episodenumber']))
 
 def test_generator():
     """Generates test for each test case in test_files.py
     """
     for category, testcases in files.items():
         for testindex, curtest in enumerate(testcases):
-            cur_tester = lambda x: check_test(x)
+            cur_tester = lambda x: check_case(x)
             cur_tester.description = '%s_%d' % (category, testindex)
             yield (cur_tester, curtest)
 
