@@ -13,10 +13,10 @@ end
 
 task :pep8 do
   title("pep8.py")
-  puts `python tools/pep8.py *.py`
+  puts `python tools/pep8.py --repeat *.py tests/*.py`
 end
 
 task :pylint do
   title("PyLint")
-  puts `pylint --reports=n --disable-msg=#{pylint_disable.join(",")} *.py`
+  puts `pylint --reports=n --disable-msg=#{pylint_disable.join(",")} *.py tests/*.py`
 end
