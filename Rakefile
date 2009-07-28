@@ -1,5 +1,5 @@
 # PyLint messages to disable
-pylint_disable = ["R0903", "C0103", "R0903", "F0401"]
+pylint_disable = ["R0903", "C0103", "R0903", "F0401", "C0301"]
 task :default => [:pep8, :pylint, :test]
 
 def title(text)
