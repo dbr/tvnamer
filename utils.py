@@ -43,31 +43,34 @@ def getEpisodeName(tvdb_instance, episode):
     it will catch tvdb_api's user abort error and raise tvnamer's
     """
     try:
-        # Ask for episode name from tvdb_api
-        epinfo = tvdb_instance[episode.seriesname]\
-        [episode.seasonnumber]\
-        [episode.episodenumber]
-    except tvdb_shownotfound:
-        # No such show found.
-        # Use the show-name from the files name, and None as the ep name
-        warn("Show %s not found on www.thetvdb.com" % episode.seriesname)
-    except (tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound):
-        # The season, episode or name wasn't found, but the show was.
-        # Use the corrected show-name, but no episode name.
-        episode.seriesname = tvdb_instance[episode.seriesname]['seriesname']
+        show = tvdb_instance[episode.seriesname]
     except tvdb_error, errormsg:
-        # Error communicating with thetvdb.com
-        sys.stderr.write(
-            "! Warning: Error contacting www.thetvdb.com:\n%s\n" % (errormsg))
-    except tvdb_userabort, errormsg:
-        # User aborted selection (q or ^c)
-        print "\n", errormsg
-        raise UserAbort(errormsg)
+        warn("! Warning: Error contacting www.thetvdb.com:\n%s\n" % errormsg)
+        return
+    except tvdb_shownotfound:
+        # No such series found.
+        warn("Show %s not found on www.thetvdb.com" % episode.seriesname)
+        return
     else:
-        # get the corrected seriesname
-        episode.seriesname = tvdb_instance[episode.seriesname]['seriesname']
-        episode.episodename = epinfo['episodename']
+        # Series was found, use corrected series name
+        episode.seriesname = show['seriesname']
 
+    if not isinstance(episode.episodenumber, list):
+        episode.episodenumber = [episode.episodenumber]
+
+    epnames = []
+    for cepno in episode.episodenumber:
+        try:
+            episodeinfo = show[episode.seasonnumber][cepno]
+        except (tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound):
+            # The season, episode or name wasn't found, but the show was.
+            # Use the corrected show-name, but no episode name.
+            warn("Episode %02d of season %02d was not found" % (
+                cepno, episode.seasonnumber))
+        else:
+            epnames.append(episodeinfo['episodename'])
+
+    episode.episodename = epnames
     return episode
 
 
@@ -188,6 +191,36 @@ class FileParser(object):
             raise InvalidFilename(self.path)
 
 
+def formatEpisodeName(names):
+    """Takes a list of episode names, formats them into a string.
+    If two names are supplied, such as "Pilot (1)" and "Pilot (2)", the
+    returned string will be "Pilot (1-2)"
+
+    If two different episode names are found, such as "The first", and
+    "Something else" it will return "The first, Something else"
+    """
+    if len(names) == 1:
+        return names[0]
+
+    found_names = []
+    numbers = []
+    for cname in names:
+        number = re.match("(.*) \(([0-9]+)\)$", cname)
+        if number:
+            epname, epno = number.group(1), number.group(2)
+            if len(found_names) > 0 and epname not in found_names:
+                return ", ".join(names)
+            found_names.append(number.group(1))
+            numbers.append(int(number.group(2)))
+        else:
+            # An episode didn't match
+            return ", ".join(names)
+
+    names = []
+    start, end = min(numbers), max(numbers)
+    names.append("%s (%d-%d)" % (found_names[0], start, end))
+    return ", ".join(names)
+
 class EpisodeInfo(object):
     """Stores information (season, episode number, episode name), and contains
     logic to generate new name
@@ -231,6 +264,8 @@ class EpisodeInfo(object):
         if self.episodename is None:
             return Config['filename_without_episode'] % epdata
         else:
+            if isinstance(self.episodename, list):
+                epdata['episodename'] = formatEpisodeName(self.episodename)
             return Config['filename_with_episode'] % epdata
 
     def __repr__(self):
