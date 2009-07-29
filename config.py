@@ -135,26 +135,16 @@ class _ConfigManager(dict):
                 [\.\- ]?[Ee](?P<episodenumberend>[0-9]+) # final episode num
                 [^\/]*$''',
 
-                # foo.1x09-11*
+                # foo.[1x09-11]*
                 '''^(?P<seriesname>.+?)[ \._\-]       # show name and padding
                 \[                                  # [
                     ?(?P<seasonnumber>[0-9]+)       # season
                 x                                   # x
                     (?P<episodenumberstart>[0-9]+)  # episode
+                    (- [0-9]+)*
                 -                                   # -
                     (?P<episodenumberend>[0-9]+)    # episode
                 \]                                  # \]
-                [^\\/]*$''',
-
-                # foo_[s01]_[e01]
-                '''^(?P<seriesname>.+?)[ \._\-]       # show name and padding
-                \[                                  # [
-                    [Ss](?P<seasonnumber>[0-9]+?)   # season
-                \]                                  # ]
-                _                                   # _
-                \[                                  # [
-                    [Ee](?P<episodenumber>[0-9]+?)  # episode
-                \]?                                 # ]
                 [^\\/]*$''',
 
                 # foo.1x09*
