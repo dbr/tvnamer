@@ -60,9 +60,9 @@ def tvnamer(paths):
         print getEpisodeName(t, episode)
         if raw_input().strip() == "y":
             cnamer = Renamer(episode.filename)
-            print cnamer
-            print "new episode name %s" % episode.generateFilename()
-            # cnamer.newName(episode.generateFilename())
+            print "Old filename: %s" % episode.filename
+            print "New filename: %s" % episode.generateFilename()
+            cnamer.newName(episode.generateFilename())
 
 
 def main():
