@@ -23,12 +23,21 @@ InvalidFilename, InvalidConfigFile, UserAbort)
 
 
 def processFile(tvdb_instance, episode):
+    """Gets episode name, prompts user for input
+    """
     print "# Processing %s" % (episode.filename)
     episode = getEpisodeName(tvdb_instance, episode)
 
+    cnamer = Renamer(episode.fullpath)
+    newName = episode.generateFilename()
+
     print "#" * 20
     print "# Old filename: %s" % episode.filename
-    print "# New filename: %s" % episode.generateFilename()
+    print "# New filename: %s" % newName
+
+    if Config['alwaysrename']:
+        cnamer.newName(newName)
+        return
 
     ans = None
     while ans not in ['y', 'n', 'a', 'q', '']:
@@ -39,9 +48,6 @@ def processFile(tvdb_instance, episode):
         except KeyboardInterrupt, errormsg:
             print "\n", errormsg
             raise UserAbort(errormsg)
-
-    cnamer = Renamer(episode.fullpath)
-    newName = episode.generateFilename()
 
     if len(ans) == 0:
         print "Renaming (default)"
@@ -60,6 +66,7 @@ def processFile(tvdb_instance, episode):
         print "Skipping"
     else:
         print "Invalid input, skipping"
+
 
 def tvnamer(paths):
     """Main tvnamer function, takes an array of paths, does stuff.
@@ -104,6 +111,7 @@ def tvnamer(paths):
         processFile(tvdb_instance, episode)
 
     print "# Done"
+
 
 def main():
     """Parses command line arguments, displays errors from tvnamer in terminal
