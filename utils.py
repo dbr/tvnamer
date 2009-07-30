@@ -289,7 +289,7 @@ class Renamer(object):
         """Renames a file, keeping the path the same.
         """
         filepath, filename = os.path.split(self.filename)
-        filename, fileext = os.path.splitext(filename)
+        filename, _ = os.path.splitext(filename)
 
         newpath = os.path.join(filepath, newName)
         os.rename(self.filename, newpath)
