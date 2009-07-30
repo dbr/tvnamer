@@ -14,11 +14,10 @@ import re
 import sys
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
-tvdb_episodenotfound, tvdb_episodenotfound, tvdb_attributenotfound,
-tvdb_userabort)
+tvdb_episodenotfound, tvdb_episodenotfound, tvdb_attributenotfound)
 
 from config import Config
-from tvnamer_exceptions import (InvalidPath, InvalidFilename, UserAbort)
+from tvnamer_exceptions import (InvalidPath, InvalidFilename)
 
 
 def warn(text):
@@ -62,7 +61,8 @@ def getEpisodeName(tvdb_instance, episode):
     for cepno in episode.episodenumber:
         try:
             episodeinfo = show[episode.seasonnumber][cepno]
-        except (tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound):
+        except (tvdb_seasonnotfound, tvdb_episodenotfound,
+                tvdb_attributenotfound):
             # The season, episode or name wasn't found, but the show was.
             # Use the corrected show-name, but no episode name.
             warn("Episode %02d of season %02d was not found" % (
@@ -175,7 +175,7 @@ class FileParser(object):
                     # No season number specified, usually for Anime
                     seasonnumber = None
 
-                seriesname = match.group('seriesname')
+                seriesname = match.group('seriesname').lower()
 
                 #remove ._- characters from name (- removed only if next to
                 # end of line)
@@ -210,8 +210,8 @@ def formatEpisodeName(names):
             epname, epno = number.group(1), number.group(2)
             if len(found_names) > 0 and epname not in found_names:
                 return ", ".join(names)
-            found_names.append(number.group(1))
-            numbers.append(int(number.group(2)))
+            found_names.append(epname)
+            numbers.append(int(epno))
         else:
             # An episode didn't match
             return ", ".join(names)
@@ -220,6 +220,7 @@ def formatEpisodeName(names):
     start, end = min(numbers), max(numbers)
     names.append("%s (%d-%d)" % (found_names[0], start, end))
     return ", ".join(names)
+
 
 class EpisodeInfo(object):
     """Stores information (season, episode number, episode name), and contains
@@ -237,7 +238,9 @@ class EpisodeInfo(object):
         self.seasonnumber = seasonnumber
         self.episodenumber = episodenumber
         self.episodename = episodename
-        self.filename = filename
+        self.fullpath = filename
+        self.filepath, self.filename = os.path.split(filename)
+        self.extension = os.path.splitext(filename)[1].replace(".", "")
 
     def generateFilename(self):
         """
@@ -245,11 +248,11 @@ class EpisodeInfo(object):
         filename_with_episode # Filename when episode name is found
         filename_without_episode # Filename when no episode can be found
         episode_single # formatting for a single episode number
-        episode_seperator # used to join multiple episode numbers
+        episode_separator # used to join multiple episode numbers
         """
         # Format episode number into string, or a list
         if isinstance(self.episodenumber, list):
-            epno = Config['episode_seperator'].join(
+            epno = Config['episode_separator'].join(
                 Config['episode_single'] % x for x in self.episodenumber)
         else:
             epno = Config['episode_single'] % self.episodenumber
@@ -259,7 +262,8 @@ class EpisodeInfo(object):
             'seriesname': self.seriesname,
             'seasonno': self.seasonnumber,
             'episode': epno,
-            'episodename': self.episodename}
+            'episodename': self.episodename,
+            'ext': self.extension}
 
         if self.episodename is None:
             return Config['filename_without_episode'] % epdata
@@ -281,20 +285,11 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = filename
 
-    def newName(self, newName, keepExtension=True):
+    def newName(self, newName):
         """Renames a file, keeping the path the same.
-
-        If keepExtension is True (default), the existing extension (if any) is
-        retained. If False, the existing extension is removed, and the one in
-        newName is used if it is supplied.
-
-        If keepExtension is False, the extension in newName will be used
         """
         filepath, filename = os.path.split(self.filename)
         filename, fileext = os.path.splitext(filename)
-
-        if keepExtension:
-            newName = newName + fileext
 
         newpath = os.path.join(filepath, newName)
         os.rename(self.filename, newpath)

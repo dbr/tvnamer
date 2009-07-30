@@ -19,12 +19,54 @@ from tvdb_api import Tvdb
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
 getEpisodeName)
 from tvnamer_exceptions import (InvalidPath, NoValidFilesFoundError,
-InvalidFilename, InvalidConfigFile)
+InvalidFilename, InvalidConfigFile, UserAbort)
 
+
+def processFile(tvdb_instance, episode):
+    print "# Processing %s" % (episode.filename)
+    episode = getEpisodeName(tvdb_instance, episode)
+
+    print "#" * 20
+    print "# Old filename: %s" % episode.filename
+    print "# New filename: %s" % episode.generateFilename()
+
+    ans = None
+    while ans not in ['y', 'n', 'a', 'q', '']:
+        print "Rename?"
+        print "([y]/n/a/q)",
+        try:
+            ans = raw_input().strip()
+        except KeyboardInterrupt, errormsg:
+            print "\n", errormsg
+            raise UserAbort(errormsg)
+
+    cnamer = Renamer(episode.fullpath)
+    newName = episode.generateFilename()
+
+    if len(ans) == 0:
+        print "Renaming (default)"
+        cnamer.newName(newName)
+    elif ans == "a":
+        print "Always renaming"
+        Config['alwaysrename'] = True
+        cnamer.newName(newName)
+    elif ans == "q":
+        print "Quitting"
+        raise UserAbort("User exited with q")
+    elif ans == "y":
+        print "Renaming"
+        cnamer.newName(newName)
+    elif ans == "n":
+        print "Skipping"
+    else:
+        print "Invalid input, skipping"
 
 def tvnamer(paths):
     """Main tvnamer function, takes an array of paths, does stuff.
     """
+    print "####################"
+    print "# Starting tvnamer"
+
     valid_files = []
 
     for cfile in paths:
@@ -54,16 +96,14 @@ def tvnamer(paths):
     if len(valid_files) == 0:
         raise NoValidFilesFoundError()
 
-    for episode in episodes_found:
-        print "Processing %s" % (episode.filename)
-        t = Tvdb(interactive=True, debug = Config['verbose'])
-        print getEpisodeName(t, episode)
-        if raw_input().strip() == "y":
-            cnamer = Renamer(episode.filename)
-            print "Old filename: %s" % episode.filename
-            print "New filename: %s" % episode.generateFilename()
-            cnamer.newName(episode.generateFilename())
+    print "# Found %d episodes" % len(valid_files)
 
+    tvdb_instance = Tvdb(interactive=True, debug = Config['verbose'])
+
+    for episode in episodes_found:
+        processFile(tvdb_instance, episode)
+
+    print "# Done"
 
 def main():
     """Parses command line arguments, displays errors from tvnamer in terminal
@@ -84,6 +124,11 @@ def main():
         "-r", "--recursive",
         default = False, dest="recursive", action="store_true",
         help="Descend more than one level directories supplied as arguments")
+    opter.add_option(
+        "-a", "--always",
+        default = False, dest="always", action="store_true",
+        help="always renames files (but still prompts for correct series). Can be set at runtime with the 'a' prompt-option")
+
 
     opts, args = opter.parse_args()
 
@@ -106,18 +151,19 @@ def main():
             print "Done, exiting"
             opter.exit(0)
 
+    Config['verbose'] = opts.verbose
+    Config['recursive'] = opts.recursive
+    Config['alwaysrename'] = opts.always
+
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
-
-    if opts.verbose:
-        Config['verbose'] = True
-    if opts.recursive:
-        Config['recursive'] = True
 
     try:
         tvnamer(paths = args)
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
+    except UserAbort, errormsg:
+        opter.error(errormsg)
 
 if __name__ == '__main__':
     main()
