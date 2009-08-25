@@ -41,7 +41,7 @@ files['misc'] = [
 files['multiple_episodes'] = [
     {'input': 'Scrubs - [01x01-02-03]',
     'seriesname': 'scrubs',
-    'seasonnumber': 1, 'episodenumber': [01, 02, 03],
+    'seasonnumber': 1, 'episodenumber': [1, 2, 3],
     },
     {'input': 'scrubs.s01e23e24',
     'seriesname': 'scrubs',
