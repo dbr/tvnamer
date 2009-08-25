@@ -14,7 +14,7 @@ import re
 import sys
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
-tvdb_episodenotfound, tvdb_episodenotfound, tvdb_attributenotfound)
+tvdb_episodenotfound, tvdb_attributenotfound)
 
 from config import Config
 from tvnamer_exceptions import (InvalidPath, InvalidFilename)
