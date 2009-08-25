@@ -58,6 +58,9 @@ files['multiple_episodes'] = [
     {'input': 'Scrubs - [02x01-03]',
     'seriesname': 'scrubs',
     'seasonnumber': 2, 'episodenumber': [1, 2, 3]},
+    {'input': 'Flight.of.the.Conchords.S01E01-02.An.Ep.name.avi',
+    'seriesname': 'Flight of the Conchords',
+    'seasonnumber': 1, 'episodenumber': [1, 2]},
 ]
 
 files['unicode'] = [
