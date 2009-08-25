@@ -31,13 +31,6 @@ import textwrap
 import optparse
 
 
-try:
-    # Debugging helper module
-    import debug
-except ImportError:
-    pass
-
-
 def percentage(p):
     return "%.02f%%" % (p*100.0,)
 
