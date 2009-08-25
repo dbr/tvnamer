@@ -175,7 +175,7 @@ class FileParser(object):
                     # No season number specified, usually for Anime
                     seasonnumber = None
 
-                seriesname = match.group('seriesname').lower()
+                seriesname = match.group('seriesname')
 
                 #remove ._- characters from name (- removed only if next to
                 # end of line)
