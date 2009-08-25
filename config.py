@@ -193,7 +193,8 @@ class _ConfigManager(dict):
                 '''^(?P<seriesname>.+)[ \._\-]
                 (?P<seasonnumber>[0-9]{2})
                 (?P<episodenumber>[0-9]{2,3})
-                [\._ -][^\\/]*$''',],
+                [\._ -][^\\/]*$''',
+            ],
 
             'filename_with_episode':
              '%(seriesname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s.%(ext)s',

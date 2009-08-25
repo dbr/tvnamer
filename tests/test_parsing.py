@@ -124,8 +124,7 @@ def test_generator():
         for testindex, curtest in enumerate(testcases):
             cur_tester = lambda x: check_case(x)
             cur_tester.description = '%s_%d: %s' % (
-                category, testindex, curtest['input']
-            )
+                category, testindex, curtest['input'])
             yield (cur_tester, curtest)
 
 
