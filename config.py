@@ -127,12 +127,26 @@ class _ConfigManager(dict):
 
                 # foo.s01e23e24*
                 '''
-                ^(?P<seriesname>.+?)[ \._\-]               # show name
+                ^(?P<seriesname>.+?)[ \._\-]             # show name
                 [Ss](?P<seasonnumber>[0-9]+)             # s01
-                [\.\- ]?                                 # seperator
+                [\.\- ]?                                 # separator
                 [Ee](?P<episodenumberstart>[0-9]+)       # first e23
-                ([\.\- ]?[Ee][0-9]+)*                    # e24e25 etc
+                ([\.\- ]?                                # separator
+                [Ee][0-9]+)*                             # e24e25 etc
                 [\.\- ]?[Ee](?P<episodenumberend>[0-9]+) # final episode num
+                [^\/]*$''',
+
+                # foo.s01e23-24*
+                '''
+                ^(?P<seriesname>.+?)[ \._\-]             # show name
+                [Ss](?P<seasonnumber>[0-9]+)             # s01
+                [\.\- ]?                                 # separator
+                [Ee](?P<episodenumberstart>[0-9]+)       # first e23
+                (                                        # -24 etc
+                     [\.\- ]
+                     [Ee]?[0-9]+
+                )*
+                     [\.\- ](?P<episodenumberend>[0-9]+)  # final episode num
                 [^\/]*$''',
 
                 # foo.[1x09-11]*
@@ -145,6 +159,13 @@ class _ConfigManager(dict):
                 -                                   # -
                     (?P<episodenumberend>[0-9]+)    # episode
                 \]                                  # \]
+                [^\\/]*$''',
+
+                # foo.s0101, foo.0201
+                '''^(?P<seriesname>.+?)[ \._\-]
+                [Ss](?P<seasonnumber>[0-9]{2})
+                [\.\- ]?
+                (?P<episodenumber>[0-9]{2})
                 [^\\/]*$''',
 
                 # foo.1x09*
@@ -172,7 +193,7 @@ class _ConfigManager(dict):
                 '''^(?P<seriesname>.+)[ \._\-]
                 (?P<seasonnumber>[0-9]{2})
                 (?P<episodenumber>[0-9]{2,3})
-                [\._ -][^\\/]*$'''],
+                [\._ -][^\\/]*$''',],
 
             'filename_with_episode':
              '%(seriesname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s.%(ext)s',
