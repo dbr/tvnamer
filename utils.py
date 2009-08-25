@@ -12,6 +12,7 @@
 import os
 import re
 import sys
+import shutil
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound)
@@ -278,12 +279,18 @@ class EpisodeInfo(object):
             self.generateFilename())
 
 
+def same_partition(f1, f2):
+    """Returns True if both files or directories are on the same partition
+    """
+    return os.stat(f1).st_dev == os.stat(f2).st_dev
+
+
 class Renamer(object):
     """Deals with renaming of files
     """
 
     def __init__(self, filename):
-        self.filename = filename
+        self.filename = os.path.abspath(filename)
 
     def newName(self, newName):
         """Renames a file, keeping the path the same.
@@ -294,3 +301,30 @@ class Renamer(object):
         newpath = os.path.join(filepath, newName)
         os.rename(self.filename, newpath)
         self.filename = newpath
+
+    def newPath(self, new_path, force = False, always_copy = False):
+        """Moves the file to a new path.
+
+        If it is on the same partition, it will be moved (unless always_copy is True)
+        If it is on a different partition, it will be copied.
+        If the target file already exists, it will raise OSError unless force is True.
+        """
+        _, old_filename = os.path.split(self.filename)
+        new_fullpath = os.path.abspath(os.path.join(new_path, old_filename))
+
+        if os.path.isfile(new_fullpath):
+            # If the destination exists, raise exception unless force is True
+            if not force:
+                raise OSError("File %s already exists, not forcefully moving %s" % (
+                    new_fullpath, self.filename))
+
+        if same_partition(self.filename, new_path) and not always_copy:
+            # File is on same partition, and the user doesn't want to copy the file
+            print "move %s to %s" % (self.filename, new_fullpath)
+            os.rename(self.filename, new_fullpath)
+        else:
+            # File is on different partition (different disc), or always_copy is True
+            print "copy %s to %s" % (self.filename, new_fullpath)
+            shutil.copyfile(self.filename, new_fullpath)
+
+        self.filename = new_fullpath
