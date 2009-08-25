@@ -11,7 +11,7 @@
 
 import os
 import xml
-import elementtree.ElementTree as ET
+import xml.etree.ElementTree as ET
 
 from tvnamer_exceptions import InvalidConfigFile, WrongConfigVersion
 
