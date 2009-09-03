@@ -14,8 +14,6 @@ You may need to use sudo, depending on your setup:
 
     sudo easy_install tvnamer
 
-# `tvnamer`
-
 ## Basic usage
 
 From the command line, simply run:
