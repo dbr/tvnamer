@@ -239,7 +239,7 @@ class _ConfigManager(dict):
         root = ET.Element('tvnamer')
         root.set('version', str(self.VERSION))
 
-        for ckey, cvalue in configdict.items():
+        for ckey, cvalue in sorted(configdict.items()):
             _serialiseElement(root, ckey, cvalue)
 
         _indentTree(root)
