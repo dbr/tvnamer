@@ -68,12 +68,9 @@ def processFile(tvdb_instance, episode):
         print "Invalid input, skipping"
 
 
-def tvnamer(paths):
-    """Main tvnamer function, takes an array of paths, does stuff.
+def findFiles(paths):
+    """Takes an array of paths, returns all files found
     """
-    print "####################"
-    print "# Starting tvnamer"
-
     valid_files = []
 
     for cfile in paths:
@@ -89,9 +86,18 @@ def tvnamer(paths):
     # Remove duplicate files (all paths from FileFinder are absolute)
     valid_files = list(set(valid_files))
 
+    return valid_files
+
+
+def tvnamer(paths):
+    """Main tvnamer function, takes an array of paths, does stuff.
+    """
+    print "####################"
+    print "# Starting tvnamer"
+
     episodes_found = []
 
-    for cfile in valid_files:
+    for cfile in findFiles(paths):
         parser = FileParser(cfile)
         try:
             episode = parser.parse()
@@ -159,9 +165,14 @@ def main():
             print "Done, exiting"
             opter.exit(0)
 
-    Config['verbose'] = opts.verbose
-    Config['recursive'] = opts.recursive
-    Config['alwaysrename'] = opts.always
+    if opts.verbose is not None:
+        Config['verbose'] = opts.verbose
+
+    if opts.recursive is not None:
+        Config['recursive'] = opts.recursive
+
+    if opts.always is not None:
+        Config['alwaysrename'] = opts.always
 
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
