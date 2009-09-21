@@ -108,6 +108,8 @@ class _ConfigManager(dict):
         skips any options, the missing settings are set to the defaults.
         """
         defaults = {
+            'selectfirst': False,
+            'alwaysrename': False,
             'verbose': False,
             'recursive': False,
             'episode_patterns': [

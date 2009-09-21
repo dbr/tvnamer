@@ -36,7 +36,7 @@ def test_saving_loading():
 
     # Compare
     assert saved_config == new_config, "Configs do not match"
-    
+
     # Clear config
     os.close(fid)
 

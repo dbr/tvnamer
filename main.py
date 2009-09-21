@@ -106,12 +106,12 @@ def tvnamer(paths):
         else:
             episodes_found.append(episode)
 
-    if len(valid_files) == 0:
+    if len(episodes_found) == 0:
         raise NoValidFilesFoundError()
 
-    print "# Found %d episodes" % len(valid_files)
+    print "# Found %d episodes" % len(episodes_found)
 
-    tvdb_instance = Tvdb(interactive=True, debug = Config['verbose'])
+    tvdb_instance = Tvdb(interactive=not Config['selectfirst'], debug = Config['verbose'])
 
     for episode in episodes_found:
         processFile(tvdb_instance, episode)
@@ -140,8 +140,16 @@ def main():
         help="Descend more than one level directories supplied as arguments")
     opter.add_option(
         "-a", "--always",
-        default = False, dest="always", action="store_true",
+        default = False, dest="alwaysrename", action="store_true",
         help="always renames files (but still prompts for correct series). Can be set at runtime with the 'a' prompt-option")
+    opter.add_option(
+        "-f", "--selectfirst",
+        default = False, dest="selectfirst", action="store_true",
+        help="select first series search result (instead of showing the select-series interface")
+    opter.add_option(
+        "-b", "--batch",
+        default = False, dest="batch", action="store_true",
+        help="rename without human intervention, selects first series and always renames, same as --always and --selectfirst")
 
 
     opts, args = opter.parse_args()
@@ -165,14 +173,17 @@ def main():
             print "Done, exiting"
             opter.exit(0)
 
-    if opts.verbose is not None:
-        Config['verbose'] = opts.verbose
+    if opts.batch:
+        opts.selectfirst = True
+        opts.alwaysrename = True
 
-    if opts.recursive is not None:
-        Config['recursive'] = opts.recursive
+    Config['verbose'] = opts.verbose
 
-    if opts.always is not None:
-        Config['alwaysrename'] = opts.always
+    Config['recursive'] = opts.recursive
+
+    Config['alwaysrename'] = opts.alwaysrename
+
+    Config['selectfirst'] = opts.selectfirst
 
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
