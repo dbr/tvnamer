@@ -94,4 +94,7 @@ files['anime'] = [
     {'input': '[Shinsen-Subs] True Mazinger - 07 [848x480 H.264 Vorbis][787D0074]',
     'seriesname': 'true mazinger',
     'seasonnumber': None, 'episodenumber': 7},
+    {'input': '[BSS]_Tokyo_Magnitude_8.0_-_02_[0E5C4A40].mkv',
+    'seriesname': 'tokyo magnitude 8 0',
+    'seasonnumber': None, 'episodenumber': 2},
 ]
