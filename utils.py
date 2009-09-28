@@ -50,7 +50,7 @@ def getEpisodeName(tvdb_instance, episode):
     except tvdb_shownotfound:
         # No such series found.
         warn("Show %s not found on www.thetvdb.com" % episode.seriesname)
-        return
+        return episode
     else:
         # Series was found, use corrected series name
         episode.seriesname = show['seriesname']
