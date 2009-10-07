@@ -267,11 +267,17 @@ class EpisodeInfo(object):
             'ext': self.extension}
 
         if self.episodename is None:
-            return Config['filename_without_episode'] % epdata
+            if self.seasonnumber is None:
+                return Config['filename_without_episode_no_season'] % epdata
+            else:
+                return Config['filename_without_episode'] % epdata
         else:
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(self.episodename)
-            return Config['filename_with_episode'] % epdata
+            if self.seasonnumber is None:
+                return Config['filename_with_episode_no_season'] % epdata
+            else:
+                return Config['filename_with_episode'] % epdata
 
     def __repr__(self):
         return "<%s: %s>" % (

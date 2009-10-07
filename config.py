@@ -199,9 +199,14 @@ class _ConfigManager(dict):
             ],
 
             'filename_with_episode':
-             '%(seriesname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s.%(ext)s',
+             '%(seriesname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s%(ext)s',
             'filename_without_episode':
-             '%(seriesname)s - [%(seasonno)02dx%(episode)s].%(ext)s',
+             '%(seriesname)s - [%(seasonno)02dx%(episode)s]%(ext)s',
+             'filename_with_episode_no_season':
+              '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
+             'filename_without_episode_no_season':
+              '%(seriesname)s - [%(episode)s]%(ext)s',
+
             'episode_single': '%02d',
             'episode_separator': '-'}
 
