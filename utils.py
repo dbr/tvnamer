@@ -259,12 +259,16 @@ class EpisodeInfo(object):
             epno = Config['episode_single'] % self.episodenumber
 
         # Data made available to config'd output file format
+        if self.extension is None:
+            prep_extension = ''
+        else:
+            prep_extension = '.%s' % self.extension
         epdata = {
             'seriesname': self.seriesname,
             'seasonno': self.seasonnumber,
             'episode': epno,
             'episodename': self.episodename,
-            'ext': self.extension}
+            'ext': prep_extension}
 
         if self.episodename is None:
             if self.seasonnumber is None:
