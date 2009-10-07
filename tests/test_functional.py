@@ -101,6 +101,9 @@ class functional_tests(unittest.TestCase):
 
         if len(error_log) > 0:
             print "*" * 60
+            print "Ended up with files:"
+            print os.listdir(tmp)
+            print "*" * 60
             print "Errors:"
             for cur in error_log:
                 print "ERROR: %(in)s -> %(expected)s" % cur
