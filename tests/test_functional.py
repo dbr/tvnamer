@@ -48,7 +48,8 @@ def tvnamerifiy(location):
         fullpath = os.path.join(location, f)
         proc = Popen(
             [sys.executable, tvn, "-b", fullpath],
-            stdout = PIPE)
+            stdout = PIPE,
+            stderr = PIPE)
         stdout, stderr = proc.communicate()
         log.append({'filename': f, 'stdout': stdout, 'stderr': stderr})
 
