@@ -60,10 +60,16 @@ def getEpisodeName(tvdb_instance, episode):
     else:
         epNoList = episode.episodenumber
 
+    if episode.seasonnumber is None:
+        # Series without concept of seasons have all episodes in season 1
+        seasonnumber = 1
+    else:
+        seasonnumber = episode.seasonnumber
+
     epnames = []
     for cepno in epNoList:
         try:
-            episodeinfo = show[episode.seasonnumber][cepno]
+            episodeinfo = show[seasonnumber][cepno]
 
         except tvdb_seasonnotfound:
             raise SeasonNotFound(
