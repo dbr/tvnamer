@@ -110,7 +110,9 @@ def check_case(curtest):
     """
     parser = FileParser(curtest['input'])
     theep = parser.parse()
-    assert theep.seriesname.lower() == curtest['seriesname'].lower(), "%s == %s" % (theep.seriesname.lower(), curtest['seriesname'].lower())
+    assert theep.seriesname.lower() == curtest['parsedseriesname'].lower(), "%s == %s" % (
+        theep.seriesname.lower(),
+        curtest['parsedseriesname'].lower())
 
     assert theep.seasonnumber == curtest['seasonnumber'], "%s == %s" % (theep.seasonnumber, curtest['seasonnumber'])
 
