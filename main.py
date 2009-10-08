@@ -20,9 +20,9 @@ from utils import (Config, FileFinder, FileParser, Renamer, warn,
 getEpisodeName)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound, UserAbort, UserAbort, InvalidPath,
-NoValidFilesFoundError, InvalidFilename, NoValidFilesFoundError,
-InvalidConfigFile, InvalidConfigFile, NoValidFilesFoundError, UserAbort)
+EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
+InvalidFilename, NoValidFilesFoundError, InvalidConfigFile, InvalidConfigFile,
+NoValidFilesFoundError, DataRetrievalError)
 
 
 def processFile(tvdb_instance, episode):
