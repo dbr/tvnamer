@@ -55,3 +55,33 @@ class InvalidConfigFile(BaseConfigError):
 class WrongConfigVersion(BaseTvnamerException):
     """Config versions do not match"""
     pass
+
+
+class DataRetrievalError(BaseTvnamerException):
+    """Raised when an error (such as a network problem) prevents tvnamer
+    from being able to retrieve data such as episode name
+    """
+
+
+class ShowNotFound(DataRetrievalError):
+    """Raised when a show cannot be found
+    """
+    pass
+
+
+class SeasonNotFound(DataRetrievalError):
+    """Raised when requested season cannot be found
+    """
+    pass
+
+
+class EpisodeNotFound(DataRetrievalError):
+    """Raised when episode cannot be found
+    """
+    pass
+
+
+class EpisodeNameNotFound(DataRetrievalError):
+    """Raised when the name of the episode cannot be found
+    """
+    pass

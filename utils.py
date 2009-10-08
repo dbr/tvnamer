@@ -18,7 +18,9 @@ from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound)
 
 from config import Config
-from tvnamer_exceptions import (InvalidPath, InvalidFilename)
+from tvnamer_exceptions import (InvalidPath, InvalidFilename,
+ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
+EpisodeNameNotFound)
 
 
 def warn(text):
@@ -45,34 +47,44 @@ def getEpisodeName(tvdb_instance, episode):
     try:
         show = tvdb_instance[episode.seriesname]
     except tvdb_error, errormsg:
-        warn("! Warning: Error contacting www.thetvdb.com:\n%s\n" % errormsg)
-        return
+        raise DataRetrievalError("! Warning: Error contacting www.thetvdb.com: %s" % errormsg)
     except tvdb_shownotfound:
         # No such series found.
-        warn("Show %s not found on www.thetvdb.com" % episode.seriesname)
-        return episode
+        raise ShowNotFound("Show %s not found on www.thetvdb.com" % episode.seriesname)
     else:
         # Series was found, use corrected series name
-        episode.seriesname = show['seriesname']
+        correctedShowName = show['seriesname']
 
     if not isinstance(episode.episodenumber, list):
-        episode.episodenumber = [episode.episodenumber]
+        epNoList = [episode.episodenumber]
+    else:
+        epNoList = episode.episodenumber
 
     epnames = []
-    for cepno in episode.episodenumber:
+    for cepno in epNoList:
         try:
             episodeinfo = show[episode.seasonnumber][cepno]
-        except (tvdb_seasonnotfound, tvdb_episodenotfound,
-                tvdb_attributenotfound):
-            # The season, episode or name wasn't found, but the show was.
-            # Use the corrected show-name, but no episode name.
-            warn("Episode %02d of season %02d was not found" % (
-                cepno, episode.seasonnumber))
+
+        except tvdb_seasonnotfound:
+            raise SeasonNotFound(
+                "Season %s of show %s could not be found" % (
+                episode.seasonnumber,
+                episode.seriesname))
+
+        except tvdb_episodenotfound:
+            raise EpisodeNotFound(
+                "Episode %s of show %s, season %s could not be found" % (
+                    cepno,
+                    episode.seriesname,
+                    episode.seasonnumber))
+
+        except tvdb_attributenotfound:
+            raise EpisodeNameNotFound(
+                "Could not find episode name for %s" % episode)
         else:
             epnames.append(episodeinfo['episodename'])
 
-    episode.episodename = epnames
-    return episode
+    return correctedShowName, epnames
 
 
 class FileFinder(object):

@@ -18,15 +18,28 @@ from tvdb_api import Tvdb
 
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
 getEpisodeName)
-from tvnamer_exceptions import (InvalidPath, NoValidFilesFoundError,
-InvalidFilename, InvalidConfigFile, UserAbort)
+
+from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
+EpisodeNameNotFound, UserAbort, UserAbort, InvalidPath,
+NoValidFilesFoundError, InvalidFilename, NoValidFilesFoundError,
+InvalidConfigFile, InvalidConfigFile, NoValidFilesFoundError, UserAbort)
 
 
 def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
     print "# Processing %s" % (episode.filename)
-    episode = getEpisodeName(tvdb_instance, episode)
+    try:
+        correctedSeriesName, epName = getEpisodeName(tvdb_instance, episode)
+    except (DataRetrievalError, ShowNotFound), errormsg:
+        warn(errormsg)
+    except (SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound), errormsg:
+        # Show was found, so use corrected series name
+        warn(errormsg)
+        episode.seriesname = correctedSeriesName
+    else:
+        episode.seriesname = correctedSeriesName
+        episode.episodename = epName
 
     cnamer = Renamer(episode.fullpath)
     newName = episode.generateFilename()
