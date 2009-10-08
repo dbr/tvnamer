@@ -252,8 +252,20 @@ class EpisodeInfo(object):
         self.episodenumber = episodenumber
         self.episodename = episodename
         self.fullpath = filename
-        self.filepath, self.filename = os.path.split(filename)
-        self.extension = os.path.splitext(filename)[1].replace(".", "")
+
+    @property
+    def fullpath(self):
+        return self._fullpath
+
+    @fullpath.setter
+    def fullpath(self, value):
+        self._fullpath = value
+        if value is None:
+            self.filename, self.extension = None, None
+        else:
+            self.filepath, self.filename = os.path.split(value)
+            self.filename, self.extension = os.path.splitext(self.filename)
+            self.extension = self.extension.replace(".", "")
 
     def generateFilename(self):
         """
