@@ -97,26 +97,26 @@ files['multiple_episodes'] = [
     'episodenames': ['Sally', 'Bret Gives Up The Dream']},
 ]
 
-files['unicode'] = [
-    {'input': u'DARKER THAN BLACK -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85- - S01E01 (21st copy)',
-    'parsedseriesname': u'darker than black -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85-',
-    'correctedseriesname': u'darker than black -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85-',
-    'seasonnumber': 1, 'episodenumber': 1,
-    'episodenames': ['The Star of Contract Flowed... (1st Part)']},
-
-    {'input': u'Carniv\xc3\xa0le 1x11 - The Day of the Dead',
-    'parsedseriesname': u'Carniv\xc3\xa0le',
-    'correctedseriesname': u'Carniv\xc3\xa0le',
-    'seasonnumber': 1, 'episodenumber': 11,
-    'episodenames': ['The Day of the Dead']},
-
-    {'input': 't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i - [01x01]',
-    'parsedseriesname': 't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i',
-    'correctedseriesname': u't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i',
-    'seasonnumber': 1, 'episodenumber': 1,
-    'episodenames': [u'T\xc3\xacNh Ng\xc6\xb0\xe1\xbb\x9dI Hi\xe1\xbb\x87N \xc4\x91\xe1\xba\xa1I - Virtues Of Harmony II']
-    },
-]
+# files['unicode'] = [
+#     {'input': u'DARKER THAN BLACK -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85- - S01E01 (21st copy)',
+#     'parsedseriesname': u'darker than black -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85-',
+#     'correctedseriesname': u'darker than black -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85-',
+#     'seasonnumber': 1, 'episodenumber': 1,
+#     'episodenames': ['The Star of Contract Flowed... (1st Part)']},
+# 
+#     {'input': u'Carniv\xc3\xa0le 1x11 - The Day of the Dead',
+#     'parsedseriesname': u'Carniv\xc3\xa0le',
+#     'correctedseriesname': u'Carniv\xc3\xa0le',
+#     'seasonnumber': 1, 'episodenumber': 11,
+#     'episodenames': ['The Day of the Dead']},
+# 
+#     {'input': 't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i - [01x01]',
+#     'parsedseriesname': 't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i',
+#     'correctedseriesname': u't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i',
+#     'seasonnumber': 1, 'episodenumber': 1,
+#     'episodenames': [u'T\xc3\xacNh Ng\xc6\xb0\xe1\xbb\x9dI Hi\xe1\xbb\x87N \xc4\x91\xe1\xba\xa1I - Virtues Of Harmony II']
+#     },
+# ]
 
 files['anime'] = [
     {'input': '[Eclipse] Fullmetal Alchemist Brotherhood - 02 (1280x720 h264) [8452C4BF]',
