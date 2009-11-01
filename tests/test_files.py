@@ -161,3 +161,15 @@ files['anime'] = [
     'seasonnumber': None, 'episodenumber': 2,
     'episodenames': ['Broken World']},
 ]
+
+def test_verify_test_data_sanity():
+    """Checks all test data is consistent
+    """
+    keys = []
+    for category, alltests in files.items():
+        for ctest in alltests:
+            keys.append(ctest.keys())
+
+    for k1 in keys:
+        for k2 in keys:
+            assert sorted(k1) == sorted(k2)
