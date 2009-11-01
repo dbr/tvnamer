@@ -13,8 +13,7 @@ import os
 import sys
 import unittest
 
-sys.path.append(os.path.join(os.path.abspath(sys.path[0]), ".."))
-from utils import FileParser
+from tvnamer.utils import FileParser
 
 from test_files import files
 

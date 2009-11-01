@@ -15,8 +15,7 @@ import unittest
 
 from tvdb_api import Tvdb
 
-sys.path.append(os.path.join(os.path.abspath(sys.path[0]), ".."))
-from utils import getEpisodeName, EpisodeInfo
+from tvnamer.utils import getEpisodeName, EpisodeInfo
 
 from test_files import files
 
