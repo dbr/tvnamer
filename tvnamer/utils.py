@@ -277,12 +277,10 @@ class EpisodeInfo(object):
         self.episodename = episodename
         self.fullpath = filename
 
-    @property
-    def fullpath(self):
+    def fullpath_get(self):
         return self._fullpath
 
-    @fullpath.setter
-    def fullpath(self, value):
+    def fullpath_set(self, value):
         self._fullpath = value
         if value is None:
             self.filename, self.extension = None, None
@@ -290,6 +288,8 @@ class EpisodeInfo(object):
             self.filepath, self.filename = os.path.split(value)
             self.filename, self.extension = os.path.splitext(self.filename)
             self.extension = self.extension.replace(".", "")
+
+    fullpath = property(fullpath_get, fullpath_set)
 
     def generateFilename(self):
         """
