@@ -156,7 +156,8 @@ files['anime'] = [
     'episodenames': ['Legend! The Mechanical Beasts of Bardos!']},
 
     {'input': '[BSS]_Tokyo_Magnitude_8.0_-_02_[0E5C4A40].mkv',
-    'parsedseriesname': 'tokyo magnitude 8 0',
+    'parsedseriesname': 'tokyo magnitude 8.0',
+    'correctedseriesname': 'Tokyo Magnitude 8.0',
     'seasonnumber': None, 'episodenumber': 2,
     'episodenames': ['Broken World']},
 ]

@@ -93,6 +93,26 @@ def getEpisodeName(tvdb_instance, episode):
     return correctedShowName, epnames
 
 
+def cleanRegexedSeriesName(seriesname):
+    """Cleans up series name by removing any . and _
+    characters, along with any trailing hyphens.
+
+    Is basically equivalent to replacing all _ and . with a
+    space, but handles decimal numbers in string, for example:
+
+    >>> cleanRegexedSeriesName("an.example.1.0.test")
+    'an example 1.0 test'
+    >>> cleanRegexedSeriesName("an_example_1.0_test")
+    'an example 1.0 test'
+    """
+    seriesname = re.sub("(\D)[.](\D)", "\\1 \\2", seriesname)
+    seriesname = re.sub("(\D)[.]", "\\1 ", seriesname)
+    seriesname = re.sub("[.](\D)", " \\1", seriesname)
+    seriesname = seriesname.replace("_", " ")
+    seriesname = re.sub("-$", "", seriesname)
+    return seriesname.strip()
+
+
 class FileFinder(object):
     """Given a file, it will verify it exists, given a folder it will descend
     one level into it and return a list of files, unless the recursive argument
@@ -196,9 +216,7 @@ class FileParser(object):
 
                 seriesname = match.group('seriesname')
 
-                #remove ._- characters from name (- removed only if next to
-                # end of line)
-                seriesname = re.sub("[\._]|\-(?=$)", " ", seriesname).strip()
+                seriesname = cleanRegexedSeriesName(seriesname)
 
                 episode = EpisodeInfo(
                     seriesname = seriesname,
