@@ -13,8 +13,7 @@ import os
 import sys
 import tempfile
 
-sys.path.append(os.path.join(os.path.abspath(sys.path[0]), ".."))
-from config import Config
+from tvnamer.config import Config
 
 
 def test_saving_loading():
