@@ -30,7 +30,7 @@ def get_tvnamer_path():
     cur_location, _ = os.path.split(os.path.abspath(sys.path[0]))
     for cdir in [".", ".."]:
         tvnamer_location = os.path.abspath(
-            os.path.join(cur_location, cdir, "main.py"))
+            os.path.join(cur_location, cdir, "tvnamer", "main.py"))
 
         if os.path.isfile(tvnamer_location):
             return tvnamer_location
