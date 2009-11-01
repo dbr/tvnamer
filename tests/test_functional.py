@@ -91,7 +91,7 @@ class functional_tests(unittest.TestCase):
         ]
         tmp = make_temp_dir()
         make_dummy_files([x['in'] for x in tests], tmp)
-        log = tvnamerifiy(tmp)
+        tvnamerifiy(tmp)
 
         (pass_log, error_log) = verify_naming(tests, tmp)
 

@@ -9,31 +9,29 @@
 """Test tvnamer's EpisodeInfo file name generation
 """
 
-import os
-import sys
 import unittest
+
+from tvnamer.utils import getEpisodeName, EpisodeInfo
+from test_files import files
 
 from tvdb_api import Tvdb
 
-from tvnamer.utils import getEpisodeName, EpisodeInfo
-
-from test_files import files
 
 def verify_name_gen(curtest, tvdb_instance):
     ep = EpisodeInfo(
         seriesname = curtest['parsedseriesname'],
         seasonnumber = curtest['seasonnumber'],
-        episodenumber = curtest['episodenumber']
-    )
+        episodenumber = curtest['episodenumber'])
     correctedSeriesName, epName = getEpisodeName(tvdb_instance, ep)
 
     assert correctedSeriesName is not None, "Corrected series name was none"
     assert epName is not None, "Episode name was None"
-    
+
     assert epName == curtest['episodenames'], "Episode names were not correct"
     assert correctedSeriesName == curtest['correctedseriesname'], "Got: %r Expected: %r" % (
         correctedSeriesName,
         curtest['correctedseriesname'])
+
 
 def test_name_generation_on_testfiles():
     tvdb_instance = Tvdb()
@@ -43,6 +41,7 @@ def test_name_generation_on_testfiles():
             cur_tester.description = '%s_%d: %s' % (
                 category, testindex, curtest['input'])
             yield (cur_tester, curtest)
+
 
 class test_name_generation_output_formats(unittest.TestCase):
     """Tests a few different output formats, such as with/without episode
@@ -62,8 +61,7 @@ class test_name_generation_output_formats(unittest.TestCase):
 
         self.assertEquals(
             ep.generateFilename(),
-            'Scrubs - [01x02] - My Mentor.avi'
-        )
+            'Scrubs - [01x02] - My Mentor.avi')
 
     def test_simple_no_ext(self):
         """Simple episode with out extension
@@ -77,8 +75,7 @@ class test_name_generation_output_formats(unittest.TestCase):
 
         self.assertEquals(
             ep.generateFilename(),
-            'Scrubs - [01x02] - My Mentor'
-        )
+            'Scrubs - [01x02] - My Mentor')
 
     def test_no_name(self):
         """Episode without a name
@@ -92,8 +89,7 @@ class test_name_generation_output_formats(unittest.TestCase):
 
         self.assertEquals(
             ep.generateFilename(),
-            'Scrubs - [01x02].avi'
-        )
+            'Scrubs - [01x02].avi')
 
     def test_no_name_no_ext(self):
         """Episode with no name or extension
@@ -107,8 +103,7 @@ class test_name_generation_output_formats(unittest.TestCase):
 
         self.assertEquals(
             ep.generateFilename(),
-            'Scrubs - [01x02]'
-        )
+            'Scrubs - [01x02]')
 
     def test_no_series_number(self):
         """Episode without series number
@@ -122,5 +117,4 @@ class test_name_generation_output_formats(unittest.TestCase):
 
         self.assertEquals(
             ep.generateFilename(),
-            'Scrubs - [02] - My Mentor'
-        )
+            'Scrubs - [02] - My Mentor')

@@ -21,8 +21,7 @@ getEpisodeName)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
-InvalidFilename, NoValidFilesFoundError, InvalidConfigFile, InvalidConfigFile,
-NoValidFilesFoundError, DataRetrievalError)
+InvalidFilename, InvalidConfigFile, DataRetrievalError)
 
 
 def processFile(tvdb_instance, episode):

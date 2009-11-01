@@ -9,8 +9,6 @@
 """Test tvnamer's filename parser
 """
 
-import os
-import sys
 import unittest
 
 from tvnamer.utils import FileParser

@@ -10,7 +10,6 @@
 """
 
 import os
-import sys
 import tempfile
 
 from tvnamer.config import Config
