@@ -27,10 +27,8 @@ def verify_name_gen(curtest, tvdb_instance):
     assert correctedSeriesName is not None, "Corrected series name was none"
     assert epName is not None, "Episode name was None"
 
-    assert epName == curtest['episodenames'], "Episode names were not correct"
-    assert correctedSeriesName == curtest['correctedseriesname'], "Got: %r Expected: %r" % (
-        correctedSeriesName,
-        curtest['correctedseriesname'])
+    assertEquals(epName, curtest['episodenames'])
+    assertEquals(correctedSeriesName, curtest['correctedseriesname'])
 
 
 def test_name_generation_on_testfiles():
