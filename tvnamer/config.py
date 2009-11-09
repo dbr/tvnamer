@@ -148,7 +148,8 @@ class _ConfigManager(dict):
                      [\.\- ]
                      [Ee]?[0-9]+
                 )*
-                     [\.\- ](?P<episodenumberend>[0-9]+)  # final episode num
+                     [\- ]                             # separator
+                     (?P<episodenumberend>[0-9]+)        # final episode num
                 [^\/]*$''',
 
                 # foo.[1x09-11]*
@@ -196,6 +197,13 @@ class _ConfigManager(dict):
                 (?P<seasonnumber>[0-9]{2})
                 (?P<episodenumber>[0-9]{2,3})
                 [\._ -][^\\/]*$''',
+
+                # show.name.e123.abc
+                '''^(?P<seriesname>.+?)          # Show name
+                [ \._\-]                       # Padding
+                [Ee](?P<episodenumber>[0-9]+)  # E123
+                [\._ -][^\\/]*$                # More padding, then anything
+                '''
             ],
 
             'filename_with_episode':
