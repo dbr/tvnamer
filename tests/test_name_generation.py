@@ -10,6 +10,7 @@
 """
 
 import unittest
+from helpers import assertEquals
 
 from tvnamer.utils import getEpisodeName, EpisodeInfo
 from test_files import files
