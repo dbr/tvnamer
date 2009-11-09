@@ -43,7 +43,7 @@ Enter `y` then press `return` and the file will be renamed to "Scrubs - [01x01] 
 
 If there are multiple shows with the same (or similar) names, you will be asked to select the correct one - "Lost" is a good example of this:
 
-    $ python tvnamer.py lost.s01e01.avi 
+    $ python tvnamer.py lost.s01e01.avi
     ####################
     # Starting tvnamer
     # Processing 1 files

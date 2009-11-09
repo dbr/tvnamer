@@ -29,13 +29,6 @@ def warn(text):
     sys.stderr.write("%s\n" % text)
 
 
-def verbose(text):
-    """Prints message if verbose option is specified
-    """
-    if Config['verbose']:
-        print text
-
-
 def getEpisodeName(tvdb_instance, episode):
     """Queries the tvdb_api.Tvdb instance for episode name and corrected
     series name.
