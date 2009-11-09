@@ -43,6 +43,12 @@ files['s01e01_format'] = [
     'correctedseriesname': 'Scrubs',
     'seasonnumber': 1, 'episodenumber': 24,
     'episodenames': ['My Last Day']},
+
+    {'input': 'dexter.s04e05.720p.blah',
+    'parsedseriesname': 'dexter',
+    'correctedseriesname': 'Dexter',
+    'seasonnumber': 4, 'episodenumber': 5,
+    'episodenames': ['Dirty Harry']},
 ]
 
 files['misc'] = [
