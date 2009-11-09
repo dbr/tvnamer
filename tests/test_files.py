@@ -57,6 +57,11 @@ files['misc'] = [
     'correctedseriesname': 'Six Feet Under',
     'seasonnumber': 2, 'episodenumber': 1,
     'episodenames': ['In The Game']},
+    {'input': 'Sid.The.Science.Kid.E11.The.Itchy.Tag.WS.ABC.DeF-HIJK',
+    'parsedseriesname': 'Sid The Science Kid',
+    'correctedseriesname': 'Sid the Science Kid',
+    'seasonnumber': None, 'episodenumber': 11,
+    'episodenames': ['The Itchy Tag']},
 ]
 
 files['multiple_episodes'] = [
