@@ -10,6 +10,7 @@
 """
 
 import unittest
+from helpers import assertEquals
 
 from tvnamer.utils import FileParser
 
@@ -111,9 +112,9 @@ def check_case(curtest):
         theep.seriesname.lower(),
         curtest['parsedseriesname'].lower())
 
-    assert theep.seasonnumber == curtest['seasonnumber'], "%s == %s" % (theep.seasonnumber, curtest['seasonnumber'])
+    assertEquals(theep.seasonnumber, curtest['seasonnumber'])
 
-    assert theep.episodenumber == curtest['episodenumber'], "%s == %s" % (theep.episodenumber, curtest['episodenumber'])
+    assertEquals(theep.episodenumber, curtest['episodenumber'])
 
 
 def test_generator():
