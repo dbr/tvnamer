@@ -4,7 +4,7 @@
 from setuptools import setup
 setup(
 name = 'tvnamer',
-version='1.2',
+version='2.0',
 
 author='dbr/Ben',
 description='Automatic TV episode namer',
@@ -20,7 +20,7 @@ files: [SomeGroup] Show Name - 102 [A1B2C3].mkv and better handles files
 containing unicode characters.
 """,
 
-py_modules = ['tvnamer'],
+package = ['tvnamer'],
 entry_points = {
     'console_scripts': [
         'tvnamer = tvnamer.main:main',
