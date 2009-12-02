@@ -24,7 +24,7 @@ InvalidFilename, InvalidConfigFile, DataRetrievalError)
 def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
-    print "# Processing %s" % (episode.filename)
+    print "# Processing %s" % (episode.fullfilename)
     try:
         correctedSeriesName, epName = getEpisodeName(tvdb_instance, episode)
     except (DataRetrievalError, ShowNotFound), errormsg:
@@ -41,7 +41,7 @@ def processFile(tvdb_instance, episode):
     newName = episode.generateFilename()
 
     print "#" * 20
-    print "# Old filename: %s" % episode.filename
+    print "# Old filename: %s" % episode.fullfilename
     print "# New filename: %s" % newName
 
     if Config['alwaysrename']:

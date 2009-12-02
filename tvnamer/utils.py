@@ -284,6 +284,10 @@ class EpisodeInfo(object):
 
     fullpath = property(fullpath_get, fullpath_set)
 
+    @property
+    def fullfilename(self):
+        return "%s.%s" % (self.filename, self.extension)
+
     def generateFilename(self):
         """
         Uses the following config options:
