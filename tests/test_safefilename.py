@@ -9,6 +9,8 @@
 """Test the function to create safe filenames
 """
 
+import platform
+
 from helpers import assertEquals
 
 from tvnamer.utils import makeValidFilename
@@ -37,6 +39,7 @@ def test_windowsfilenames():
     assertEquals(makeValidFilename("COM2.txt", windows_safe = True), "_COM2.txt")
     assertEquals(makeValidFilename("COM2", windows_safe = True), "_COM2")
 
+
 def test_dotfilenames():
     """Tests makeValidFilename on filenames only consisting of .
     """
@@ -44,7 +47,34 @@ def test_dotfilenames():
     assertEquals(makeValidFilename(".."), "_..")
     assertEquals(makeValidFilename("..."), "_...")
 
+
 def test_customblacklist():
     """Test makeValidFilename custom_blacklist feature
     """
     assertEquals(makeValidFilename("Test.avi", custom_blacklist="e"), "T_st.avi")
+
+
+def _test_truncation(max_len, windows_safe):
+    """Tests truncation works correctly.
+    Called with different parameters for both Windows and Darwin/Linux.
+    """
+    assertEquals(makeValidFilename("a" * 300, windows_safe = windows_safe), "a" * max_len)
+    assertEquals(makeValidFilename("a" * 255 + ".avi", windows_safe = windows_safe), "a" * (max_len-4) + ".avi")
+    assertEquals(makeValidFilename("a" * 251 + "b" * 10 + ".avi", windows_safe = windows_safe), "a" * (max_len-4) + ".avi")
+    assertEquals(makeValidFilename("test." + "a" * 255, windows_safe = windows_safe), "test." + "a" * (max_len-5))
+
+
+def test_truncation_darwinlinux():
+    """Tests makeValidFilename truncates filenames to valid length
+    """
+
+    if platform.system() not in ['Darwin', 'Linux']:
+        import nose
+        raise nose.SkipTest("Test only valid on Darwin and Linux platform")
+
+    _test_truncation(255, windows_safe = False)
+
+
+def test_truncation_windows():
+    """Tests truncate works on Windows (using windows_safe=True)"""
+    _test_truncation(max_len = 32, windows_safe = True)
