@@ -88,6 +88,8 @@ class functional_tests(unittest.TestCase):
             'expected':'My Name Is Earl - [01x01] - Pilot.avi'},
             {'in':'a.fake.show.s12e24.fake.avi',
             'expected':'a fake show - [12x24].avi'},
+            {'in': 'total.access.s01e01.avi',
+            'expected': 'Total Access 24_7 - [01x01] - Episode #1.avi'},
         ]
         tmp = make_temp_dir()
         make_dummy_files([x['in'] for x in tests], tmp)

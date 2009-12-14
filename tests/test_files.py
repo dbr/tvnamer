@@ -57,11 +57,18 @@ files['misc'] = [
     'correctedseriesname': 'Six Feet Under',
     'seasonnumber': 2, 'episodenumber': 1,
     'episodenames': ['In The Game']},
+
     {'input': 'Sid.The.Science.Kid.E11.The.Itchy.Tag.WS.ABC.DeF-HIJK',
     'parsedseriesname': 'Sid The Science Kid',
     'correctedseriesname': 'Sid the Science Kid',
     'seasonnumber': None, 'episodenumber': 11,
     'episodenames': ['The Itchy Tag']},
+
+    {'input': 'Total Access - [01x01]',
+    'parsedseriesname': 'total access',
+    'correctedseriesname': 'Total Access 24/7',
+    'seasonnumber': 1, 'episodenumber': 1,
+    'episodenames': ['Episode #1']}
 ]
 
 files['multiple_episodes'] = [
@@ -166,7 +173,7 @@ files['anime'] = [
     'seasonnumber': None, 'episodenumber': 7,
     'episodenames': ['Legend! The Mechanical Beasts of Bardos!']},
 
-    {'input': '[BSS]_Tokyo_Magnitude_8.0_-_02_[0E5C4A40].mkv',
+    {'input': '[BSS]_Tokyo_Magnitude_8.0_-_02_[0E5C4A40]',
     'parsedseriesname': 'tokyo magnitude 8.0',
     'correctedseriesname': 'Tokyo Magnitude 8.0',
     'seasonnumber': None, 'episodenumber': 2,
