@@ -288,8 +288,8 @@ def makeFilenameSafe(value, normalize_unicode = False, windows_safe = False):
         # operating system.
         blacklist = r"\/:*?\"<>|"
 
-    # Replace characters in blacklist with a single underscore
-    value = re.sub("[%s]+" % re.escape(blacklist), "_", value)
+    # Replace every blacklisted character with a underscore
+    value = re.sub("[%s]" % re.escape(blacklist), "_", value)
 
     # Remove any trailing whitespace
     value = value.strip()
