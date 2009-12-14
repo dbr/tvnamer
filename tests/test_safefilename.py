@@ -32,10 +32,10 @@ def test_dirseperators():
 def test_windowsfilenames():
     """Tests makeValidFilename windows_safe flag makes Windows-safe filenames
     """
-    assertEquals(makeValidFilename("Test/File.avi"), "Test_File.avi")
-    assertEquals(makeValidFilename("\\/:*?<Evil File>|\""), "______Evil File__")
-    assertEquals(makeValidFilename("COM.txt"), "_COM.txt")
-    assertEquals(makeValidFilename("COM"), "_COM")
+    assertEquals(makeValidFilename("Test/File.avi", windows_safe = True), "Test_File.avi")
+    assertEquals(makeValidFilename("\\/:*?<Evil>|\"", windows_safe = True), "______Evil___")
+    assertEquals(makeValidFilename("COM2.txt", windows_safe = True), "_COM2.txt")
+    assertEquals(makeValidFilename("COM2", windows_safe = True), "_COM2")
 
 def test_dotfilenames():
     """Tests makeValidFilename on filenames only consisting of .
