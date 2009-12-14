@@ -184,6 +184,8 @@ files['anime'] = [
 def test_verify_test_data_sanity():
     """Checks all test data is consistent
     """
+    from helpers import assertEquals
+
     keys = []
     for alltests in files.values():
         for ctest in alltests:
@@ -191,4 +193,4 @@ def test_verify_test_data_sanity():
 
     for k1 in keys:
         for k2 in keys:
-            assert sorted(k1) == sorted(k2)
+            assertEquals(sorted(k1), sorted(k2))
