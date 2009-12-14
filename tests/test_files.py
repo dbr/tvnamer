@@ -68,7 +68,7 @@ files['misc'] = [
     'parsedseriesname': 'total access',
     'correctedseriesname': 'Total Access 24/7',
     'seasonnumber': 1, 'episodenumber': 1,
-    'episodenames': ['Episode #1']}
+    'episodenames': ['Episode #1']},
 ]
 
 files['multiple_episodes'] = [
