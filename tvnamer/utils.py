@@ -13,6 +13,7 @@ import os
 import re
 import sys
 import shutil
+import platform
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound)
@@ -252,6 +253,65 @@ def formatEpisodeName(names):
     return ", ".join(names)
 
 
+def makeFilenameSafe(value, normalize_unicode = False, windows_safe = False):
+    """
+    Makes a filename safe to rename.
+
+    normalize_unicode replaces accented characters with ASCII equivalent, and
+    removes characters that cannot be converted sensibly to ASCII.
+
+    windows_safe forces Windows-safe filenames, regardless of current platform
+    """
+
+    if windows_safe:
+        # Allow user to make Windows-safe filenames, if they so choose
+        sysname = "Windows"
+    else:
+        sysname = platform.system()
+
+    # Treat extension seperatly
+    value, extension = os.path.splitext(value)
+
+    # Replace . at start of filename, so it doesn't become hidden
+    value = re.sub('^\.', '_', value)
+
+    # Blacklist of characters
+    if sysname == 'Darwin':
+        # : is technically allowed, but Finder will treat it as / and will
+        # generally cause weird behaviour, so treat it as invalid.
+        blacklist = r"/:"
+    elif sysname == 'Linux':
+        blacklist = r"/"
+    else:
+        # platform.system docs say it could also return "Windows" or "Java".
+        # Failsafe and use Windows sanitisation for Java, as it could be any
+        # operating system.
+        blacklist = r"\/:*?\"<>|"
+
+    # Replace characters in blacklist with a single underscore
+    value = re.sub("[%s]+" % re.escape(blacklist), "_", value)
+
+    # Remove any trailing whitespace
+    value = value.strip()
+
+    # There are a bunch of filenames that are not allowed on Windows.
+    # As with character blacklist, treat non Darwin/Linux platforms as Windows
+    if sysname not in ['Darwin', 'Linux']:
+        invalid_filenames = ["CON", "PRN", "AUX", "NUL", "COM1", "COM2",
+        "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1",
+        "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"]
+        if value in invalid_filenames:
+            value = "_" + value
+
+    # Replace accented characters with ASCII equivalent
+    if normalize_unicode:
+        import unicodedata
+        value = unicode(value) # cast data to unicode
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+
+    return value + extension
+
+
 class EpisodeInfo(object):
     """Stores information (season, episode number, episode name), and contains
     logic to generate new name
@@ -317,16 +377,19 @@ class EpisodeInfo(object):
 
         if self.episodename is None:
             if self.seasonnumber is None:
-                return Config['filename_without_episode_no_season'] % epdata
+                fname = Config['filename_without_episode_no_season'] % epdata
             else:
-                return Config['filename_without_episode'] % epdata
+                fname = Config['filename_without_episode'] % epdata
         else:
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(self.episodename)
+
             if self.seasonnumber is None:
-                return Config['filename_with_episode_no_season'] % epdata
+                fname = Config['filename_with_episode_no_season'] % epdata
             else:
-                return Config['filename_with_episode'] % epdata
+                fname = Config['filename_with_episode'] % epdata
+
+        return makeFilenameSafe(fname, windows_safe = Config['windows_safe_filenames'])
 
     def __repr__(self):
         return "<%s: %s>" % (
