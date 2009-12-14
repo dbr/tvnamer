@@ -253,7 +253,7 @@ def formatEpisodeName(names):
     return ", ".join(names)
 
 
-def makeValidFilename(value, normalize_unicode = False, windows_safe = False):
+def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None):
     """
     Takes a string and makes it into a valid filename.
 
@@ -261,6 +261,12 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False):
     removes characters that cannot be converted sensibly to ASCII.
 
     windows_safe forces Windows-safe filenames, regardless of current platform
+
+    custom_blacklist specifies additional characters that will removed. This
+    will not touch the extension separator:
+
+        >>> makeValidFilename("T.est.avi", custom_blacklist=".")
+        'T_est.avi'
     """
 
     if windows_safe:
@@ -289,6 +295,10 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False):
         # Failsafe and use Windows sanitisation for Java, as it could be any
         # operating system.
         blacklist = r"\/:*?\"<>|"
+
+    # Append custom blacklisted characters
+    if custom_blacklist is not None:
+        blacklist += custom_blacklist
 
     # Replace every blacklisted character with a underscore
     value = re.sub("[%s]" % re.escape(blacklist), "_", value)
@@ -394,7 +404,8 @@ class EpisodeInfo(object):
         return makeValidFilename(
             fname,
             normalize_unicode = Config['normalize_unicode_filenames'],
-            windows_safe = Config['windows_safe_filenames'])
+            windows_safe = Config['windows_safe_filenames'],
+            custom_blacklist = Config['custom_filename_character_blacklist'])
 
     def __repr__(self):
         return "<%s: %s>" % (

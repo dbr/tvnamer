@@ -43,3 +43,8 @@ def test_dotfilenames():
     assertEquals(makeValidFilename("."), "_.")
     assertEquals(makeValidFilename(".."), "_..")
     assertEquals(makeValidFilename("..."), "_...")
+
+def test_customblacklist():
+    """Test makeValidFilename custom_blacklist feature
+    """
+    assertEquals(makeValidFilename("Test.avi", custom_blacklist="e"), "T_st.avi")

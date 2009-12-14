@@ -127,6 +127,7 @@ class _ConfigManager(dict):
             'recursive': False,
             'windows_safe_filenames': False,
             'normalize_unicode_filenames': False,
+            'custom_filename_character_blacklist': None,
 
             'episode_patterns': [
                 # [group] Show - 01-02 [Etc]
