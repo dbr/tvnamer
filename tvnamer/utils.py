@@ -272,8 +272,10 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False):
     # Treat extension seperatly
     value, extension = os.path.splitext(value)
 
-    # Replace . at start of filename, so it doesn't become hidden
-    value = re.sub('^\.', '_', value)
+    # If the filename starts with a . prepend it with an underscore, so it
+    # doesn't become hidden
+    if value.startswith("."):
+        value = "_" + value
 
     # Blacklist of characters
     if sysname == 'Darwin':
