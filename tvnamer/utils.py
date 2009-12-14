@@ -324,6 +324,22 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
         value = unicode(value) # cast data to unicode
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
+    # Truncate filenames to valid length
+    if sysname in ['Darwin', 'Linux']:
+        max_len = 255
+    else:
+        max_len = 32
+
+    if len(value + extension) > max_len:
+        if len(extension) > len(value):
+            # Truncate extension instead of filename, no extension should be
+            # this long..
+            new_length = max_len - len(value)
+            extension = extension[:new_length]
+        else:
+            new_length = max_len - len(extension)
+            value = value[:new_length]
+
     return value + extension
 
 
