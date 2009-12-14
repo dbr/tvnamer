@@ -278,6 +278,9 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
     # Treat extension seperatly
     value, extension = os.path.splitext(value)
 
+    # Remove null byte
+    value = value.replace("\0", "")
+
     # If the filename starts with a . prepend it with an underscore, so it
     # doesn't become hidden
     if value.startswith("."):
