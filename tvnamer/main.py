@@ -120,7 +120,11 @@ def tvnamer(paths):
 
     print "# Found %d episodes" % len(episodes_found)
 
-    tvdb_instance = Tvdb(interactive=not Config['selectfirst'], debug = Config['verbose'])
+    tvdb_instance = Tvdb(
+        interactive=not Config['selectfirst'],
+        debug = Config['verbose'],
+        search_all_languages = Config['search_all_languages'],
+        language = Config['language'])
 
     for episode in episodes_found:
         processFile(tvdb_instance, episode)

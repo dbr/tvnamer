@@ -128,6 +128,8 @@ class _ConfigManager(dict):
             'windows_safe_filenames': False,
             'normalize_unicode_filenames': False,
             'custom_filename_character_blacklist': None,
+            'language': 'en',
+            'search_all_languages': True,
 
             'episode_patterns': [
                 # [group] Show - 01-02 [Etc]
