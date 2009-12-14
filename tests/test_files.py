@@ -115,26 +115,26 @@ files['multiple_episodes'] = [
     'episodenames': ['Sally', 'Bret Gives Up The Dream']},
 ]
 
-# files['unicode'] = [
-#     {'input': u'DARKER THAN BLACK -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85- - S01E01 (21st copy)',
-#     'parsedseriesname': u'darker than black -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85-',
-#     'correctedseriesname': u'darker than black -\xe9\xbb\x92\xe3\x81\xae\xe5\xa5\x91\xe7\xb4\x84\xe8\x80\x85-',
-#     'seasonnumber': 1, 'episodenumber': 1,
-#     'episodenames': ['The Star of Contract Flowed... (1st Part)']},
-#
-#     {'input': u'Carniv\xc3\xa0le 1x11 - The Day of the Dead',
-#     'parsedseriesname': u'Carniv\xc3\xa0le',
-#     'correctedseriesname': u'Carniv\xc3\xa0le',
-#     'seasonnumber': 1, 'episodenumber': 11,
-#     'episodenames': ['The Day of the Dead']},
-#
-#     {'input': 't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i - [01x01]',
-#     'parsedseriesname': 't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i',
-#     'correctedseriesname': u't\xc3\xacnh ng\xc6\xb0\xe1\xbb\x9di hi\xe1\xbb\x87n \xc4\x91\xe1\xba\xa1i',
-#     'seasonnumber': 1, 'episodenumber': 1,
-#     'episodenames': [u'T\xc3\xacNh Ng\xc6\xb0\xe1\xbb\x9dI Hi\xe1\xbb\x87N \xc4\x91\xe1\xba\xa1I - Virtues Of Harmony II']
-#     },
-# ]
+files['unicode'] = [
+    {'input': u'DARKER THAN BLACK -\u9ed2\u306e\u5951\u7d04\u8005- - S01E01 (21st copy)',
+    'parsedseriesname': u'darker than black -\u9ed2\u306e\u5951\u7d04\u8005-',
+    'correctedseriesname': u'Darker than Black',
+    'seasonnumber': 1, 'episodenumber': 1,
+    'episodenames': [u'\u5951\u7d04\u306e\u661f\u306f\u6d41\u308c\u305f\u2026\u524d\u7de8']},
+
+    {'input': u'Carniv\xe0le 1x11 - The Day of the Dead',
+    'parsedseriesname': u'Carniv\xe0le',
+    'correctedseriesname': u'Carniv\xe0le',
+    'seasonnumber': 1, 'episodenumber': 11,
+    'episodenames': ['The Day of the Dead']},
+
+    {'input': u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i - [01x01]',
+    'parsedseriesname': u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i',
+    'correctedseriesname': u'Virtues Of Harmony II',
+    'seasonnumber': 1, 'episodenumber': 1,
+    'episodenames': [u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i - Virtues Of Harmony II']
+    },
+]
 
 files['anime'] = [
     {'input': '[Eclipse] Fullmetal Alchemist Brotherhood - 02 (1280x720 h264) [8452C4BF]',
@@ -151,9 +151,9 @@ files['anime'] = [
 
     {'input': '[Shinsen-Subs] Beet - 19 [24DAB497]',
     'parsedseriesname': 'beet',
-    'correctedseriesname': 'Beet the Vandel Buster',
+    'correctedseriesname': 'Beet the Vandel Buster Excellion',
     'seasonnumber': None, 'episodenumber': 19,
-    'episodenames': ['Threat of the Planet Earth']},
+    'episodenames': ['Windfang Flash! The Soul of a Wind Mage!']},
 
     {'input': '[AG-SHS]Victory_Gundam-03_DVD[FC6E3A6F]',
     'parsedseriesname': 'victory gundam',

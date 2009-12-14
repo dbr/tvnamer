@@ -377,7 +377,7 @@ class EpisodeInfo(object):
 
     @property
     def fullfilename(self):
-        return "%s.%s" % (self.filename, self.extension)
+        return u"%s.%s" % (self.filename, self.extension)
 
     def generateFilename(self):
         """
