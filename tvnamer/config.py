@@ -113,6 +113,7 @@ class _ConfigManager(dict):
             'verbose': False,
             'recursive': False,
             'windows_safe_filenames': False,
+            'normalize_unicode_filenames': False,
 
             'episode_patterns': [
                 # [group] Show - 01-02 [Etc]

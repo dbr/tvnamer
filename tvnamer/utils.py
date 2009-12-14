@@ -391,7 +391,10 @@ class EpisodeInfo(object):
             else:
                 fname = Config['filename_with_episode'] % epdata
 
-        return makeValidFilename(fname, windows_safe = Config['windows_safe_filenames'])
+        return makeValidFilename(
+            fname,
+            normalize_unicode = Config['normalize_unicode_filenames'],
+            windows_safe = Config['windows_safe_filenames'])
 
     def __repr__(self):
         return "<%s: %s>" % (
