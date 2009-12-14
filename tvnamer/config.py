@@ -41,6 +41,13 @@ def _serialiseElement(root, name, elem, etype='option'):
         for subelem in elem:
             _serialiseElement(celem, None, subelem, 'value')
         return
+    elif elem is None:
+        celem.set('type', 'None')
+        celem.text = 'None'
+    else:
+        raise ValueError("Element %r (type: %s) could not be serialised" % (
+            elem,
+            type(elem)))
 
 
 def _deserialiseItem(ctype, citem):
@@ -60,11 +67,17 @@ def _deserialiseItem(ctype, citem):
             raise InvalidConfigFile(
                 "Boolean value for %s was not 'True' or ', was %r" % (
                     citem.text))
+    elif ctype == 'None':
+        return None
     elif ctype == 'list':
         ret = []
         for subitem in citem:
             ret.append(_deserialiseItem(subitem.attrib['type'], subitem))
         return ret
+    else:
+        raise ValueError("Element %r (type: %s) could not be deserialised" % (
+            citem,
+            ctype))
 
 
 def _indentTree(elem, level=0):
