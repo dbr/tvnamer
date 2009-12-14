@@ -253,9 +253,9 @@ def formatEpisodeName(names):
     return ", ".join(names)
 
 
-def makeFilenameSafe(value, normalize_unicode = False, windows_safe = False):
+def makeValidFilename(value, normalize_unicode = False, windows_safe = False):
     """
-    Makes a filename safe to rename.
+    Takes a string and makes it into a valid filename.
 
     normalize_unicode replaces accented characters with ASCII equivalent, and
     removes characters that cannot be converted sensibly to ASCII.
@@ -389,7 +389,7 @@ class EpisodeInfo(object):
             else:
                 fname = Config['filename_with_episode'] % epdata
 
-        return makeFilenameSafe(fname, windows_safe = Config['windows_safe_filenames'])
+        return makeValidFilename(fname, windows_safe = Config['windows_safe_filenames'])
 
     def __repr__(self):
         return "<%s: %s>" % (
