@@ -112,6 +112,8 @@ class _ConfigManager(dict):
             'alwaysrename': False,
             'verbose': False,
             'recursive': False,
+            'windows_safe_filenames': False,
+
             'episode_patterns': [
                 # [group] Show - 01-02 [Etc]
                 '''^\[.+?\][ ]? # group name
