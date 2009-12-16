@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2008 Jose Fonseca
+# Copyright 2008-2009 Jose Fonseca
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published
@@ -29,6 +29,14 @@ import os.path
 import re
 import textwrap
 import optparse
+import xml.parsers.expat
+
+
+try:
+    # Debugging helper module
+    import debug
+except ImportError:
+    pass
 
 
 def percentage(p):
@@ -47,16 +55,23 @@ def fail(a, b):
     assert False
 
 
+tol = 2 ** -23
+
 def ratio(numerator, denominator):
-    numerator = float(numerator)
-    denominator = float(denominator)
-    assert 0.0 <= numerator
-    assert numerator <= denominator
     try:
-        return numerator/denominator
+        ratio = float(numerator)/float(denominator)
     except ZeroDivisionError:
         # 0/0 is undefined, but 1.0 yields more useful results
         return 1.0
+    if ratio < 0.0:
+        if ratio < -tol:
+            sys.stderr.write('warning: negative ratio (%s/%s)\n' % (numerator, denominator))
+        return 0.0
+    if ratio > 1.0:
+        if ratio > 1.0 + tol:
+            sys.stderr.write('warning: ratio greater than one (%s/%s)\n' % (numerator, denominator))
+        return 1.0
+    return ratio
 
 
 class UndefinedEvent(Exception):
@@ -105,6 +120,7 @@ PROCESS = Event("Process", None, equal)
 
 CALLS = Event("Calls", 0, add)
 SAMPLES = Event("Samples", 0, add)
+SAMPLES2 = Event("Samples", 0, add)
 
 TIME = Event("Time", 0.0, add, lambda x: '(' + str(x) + ')')
 TIME_RATIO = Event("Time ratio", 0.0, add, lambda x: '(' + percentage(x) + ')')
@@ -242,7 +258,7 @@ class Profile(Object):
             for cycle in cycles:
                 sys.stderr.write("Cycle:\n")
                 for member in cycle.functions:
-                    sys.stderr.write("\t%s\n" % member.name)
+                    sys.stderr.write("\tFunction %s\n" % member.name)
     
     def _tarjan(self, function, order, stack, orders, lowlinks, visited):
         """Tarjan's strongly connected components algorithm.
@@ -359,6 +375,7 @@ class Profile(Object):
     def _integrate_cycle(self, cycle, outevent, inevent):
         if outevent not in cycle:
 
+            # Compute the outevent for the whole cycle
             total = inevent.null()
             for member in cycle.functions:
                 subtotal = member[inevent]
@@ -369,6 +386,7 @@ class Profile(Object):
                 total += subtotal
             cycle[outevent] = total
             
+            # Compute the time propagated to callers of this cycle
             callees = {}
             for function in self.functions.itervalues():
                 if function.cycle is not cycle:
@@ -379,6 +397,9 @@ class Profile(Object):
                                 callees[callee] += call[CALL_RATIO]
                             except KeyError:
                                 callees[callee] = call[CALL_RATIO]
+            
+            for member in cycle.functions:
+                member[outevent] = outevent.null()
 
             for callee, call_ratio in callees.iteritems():
                 ranks = {}
@@ -389,7 +410,7 @@ class Profile(Object):
                 partial = self._integrate_cycle_function(cycle, callee, call_ratio, partials, ranks, call_ratios, outevent, inevent)
                 assert partial == max(partials.values())
                 assert not total or abs(1.0 - partial/(call_ratio*total)) <= 0.001
-            
+
         return cycle[outevent]
 
     def _rank_cycle_function(self, cycle, function, rank, ranks):
@@ -512,6 +533,11 @@ class Profile(Object):
                 callee = self.functions[call.callee_id]
                 sys.stderr.write('  Call %s:\n' % (callee.name,))
                 self._dump_events(call.events)
+        for cycle in self.cycles:
+            sys.stderr.write('Cycle:\n')
+            self._dump_events(cycle.events)
+            for function in cycle.functions:
+                sys.stderr.write('  Function %s\n' % (function.name,))
 
     def _dump_events(self, events):
         for event, value in events.iteritems():
@@ -595,6 +621,158 @@ class LineParser(Parser):
         return self.__eof
 
 
+XML_ELEMENT_START, XML_ELEMENT_END, XML_CHARACTER_DATA, XML_EOF = range(4)
+
+
+class XmlToken:
+
+    def __init__(self, type, name_or_data, attrs = None, line = None, column = None):
+        assert type in (XML_ELEMENT_START, XML_ELEMENT_END, XML_CHARACTER_DATA, XML_EOF)
+        self.type = type
+        self.name_or_data = name_or_data
+        self.attrs = attrs
+        self.line = line
+        self.column = column
+
+    def __str__(self):
+        if self.type == XML_ELEMENT_START:
+            return '<' + self.name_or_data + ' ...>'
+        if self.type == XML_ELEMENT_END:
+            return '</' + self.name_or_data + '>'
+        if self.type == XML_CHARACTER_DATA:
+            return self.name_or_data
+        if self.type == XML_EOF:
+            return 'end of file'
+        assert 0
+
+
+class XmlTokenizer:
+    """Expat based XML tokenizer."""
+
+    def __init__(self, fp, skip_ws = True):
+        self.fp = fp
+        self.tokens = []
+        self.index = 0
+        self.final = False
+        self.skip_ws = skip_ws
+        
+        self.character_pos = 0, 0
+        self.character_data = ''
+        
+        self.parser = xml.parsers.expat.ParserCreate()
+        self.parser.StartElementHandler  = self.handle_element_start
+        self.parser.EndElementHandler    = self.handle_element_end
+        self.parser.CharacterDataHandler = self.handle_character_data
+    
+    def handle_element_start(self, name, attributes):
+        self.finish_character_data()
+        line, column = self.pos()
+        token = XmlToken(XML_ELEMENT_START, name, attributes, line, column)
+        self.tokens.append(token)
+    
+    def handle_element_end(self, name):
+        self.finish_character_data()
+        line, column = self.pos()
+        token = XmlToken(XML_ELEMENT_END, name, None, line, column)
+        self.tokens.append(token)
+
+    def handle_character_data(self, data):
+        if not self.character_data:
+            self.character_pos = self.pos()
+        self.character_data += data
+    
+    def finish_character_data(self):
+        if self.character_data:
+            if not self.skip_ws or not self.character_data.isspace(): 
+                line, column = self.character_pos
+                token = XmlToken(XML_CHARACTER_DATA, self.character_data, None, line, column)
+                self.tokens.append(token)
+            self.character_data = ''
+    
+    def next(self):
+        size = 16*1024
+        while self.index >= len(self.tokens) and not self.final:
+            self.tokens = []
+            self.index = 0
+            data = self.fp.read(size)
+            self.final = len(data) < size
+            try:
+                self.parser.Parse(data, self.final)
+            except xml.parsers.expat.ExpatError, e:
+                #if e.code == xml.parsers.expat.errors.XML_ERROR_NO_ELEMENTS:
+                if e.code == 3:
+                    pass
+                else:
+                    raise e
+        if self.index >= len(self.tokens):
+            line, column = self.pos()
+            token = XmlToken(XML_EOF, None, None, line, column)
+        else:
+            token = self.tokens[self.index]
+            self.index += 1
+        return token
+
+    def pos(self):
+        return self.parser.CurrentLineNumber, self.parser.CurrentColumnNumber
+
+
+class XmlTokenMismatch(Exception):
+
+    def __init__(self, expected, found):
+        self.expected = expected
+        self.found = found
+
+    def __str__(self):
+        return '%u:%u: %s expected, %s found' % (self.found.line, self.found.column, str(self.expected), str(self.found))
+
+
+class XmlParser(Parser):
+    """Base XML document parser."""
+
+    def __init__(self, fp):
+        Parser.__init__(self)
+        self.tokenizer = XmlTokenizer(fp)
+        self.consume()
+    
+    def consume(self):
+        self.token = self.tokenizer.next()
+
+    def match_element_start(self, name):
+        return self.token.type == XML_ELEMENT_START and self.token.name_or_data == name
+    
+    def match_element_end(self, name):
+        return self.token.type == XML_ELEMENT_END and self.token.name_or_data == name
+
+    def element_start(self, name):
+        while self.token.type == XML_CHARACTER_DATA:
+            self.consume()
+        if self.token.type != XML_ELEMENT_START:
+            raise XmlTokenMismatch(XmlToken(XML_ELEMENT_START, name), self.token)
+        if self.token.name_or_data != name:
+            raise XmlTokenMismatch(XmlToken(XML_ELEMENT_START, name), self.token)
+        attrs = self.token.attrs
+        self.consume()
+        return attrs
+    
+    def element_end(self, name):
+        while self.token.type == XML_CHARACTER_DATA:
+            self.consume()
+        if self.token.type != XML_ELEMENT_END:
+            raise XmlTokenMismatch(XmlToken(XML_ELEMENT_END, name), self.token)
+        if self.token.name_or_data != name:
+            raise XmlTokenMismatch(XmlToken(XML_ELEMENT_END, name), self.token)
+        self.consume()
+
+    def character_data(self, strip = True):
+        data = ''
+        while self.token.type == XML_CHARACTER_DATA:
+            data += self.token.name_or_data
+            self.consume()
+        if strip:
+            data = data.strip()
+        return data
+
+
 class GprofParser(Parser):
     """Parser for GNU gprof output.
 
@@ -653,7 +831,7 @@ class GprofParser(Parser):
     )
 
     _cg_primary_re = re.compile(
-        r'^\[(?P<index>\d+)\]' + 
+        r'^\[(?P<index>\d+)\]?' + 
         r'\s+(?P<percentage_time>\d+\.\d+)' + 
         r'\s+(?P<self>\d+\.\d+)' + 
         r'\s+(?P<descendants>\d+\.\d+)' + 
@@ -675,7 +853,7 @@ class GprofParser(Parser):
     _cg_child_re = _cg_parent_re
 
     _cg_cycle_header_re = re.compile(
-        r'^\[(?P<index>\d+)\]' + 
+        r'^\[(?P<index>\d+)\]?' + 
         r'\s+(?P<percentage_time>\d+\.\d+)' + 
         r'\s+(?P<self>\d+\.\d+)' + 
         r'\s+(?P<descendants>\d+\.\d+)' + 
@@ -834,7 +1012,13 @@ class GprofParser(Parser):
             profile.add_function(function)
 
             if entry.cycle is not None:
-                cycles[entry.cycle].add_function(function)
+                try:
+                    cycle = cycles[entry.cycle]
+                except KeyError:
+                    sys.stderr.write('warning: <cycle %u as a whole> entry missing\n' % entry.cycle) 
+                    cycle = Cycle()
+                    cycles[entry.cycle] = cycle
+                cycle.add_function(function)
 
             profile[TIME] = profile[TIME] + function[TIME]
 
@@ -924,14 +1108,14 @@ class OprofileParser(LineParser):
             for _callee in _callees.itervalues():
                 if not _callee.self:
                     call = Call(_callee.id)
-                    call[SAMPLES] = _callee.samples
+                    call[SAMPLES2] = _callee.samples
                     function.add_call(call)
                 
         # compute derived data
         profile.validate()
         profile.find_cycles()
         profile.ratio(TIME_RATIO, SAMPLES)
-        profile.call_ratios(SAMPLES)
+        profile.call_ratios(SAMPLES2)
         profile.integrate(TOTAL_TIME_RATIO, TIME_RATIO)
 
         return profile
@@ -1017,6 +1201,123 @@ class OprofileParser(LineParser):
     def match_secondary(self):
         line = self.lookahead()
         return line[:1].isspace()
+
+
+class SysprofParser(XmlParser):
+
+    def __init__(self, stream):
+        XmlParser.__init__(self, stream)
+
+    def parse(self):
+        objects = {}
+        nodes = {}
+
+        self.element_start('profile')
+        while self.token.type == XML_ELEMENT_START:
+            if self.token.name_or_data == 'objects':
+                assert not objects
+                objects = self.parse_items('objects')
+            elif self.token.name_or_data == 'nodes':
+                assert not nodes
+                nodes = self.parse_items('nodes')
+            else:
+                self.parse_value(self.token.name_or_data)
+        self.element_end('profile')
+
+        return self.build_profile(objects, nodes)
+
+    def parse_items(self, name):
+        assert name[-1] == 's'
+        items = {}
+        self.element_start(name)
+        while self.token.type == XML_ELEMENT_START:
+            id, values = self.parse_item(name[:-1])
+            assert id not in items
+            items[id] = values
+        self.element_end(name)
+        return items
+
+    def parse_item(self, name):
+        attrs = self.element_start(name)
+        id = int(attrs['id'])
+        values = self.parse_values()
+        self.element_end(name)
+        return id, values
+
+    def parse_values(self):
+        values = {}
+        while self.token.type == XML_ELEMENT_START:
+            name = self.token.name_or_data
+            value = self.parse_value(name)
+            assert name not in values
+            values[name] = value
+        return values
+
+    def parse_value(self, tag):
+        self.element_start(tag)
+        value = self.character_data()
+        self.element_end(tag)
+        if value.isdigit():
+            return int(value)
+        if value.startswith('"') and value.endswith('"'):
+            return value[1:-1]
+        return value
+
+    def build_profile(self, objects, nodes):
+        profile = Profile()
+        
+        profile[SAMPLES] = 0
+        for id, object in objects.iteritems():
+            # Ignore fake objects (process names, modules, "Everything", "kernel", etc.)
+            if object['self'] == 0:
+                continue
+
+            function = Function(id, object['name'])
+            function[SAMPLES] = object['self']
+            profile.add_function(function)
+            profile[SAMPLES] += function[SAMPLES]
+
+        for id, node in nodes.iteritems():
+            # Ignore fake calls
+            if node['self'] == 0:
+                continue
+
+            # Find a non-ignored parent
+            parent_id = node['parent']
+            while parent_id != 0:
+                parent = nodes[parent_id]
+                caller_id = parent['object']
+                if objects[caller_id]['self'] != 0:
+                    break
+                parent_id = parent['parent']
+            if parent_id == 0:
+                continue
+
+            callee_id = node['object']
+
+            assert objects[caller_id]['self']
+            assert objects[callee_id]['self']
+
+            function = profile.functions[caller_id]
+
+            samples = node['self']
+            try:
+                call = function.calls[callee_id]
+            except KeyError:
+                call = Call(callee_id)
+                call[SAMPLES2] = samples
+                function.add_call(call)
+            else:
+                call[SAMPLES2] += samples
+
+        # Compute derived events
+        profile.validate()
+        profile.find_cycles()
+        profile.ratio(TIME_RATIO, SAMPLES)
+        profile.call_ratios(SAMPLES2)
+        profile.integrate(TOTAL_TIME_RATIO, TIME_RATIO)
+
+        return profile
 
 
 class SharkParser(LineParser):
@@ -1114,12 +1415,272 @@ class SharkParser(LineParser):
         return profile
 
 
+class SleepyParser(Parser):
+    """Parser for GNU gprof output.
+
+    See also:
+    - http://www.codersnotes.com/sleepy/
+    - http://sleepygraph.sourceforge.net/
+    """
+
+    def __init__(self, filename):
+        Parser.__init__(self)
+
+        from zipfile import ZipFile
+
+        self.database = ZipFile(filename)
+
+        self.symbols = {}
+        self.calls = {}
+
+        self.profile = Profile()
+    
+    _symbol_re = re.compile(
+        r'^(?P<id>\w+)' + 
+        r'\s+"(?P<module>[^"]*)"' + 
+        r'\s+"(?P<procname>[^"]*)"' + 
+        r'\s+"(?P<sourcefile>[^"]*)"' + 
+        r'\s+(?P<sourceline>\d+)$'
+    )
+
+    def parse_symbols(self):
+        lines = self.database.read('symbols.txt').splitlines()
+        for line in lines:
+            mo = self._symbol_re.match(line)
+            if mo:
+                symbol_id, module, procname, sourcefile, sourceline = mo.groups()
+    
+                function_id = ':'.join([module, procname])
+
+                try:
+                    function = self.profile.functions[function_id]
+                except KeyError:
+                    function = Function(function_id, procname)
+                    function[SAMPLES] = 0
+                    self.profile.add_function(function)
+
+                self.symbols[symbol_id] = function
+
+    def parse_callstacks(self):
+        lines = self.database.read("callstacks.txt").splitlines()
+        for line in lines:
+            fields = line.split()
+            samples = int(fields[0])
+            callstack = fields[1:]
+
+            callstack = [self.symbols[symbol_id] for symbol_id in callstack]
+
+            callee = callstack[0]
+
+            callee[SAMPLES] += samples
+            self.profile[SAMPLES] += samples
+            
+            for caller in callstack[1:]:
+                try:
+                    call = caller.calls[callee.id]
+                except KeyError:
+                    call = Call(callee.id)
+                    call[SAMPLES2] = samples
+                    caller.add_call(call)
+                else:
+                    call[SAMPLES2] += samples
+
+                callee = caller
+
+    def parse(self):
+        profile = self.profile
+        profile[SAMPLES] = 0
+
+        self.parse_symbols()
+        self.parse_callstacks()
+
+        # Compute derived events
+        profile.validate()
+        profile.find_cycles()
+        profile.ratio(TIME_RATIO, SAMPLES)
+        profile.call_ratios(SAMPLES2)
+        profile.integrate(TOTAL_TIME_RATIO, TIME_RATIO)
+
+        return profile
+
+
+class AQtimeTable:
+
+    def __init__(self, name, fields):
+        self.name = name
+
+        self.fields = fields
+        self.field_column = {}
+        for column in range(len(fields)):
+            self.field_column[fields[column]] = column
+        self.rows = []
+
+    def __len__(self):
+        return len(self.rows)
+
+    def __iter__(self):
+        for values, children in self.rows:
+            fields = {}
+            for name, value in zip(self.fields, values):
+                fields[name] = value
+            children = dict([(child.name, child) for child in children])
+            yield fields, children
+        raise StopIteration
+
+    def add_row(self, values, children=()):
+        self.rows.append((values, children))
+
+
+class AQtimeParser(XmlParser):
+
+    def __init__(self, stream):
+        XmlParser.__init__(self, stream)
+        self.tables = {}
+
+    def parse(self):
+        self.element_start('AQtime_Results')
+        self.parse_headers()
+        results = self.parse_results()
+        self.element_end('AQtime_Results')
+        return self.build_profile(results) 
+
+    def parse_headers(self):
+        self.element_start('HEADERS')
+        while self.token.type == XML_ELEMENT_START:
+            self.parse_table_header()
+        self.element_end('HEADERS')
+
+    def parse_table_header(self):
+        attrs = self.element_start('TABLE_HEADER')
+        name = attrs['NAME']
+        id = int(attrs['ID'])
+        field_types = []
+        field_names = []
+        while self.token.type == XML_ELEMENT_START:
+            field_type, field_name = self.parse_table_field()
+            field_types.append(field_type)
+            field_names.append(field_name)
+        self.element_end('TABLE_HEADER')
+        self.tables[id] = name, field_types, field_names
+
+    def parse_table_field(self):
+        attrs = self.element_start('TABLE_FIELD')
+        type = attrs['TYPE']
+        name = self.character_data()
+        self.element_end('TABLE_FIELD')
+        return type, name
+
+    def parse_results(self):
+        self.element_start('RESULTS')
+        table = self.parse_data()
+        self.element_end('RESULTS')
+        return table
+
+    def parse_data(self):
+        rows = []
+        attrs = self.element_start('DATA')
+        table_id = int(attrs['TABLE_ID'])
+        table_name, field_types, field_names = self.tables[table_id]
+        table = AQtimeTable(table_name, field_names)
+        while self.token.type == XML_ELEMENT_START:
+            row, children = self.parse_row(field_types)
+            table.add_row(row, children)
+        self.element_end('DATA')
+        return table
+
+    def parse_row(self, field_types):
+        row = [None]*len(field_types)
+        children = []
+        self.element_start('ROW')
+        while self.token.type == XML_ELEMENT_START:
+            if self.token.name_or_data == 'FIELD':
+                field_id, field_value = self.parse_field(field_types)
+                row[field_id] = field_value
+            elif self.token.name_or_data == 'CHILDREN':
+                children = self.parse_children()
+            else:
+                raise XmlTokenMismatch("<FIELD ...> or <CHILDREN ...>", self.token)
+        self.element_end('ROW')
+        return row, children
+
+    def parse_field(self, field_types):
+        attrs = self.element_start('FIELD')
+        id = int(attrs['ID'])
+        type = field_types[id]
+        value = self.character_data()
+        if type == 'Integer':
+            value = int(value)
+        elif type == 'Float':
+            value = float(value)
+        elif type == 'Address':
+            value = int(value)
+        elif type == 'String':
+            pass
+        else:
+            assert False
+        self.element_end('FIELD')
+        return id, value
+
+    def parse_children(self):
+        children = []
+        self.element_start('CHILDREN')
+        while self.token.type == XML_ELEMENT_START:
+            table = self.parse_data()
+            assert table.name not in children
+            children.append(table)
+        self.element_end('CHILDREN')
+        return children
+
+    def build_profile(self, results):
+        assert results.name == 'Routines'
+        profile = Profile()
+        profile[TIME] = 0.0
+        for fields, tables in results:
+            function = self.build_function(fields)
+            children = tables['Children']
+            for fields, _ in children:
+                call = self.build_call(fields)
+                function.add_call(call)
+            profile.add_function(function)
+            profile[TIME] = profile[TIME] + function[TIME]
+        profile[TOTAL_TIME] = profile[TIME]
+        profile.ratio(TOTAL_TIME_RATIO, TOTAL_TIME)
+        return profile
+    
+    def build_function(self, fields):
+        function = Function(self.build_id(fields), self.build_name(fields))
+        function[TIME] = fields['Time']
+        function[TOTAL_TIME] = fields['Time with Children']
+        #function[TIME_RATIO] = fields['% Time']/100.0
+        #function[TOTAL_TIME_RATIO] = fields['% with Children']/100.0
+        return function
+
+    def build_call(self, fields):
+        call = Call(self.build_id(fields))
+        call[TIME] = fields['Time']
+        call[TOTAL_TIME] = fields['Time with Children']
+        #call[TIME_RATIO] = fields['% Time']/100.0
+        #call[TOTAL_TIME_RATIO] = fields['% with Children']/100.0
+        return call
+
+    def build_id(self, fields):
+        return ':'.join([fields['Module Name'], fields['Unit Name'], fields['Routine Name']])
+
+    def build_name(self, fields):
+        # TODO: use more fields
+        return fields['Routine Name']
+
+
 class PstatsParser:
     """Parser python profiling statistics saved with te pstats module."""
 
     def __init__(self, *filename):
         import pstats
-        self.stats = pstats.Stats(*filename)
+        try:
+            self.stats = pstats.Stats(*filename)
+        except ValueError:
+            import hotshot.stats
+            self.stats = hotshot.stats.load(filename[0])
         self.profile = Profile()
         self.function_ids = {}
 
@@ -1194,7 +1755,8 @@ class Theme:
             maxfontsize = 10.0,
             minpenwidth = 0.5,
             maxpenwidth = 4.0,
-            gamma = 2.2):
+            gamma = 2.2,
+            skew = 1.0):
         self.bgcolor = bgcolor
         self.mincolor = mincolor
         self.maxcolor = maxcolor
@@ -1204,6 +1766,7 @@ class Theme:
         self.minpenwidth = minpenwidth
         self.maxpenwidth = maxpenwidth
         self.gamma = gamma
+        self.skew = skew
 
     def graph_bgcolor(self):
         return self.hsl_to_rgb(*self.bgcolor)
@@ -1243,10 +1806,18 @@ class Theme:
     
         hmin, smin, lmin = self.mincolor
         hmax, smax, lmax = self.maxcolor
-
-        h = hmin + weight*(hmax - hmin)
-        s = smin + weight*(smax - smin)
-        l = lmin + weight*(lmax - lmin)
+        
+        if self.skew < 0:
+            raise ValueError("Skew must be greater than 0")
+        elif self.skew == 1.0:
+            h = hmin + weight*(hmax - hmin)
+            s = smin + weight*(smax - smin)
+            l = lmin + weight*(lmax - lmin)
+        else:
+            base = self.skew
+            h = hmin + ((hmax-hmin)*(-1.0 + (base ** weight)) / (base - 1.0))
+            s = smin + ((smax-smin)*(-1.0 + (base ** weight)) / (base - 1.0))
+            l = lmin + ((lmax-lmin)*(-1.0 + (base ** weight)) / (base - 1.0))
 
         return self.hsl_to_rgb(h, s, l)
 
@@ -1335,7 +1906,7 @@ class DotWriter:
         fontname = theme.graph_fontname()
 
         self.attr('graph', fontname=fontname, ranksep=0.25, nodesep=0.125)
-        self.attr('node', fontname=fontname, shape="box", style="filled,rounded", fontcolor="white", width=0, height=0)
+        self.attr('node', fontname=fontname, shape="box", style="filled", fontcolor="white", width=0, height=0)
         self.attr('edge', fontname=fontname)
 
         for function in profile.functions.itervalues():
@@ -1438,7 +2009,7 @@ class DotWriter:
     def id(self, id):
         if isinstance(id, (int, float)):
             s = str(id)
-        elif isinstance(id, str):
+        elif isinstance(id, basestring):
             if id.isalnum():
                 s = id
             else:
@@ -1500,9 +2071,9 @@ class Main:
             help="eliminate edges below this threshold [default: %default]")
         parser.add_option(
             '-f', '--format',
-            type="choice", choices=('prof', 'oprofile', 'pstats', 'shark'),
+            type="choice", choices=('prof', 'oprofile', 'sysprof', 'pstats', 'shark', 'sleepy', 'aqtime'),
             dest="format", default="prof",
-            help="profile format: prof, oprofile, or pstats [default: %default]")
+            help="profile format: prof, oprofile, sysprof, shark, sleepy, aqtime, or pstats [default: %default]")
         parser.add_option(
             '-c', '--colormap',
             type="choice", choices=('color', 'pink', 'gray', 'bw'),
@@ -1518,6 +2089,11 @@ class Main:
             action="store_true",
             dest="wrap", default=False,
             help="wrap function names")
+        # add a new option to control skew of the colorization curve
+        parser.add_option(
+            '--skew',
+            type="float", dest="theme_skew", default=1.0,
+            help="skew the colorization curve.  Values < 1.0 give more variety to lower percentages.  Value > 1.0 give less variety to lower percentages")
         (self.options, self.args) = parser.parse_args(sys.argv[1:])
 
         if len(self.args) > 1 and self.options.format != 'pstats':
@@ -1527,6 +2103,10 @@ class Main:
             self.theme = self.themes[self.options.theme]
         except KeyError:
             parser.error('invalid colormap \'%s\'' % self.options.theme)
+        
+        # set skew on the theme now that it has been picked.
+        if self.options.theme_skew:
+            self.theme.skew = self.options.theme_skew
 
         if self.options.format == 'prof':
             if not self.args:
@@ -1540,6 +2120,12 @@ class Main:
             else:
                 fp = open(self.args[0], 'rt')
             parser = OprofileParser(fp)
+        elif self.options.format == 'sysprof':
+            if not self.args:
+                fp = sys.stdin
+            else:
+                fp = open(self.args[0], 'rt')
+            parser = SysprofParser(fp)
         elif self.options.format == 'pstats':
             if not self.args:
                 parser.error('at least a file must be specified for pstats input')
@@ -1550,6 +2136,16 @@ class Main:
             else:
                 fp = open(self.args[0], 'rt')
             parser = SharkParser(fp)
+        elif self.options.format == 'sleepy':
+            if len(self.args) != 1:
+                parser.error('exactly one file must be specified for sleepy input')
+            parser = SleepyParser(self.args[0])
+        elif self.options.format == 'aqtime':
+            if not self.args:
+                fp = sys.stdin
+            else:
+                fp = open(self.args[0], 'rt')
+            parser = AQtimeParser(fp)
         else:
             parser.error('invalid format \'%s\'' % self.options.format)
 
