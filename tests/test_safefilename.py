@@ -46,6 +46,7 @@ def test_dotfilenames():
     assertEquals(makeValidFilename("."), "_.")
     assertEquals(makeValidFilename(".."), "_..")
     assertEquals(makeValidFilename("..."), "_...")
+    assertEquals(makeValidFilename(".test.rc"), "_.test.rc")
 
 
 def test_customblacklist():

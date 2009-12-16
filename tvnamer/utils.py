@@ -275,16 +275,21 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
     else:
         sysname = platform.system()
 
+    # If the filename starts with a . prepend it with an underscore, so it
+    # doesn't become hidden.
+
+    # This is done before calling splitext to handle filename of "."
+    # splitext acts differently in python 2.5 and 2.6 - 2.5 returns ('', '.')
+    # and 2.6 returns ('.', ''), so rather than special case '.', this
+    # special-cases all files starting with "." equally (since dotfiles have)
+    if value.startswith("."):
+        value = "_" + value
+
     # Treat extension seperatly
     value, extension = os.path.splitext(value)
 
     # Remove null byte
     value = value.replace("\0", "")
-
-    # If the filename starts with a . prepend it with an underscore, so it
-    # doesn't become hidden
-    if value.startswith("."):
-        value = "_" + value
 
     # Blacklist of characters
     if sysname == 'Darwin':
