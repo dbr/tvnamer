@@ -39,7 +39,7 @@ def test_name_generation_on_testfiles():
     for category, testcases in files.items():
         for testindex, curtest in enumerate(testcases):
             cur_tester = lambda x: verify_name_gen(x, tvdb_instance)
-            cur_tester.description = '%s_%d: %r' % (
+            cur_tester.description = 'test_name_generation_%s_%d: %r' % (
                 category, testindex, curtest['input'])
             yield (cur_tester, curtest)
 
