@@ -120,7 +120,7 @@ files['unicode'] = [
     'parsedseriesname': u'darker than black -\u9ed2\u306e\u5951\u7d04\u8005-',
     'correctedseriesname': u'Darker than Black',
     'seasonnumber': 1, 'episodenumber': 1,
-    'episodenames': [u'\u5951\u7d04\u306e\u661f\u306f\u6d41\u308c\u305f\u2026\u524d\u7de8']},
+    'episodenames': [u'The Star of Contract Flowed... (1st Part)']},
 
     {'input': u'Carniv\xe0le 1x11 - The Day of the Dead',
     'parsedseriesname': u'Carniv\xe0le',
