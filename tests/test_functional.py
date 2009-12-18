@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #encoding:utf-8
 #author:dbr/Ben
-#project:tvdb_api
-#repository:http://github.com/dbr/tvdb_api
+#project:tvnamer
+#repository:http://github.com/dbr/tvnamer
 #license:Creative Commons GNU GPL v2
 # (http://creativecommons.org/licenses/GPL/2.0/)
 

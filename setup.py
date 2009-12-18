@@ -8,7 +8,7 @@ version='2.0',
 
 author='dbr/Ben',
 description='Automatic TV episode namer',
-url='http://github.com/dbr/tvdb_api/tree/master',
+url='http://github.com/dbr/tvnamer',
 license='GPLv2',
 
 long_description="""\
