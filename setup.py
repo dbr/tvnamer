@@ -27,7 +27,7 @@ entry_points = {
     ],
 },
 
-install_requires = ['tvdb_api>=1.2'],
+install_requires = ['tvdb_api>=1.3'],
 
 classifiers=[
     "Environment :: Console",
