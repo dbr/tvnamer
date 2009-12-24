@@ -122,7 +122,7 @@ def test_parsing_generator():
     for category, testcases in files.items():
         for testindex, curtest in enumerate(testcases):
             cur_tester = lambda x: check_case(x)
-            cur_tester.description = 'test_parsing_%s_%d: %s' % (
+            cur_tester.description = 'test_parsing_%s_%d: %r' % (
                 category, testindex, curtest['input'])
             yield (cur_tester, curtest)
 
