@@ -54,6 +54,10 @@ def test_customblacklist():
     """
     assertEquals(makeValidFilename("Test.avi", custom_blacklist="e"), "T_st.avi")
 
+def test_replacewith():
+    """Tests replacing blacklisted character with custom characters
+    """
+    assertEquals(makeValidFilename("My Test File.avi", custom_blacklist=" ", replace_with="."), "My.Test.File.avi")
 
 def _test_truncation(max_len, windows_safe):
     """Tests truncation works correctly.
@@ -77,5 +81,6 @@ def test_truncation_darwinlinux():
 
 
 def test_truncation_windows():
-    """Tests truncate works on Windows (using windows_safe=True)"""
+    """Tests truncate works on Windows (using windows_safe=True)
+    """
     _test_truncation(max_len = 32, windows_safe = True)

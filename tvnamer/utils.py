@@ -253,7 +253,7 @@ def formatEpisodeName(names):
     return ", ".join(names)
 
 
-def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None):
+def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None, replace_with = "_"):
     """
     Takes a string and makes it into a valid filename.
 
@@ -288,7 +288,7 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
     # Treat extension seperatly
     value, extension = os.path.splitext(value)
 
-    # Remove null byte
+    # Remove any null bytes
     value = value.replace("\0", "")
 
     # Blacklist of characters
@@ -309,7 +309,7 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
         blacklist += custom_blacklist
 
     # Replace every blacklisted character with a underscore
-    value = re.sub("[%s]" % re.escape(blacklist), "_", value)
+    value = re.sub("[%s]" % re.escape(blacklist), replace_with, value)
 
     # Remove any trailing whitespace
     value = value.strip()
@@ -429,7 +429,8 @@ class EpisodeInfo(object):
             fname,
             normalize_unicode = Config['normalize_unicode_filenames'],
             windows_safe = Config['windows_safe_filenames'],
-            custom_blacklist = Config['custom_filename_character_blacklist'])
+            custom_blacklist = Config['custom_filename_character_blacklist'],
+            replace_with = Config['replace_blacklisted_characters_with'])
 
     def __repr__(self):
         return "<%s: %s>" % (
