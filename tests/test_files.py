@@ -49,6 +49,13 @@ files['s01e01_format'] = [
     'correctedseriesname': 'Dexter',
     'seasonnumber': 4, 'episodenumber': 5,
     'episodenames': ['Dirty Harry']},
+
+    {'input': 'QI.S04E01.2006-09-29.blah',
+    'parsedseriesname': 'QI',
+    'correctedseriesname': 'QI',
+    'seasonnumber': 4, 'episodenumber': 1,
+    'episodenames': ['Danger']},
+
 ]
 
 files['misc'] = [
