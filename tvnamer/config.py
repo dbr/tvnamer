@@ -57,7 +57,11 @@ def _deserialiseItem(ctype, citem):
     if ctype == 'int':
         return int(citem.text)
     elif ctype == 'string':
-        return citem.text
+        if citem.text is None:
+            # Empty string is serialised as None, rather than an empty string
+            return ""
+        else:
+            return citem.text
     elif ctype == 'bool':
         if citem.text == 'True':
             return True
