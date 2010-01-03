@@ -32,7 +32,14 @@ def test_saving_loading():
     Config.loadConfig(fname)
     new_config = dict(Config)
 
-    # Compare
+    # Show differences between the two dictionaries, to help debugging errors
+    for nk in new_config.keys():
+        for sk in saved_config.keys():
+            if new_config[nk] != saved_config[nk]:
+                print "new_config[%s] (%s) != saved_config[%s] (%s)" % (nk, new_config[nk], nk, saved_config[nk])
+            if new_config[sk] != saved_config[sk]:
+                print "new_config[%s] (%s) != saved_config[%s] (%s)" % (sk, new_config[sk], sk, saved_config[sk])
+
     assert saved_config == new_config, "Configs do not match"
 
     # Clear config
