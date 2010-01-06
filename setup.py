@@ -20,7 +20,8 @@ files: [SomeGroup] Show Name - 102 [A1B2C3].mkv and better handles files
 containing unicode characters.
 """,
 
-package = ['tvnamer'],
+packages = ['tvnamer'],
+
 entry_points = {
     'console_scripts': [
         'tvnamer = tvnamer.main:main',
