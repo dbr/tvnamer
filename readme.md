@@ -6,13 +6,30 @@
 
 You can easily install `tvnamer` via `easy_install`
 
-    easy_install tvnamer
+    sudo easy_install tvnamer
 
 This installs the `tvnamer` command-line tool (and the `tvdb_api` module as a requirement)
 
-You may need to use sudo, depending on your setup:
+If you wish to install the latest (non-stable) development version from source, download the latest version of the code, either from <http://github.com/dbr/tvnamer/tarball/master> or by running:
 
-    sudo easy_install tvnamer
+    git clone git://github.com/dbr/tvnamer.git
+
+..then `cd` into the directory, and run:
+
+    sudo python setup.py install
+
+Example terminal session (after downloading [the above link](http://github.com/dbr/tvnamer/tarball/master)):
+
+    $ cd Downloads/
+    $ ls
+    dbr-tvnamer-b4cb148.tar.gz
+    $ gunzip dbr-tvnamer-b4cb148.tar.gz
+    $ tar -xf dbr-tvnamer-b4cb148.tar
+    $ cd dbr-tvnamer-b4cb148/
+    $ sudo python setup.py install
+    Password:
+    [...]
+    Finished processing dependencies for tvnamer==2.0
 
 ## Improvements over v1
 
