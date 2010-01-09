@@ -25,7 +25,8 @@ def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
     print "#" * 20
-    print "# Processing %s (season: %s, episode: %s)" % (
+    print "# Processing file: %s" % episode.fullfilename
+    print "# Detected series: %s (season: %s, episode: %s)" % (
         episode.seriesname,
         episode.seasonnumber,
         episode.episodenumber)
