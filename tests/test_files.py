@@ -139,8 +139,7 @@ files['unicode'] = [
     'parsedseriesname': u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i',
     'correctedseriesname': u'Virtues Of Harmony II',
     'seasonnumber': 1, 'episodenumber': 1,
-    'episodenames': [u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i - Virtues Of Harmony II']
-    },
+    'episodenames': [u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i - Virtues Of Harmony II']},
 ]
 
 files['anime'] = [
