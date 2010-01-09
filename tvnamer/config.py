@@ -116,7 +116,7 @@ class _ConfigManager(dict):
     def __init__(self):
         super(_ConfigManager, self).__init__(self)
         if os.path.isfile(self.DEFAULT_CONFIG_FILE):
-            self._loadConfig(self.DEFAULT_CONFIG_FILE)
+            self.loadConfig(self.DEFAULT_CONFIG_FILE)
         else:
             self.useDefaultConfig()
 
@@ -251,7 +251,7 @@ class _ConfigManager(dict):
         """
         self.clear()
 
-    def _loadConfig(self, xmlsrc):
+    def _parseConfigString(self, xmlsrc):
         """Loads a config from a file
         """
         try:
@@ -294,7 +294,7 @@ class _ConfigManager(dict):
         except IOError, errormsg:
             raise InvalidConfigFile(errormsg)
         else:
-            loaded_conf = self._loadConfig(xmlsrc)
+            loaded_conf = self._parseConfigString(xmlsrc)
             self._setDefaults() # Makes sure all config options are set
             self.update(loaded_conf)
 
