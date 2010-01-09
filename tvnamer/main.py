@@ -24,7 +24,12 @@ InvalidFilename, InvalidConfigFile, DataRetrievalError)
 def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
-    print "# Processing %s" % (episode.fullfilename)
+    print "#" * 20
+    print "# Processing %s (season: %s, episode: %s)" % (
+        episode.seriesname,
+        episode.seasonnumber,
+        episode.episodenumber)
+
     try:
         correctedSeriesName, epName = getEpisodeName(tvdb_instance, episode)
     except (DataRetrievalError, ShowNotFound), errormsg:
@@ -41,8 +46,8 @@ def processFile(tvdb_instance, episode):
     newName = episode.generateFilename()
 
     print "#" * 20
-    print "# Old filename: %s" % episode.fullfilename
-    print "# New filename: %s" % newName
+    print "Old filename: %s" % episode.fullfilename
+    print "New filename: %s" % newName
 
     if Config['alwaysrename']:
         cnamer.newName(newName)
@@ -101,7 +106,7 @@ def findFiles(paths):
 def tvnamer(paths):
     """Main tvnamer function, takes an array of paths, does stuff.
     """
-    print "####################"
+    print "#" * 20
     print "# Starting tvnamer"
 
     episodes_found = []
@@ -128,7 +133,9 @@ def tvnamer(paths):
 
     for episode in episodes_found:
         processFile(tvdb_instance, episode)
+        print
 
+    print "#" * 20
     print "# Done"
 
 
