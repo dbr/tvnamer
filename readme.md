@@ -26,14 +26,13 @@ If you wish to install the latest (non-stable) development version from source, 
 
     sudo python setup.py install
 
-Example terminal session (after downloading [the above link](http://github.com/dbr/tvnamer/tarball/master)):
+Example terminal session (you can skip the `curl` line if you have already downloaded and extracted [the above link](http://github.com/dbr/tvnamer/tarball/master)):
 
     $ cd Downloads/
+    $ curl -L http://github.com/dbr/tvnamer/tarball/master | gunzip - | tar -x -
     $ ls
-    dbr-tvnamer-b4cb148.tar.gz
-    $ gunzip dbr-tvnamer-b4cb148.tar.gz
-    $ tar -xf dbr-tvnamer-b4cb148.tar
-    $ cd dbr-tvnamer-b4cb148/
+    dbr-tvnamer-ce3ac8d/
+    $ cd dbr-tvnamer-ce3ac8d/
     $ sudo python setup.py install
     Password:
     [...]
