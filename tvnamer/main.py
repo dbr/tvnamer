@@ -51,7 +51,10 @@ def processFile(tvdb_instance, episode):
     print "New filename: %s" % newName
 
     if Config['alwaysrename']:
-        cnamer.newName(newName)
+        try:
+            cnamer.newName(newName)
+        except OSError, e:
+            warn(e)
         return
 
     ans = None
@@ -64,23 +67,31 @@ def processFile(tvdb_instance, episode):
             print "\n", errormsg
             raise UserAbort(errormsg)
 
+    shouldRename = False
     if len(ans) == 0:
         print "Renaming (default)"
-        cnamer.newName(newName)
+        shouldRename = True
     elif ans == "a":
         print "Always renaming"
         Config['alwaysrename'] = True
-        cnamer.newName(newName)
+        shouldRename = True
     elif ans == "q":
         print "Quitting"
         raise UserAbort("User exited with q")
     elif ans == "y":
         print "Renaming"
-        cnamer.newName(newName)
+        shouldRename = True
     elif ans == "n":
         print "Skipping"
     else:
         print "Invalid input, skipping"
+
+    if shouldRename:
+        try:
+            cnamer.newName(newName)
+        except OSError, e:
+            warn(e)
+
 
 
 def findFiles(paths):

@@ -451,13 +451,20 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
 
-    def newName(self, newName):
+    def newName(self, newName, force = False):
         """Renames a file, keeping the path the same.
         """
         filepath, filename = os.path.split(self.filename)
         filename, _ = os.path.splitext(filename)
 
         newpath = os.path.join(filepath, newName)
+
+        if os.path.isfile(newpath):
+            # If the destination exists, raise exception unless force is True
+            if not force:
+                raise OSError("File %s already exists, not forcefully moving %s" % (
+                    newpath, self.filename))
+
         os.rename(self.filename, newpath)
         self.filename = newpath
 
