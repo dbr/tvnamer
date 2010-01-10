@@ -125,6 +125,12 @@ files['multiple_episodes'] = [
     'correctedseriesname': 'Flight of the Conchords',
     'seasonnumber': 1, 'episodenumber': [1, 2],
     'episodenames': ['Sally', 'Bret Gives Up The Dream']},
+
+    {'input': 'Flight.of.the.Conchords.S01E02e01.An.Ep.name.avi',
+    'parsedseriesname': 'Flight of the Conchords',
+    'correctedseriesname': 'Flight of the Conchords',
+    'seasonnumber': 1, 'episodenumber': [1, 2],
+    'episodenames': ['Sally', 'Bret Gives Up The Dream']},
 ]
 
 files['unicode'] = [
