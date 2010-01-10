@@ -169,10 +169,10 @@ class _ConfigManager(dict):
                 [\.\- ]?                                 # separator
                 [Ee](?P<episodenumberstart>[0-9]+)       # first e23
                 (                                        # -24 etc
-                     [\- ]
+                     [\-]
                      [Ee]?[0-9]+
                 )*
-                     [\- ]                             # separator
+                     [\-]                                # separator
                      (?P<episodenumberend>[0-9]+)        # final episode num
                 [^\/]*$''',
 
