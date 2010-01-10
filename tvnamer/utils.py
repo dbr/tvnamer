@@ -471,13 +471,19 @@ class Renamer(object):
         os.rename(self.filename, newpath)
         self.filename = newpath
 
-    def newPath(self, new_path, force = False, always_copy = False):
+    def newPath(self, new_path, force = False, always_copy = False, always_move = False):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)
         If it is on a different partition, it will be copied.
         If the target file already exists, it will raise OSError unless force is True.
         """
+
+        raise NotImplementedError('The function is not tested at all, needs testing before use')
+
+        if always_copy and always_move:
+            raise ValueError("Both always_copy and always_move cannot be specified")
+
         _, old_filename = os.path.split(self.filename)
         new_fullpath = os.path.abspath(os.path.join(new_path, old_filename))
 
@@ -487,13 +493,22 @@ class Renamer(object):
                 raise OSError("File %s already exists, not forcefully moving %s" % (
                     new_fullpath, self.filename))
 
-        if same_partition(self.filename, new_path) and not always_copy:
-            # File is on same partition, and the user doesn't want to copy the file
-            print "move %s to %s" % (self.filename, new_fullpath)
-            os.rename(self.filename, new_fullpath)
+        if same_partition(self.filename, new_path):
+            if always_copy:
+                # Same partition, but forced to copy
+                print "copy %s to %s" % (self.filename, new_fullpath)
+                shutil.copyfile(self.filename, new_fullpath)
+            else:
+                # Same partition, just rename the file to move it
+                print "move %s to %s" % (self.filename, new_fullpath)
+                os.rename(self.filename, new_fullpath)
         else:
-            # File is on different partition (different disc), or always_copy is True
+            # File is on different partition (different disc), copy it
             print "copy %s to %s" % (self.filename, new_fullpath)
             shutil.copyfile(self.filename, new_fullpath)
+            if always_move:
+                # Forced to move file, we just trash old file
+                print "Deleting %s" % (self.filename)
+                delete_file(self.filename)
 
         self.filename = new_fullpath
