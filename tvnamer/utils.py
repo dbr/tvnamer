@@ -197,6 +197,9 @@ class FileParser(object):
                     # Multiple episodes, regex specifies start and end number
                     start = int(match.group('episodenumberstart'))
                     end = int(match.group('episodenumberend'))
+                    if start > end:
+                        # Swap start and end
+                        start, end = end, start
                     episodenumber = range(start, end + 1)
 
                 else:
