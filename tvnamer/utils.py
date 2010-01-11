@@ -243,12 +243,12 @@ def formatEpisodeName(names, join_with):
         if number:
             epname, epno = number.group(1), number.group(2)
             if len(found_names) > 0 and epname not in found_names:
-                return ", ".join(names)
+                return join_with.join(names)
             found_names.append(epname)
             numbers.append(int(epno))
         else:
             # An episode didn't match
-            return ", ".join(names)
+            return join_with.join(names)
 
     names = []
     start, end = min(numbers), max(numbers)
@@ -423,7 +423,7 @@ class EpisodeInfo(object):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    Config['multiep_join_name_with']
+                    join_with = Config['multiep_join_name_with']
                 )
 
             if self.seasonnumber is None:
