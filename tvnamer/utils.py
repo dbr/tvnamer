@@ -225,7 +225,7 @@ class FileParser(object):
             raise InvalidFilename(self.path)
 
 
-def formatEpisodeName(names):
+def formatEpisodeName(names, join_with):
     """Takes a list of episode names, formats them into a string.
     If two names are supplied, such as "Pilot (1)" and "Pilot (2)", the
     returned string will be "Pilot (1-2)"
@@ -421,7 +421,10 @@ class EpisodeInfo(object):
                 fname = Config['filename_without_episode'] % epdata
         else:
             if isinstance(self.episodename, list):
-                epdata['episodename'] = formatEpisodeName(self.episodename)
+                epdata['episodename'] = formatEpisodeName(
+                    self.episodename,
+                    Config['multiep_join_name_with']
+                )
 
             if self.seasonnumber is None:
                 fname = Config['filename_with_episode_no_season'] % epdata

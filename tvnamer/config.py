@@ -133,6 +133,7 @@ class _ConfigManager(dict):
             'normalize_unicode_filenames': False,
             'custom_filename_character_blacklist': '',
             'replace_blacklisted_characters_with': '_',
+            'multiep_join_name_with': ', ',
             'language': 'en',
             'search_all_languages': True,
 
