@@ -144,6 +144,8 @@ To write the default configuration file, which is a good starting point for your
 
 To use your custom configuration, you must either specify the location using `tvnamer --config=/path/to/mytvnamerconfig.xml` or place the file at `~/.tvnamer.xml` (a file named `.tvnamer.xml` in your home directory)
 
+**Important:** If tvnamer's default settings change and your saved config contains the old settings, you may experience strange behaviour or bugs (the config may contain a buggy `episode_patterns` regex, for example). It is recommended you remove config options you are not altering (particularly `episode_patterns`). If you experience any strangeness, try disabling your custom configuration (moving it away from `~/.tvnamer.xml`)
+
 If for example you wish to change the default language used, change the option `language` to another two-letter language code, such as `fr` for French.
 
 `search_all_languages` makes tvnamer search for the series in all languages, and allows you to select the appropriate one. If this is False, tvnamer will search in the language specified in the option `language`
