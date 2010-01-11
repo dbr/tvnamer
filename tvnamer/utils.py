@@ -332,11 +332,11 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
         value = unicode(value) # cast data to unicode
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
-    # Truncate filenames to valid length
-    if sysname in ['Darwin', 'Linux']:
-        max_len = 255
-    else:
-        max_len = 32
+    # Truncate filenames to valid/sane length.
+    # NTFS is limited to 255 characters, HFS+ and EXT3 don't seem to have
+    # limits, FAT32 is 254. I doubt anyone will take issue with losing that
+    # one possible character, and files over 254 are pointlessly unweidly
+    max_len = 254
 
     if len(value + extension) > max_len:
         if len(extension) > len(value):
