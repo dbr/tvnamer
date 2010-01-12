@@ -58,7 +58,7 @@ files['s01e01_format'] = [
 
     {'input': 'The Wire s05e10 30.mp4',
     'parsedseriesname': 'The Wire',
-    'correctedseriesname': 'The WIre',
+    'correctedseriesname': 'The Wire',
     'seasonnumber': 5, 'episodenumber': 10,
     'episodenames': ['-30-']},
 ]
