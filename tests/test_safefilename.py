@@ -86,4 +86,3 @@ def test_truncation_windows():
     """Tests truncate works on Windows (using windows_safe=True)
     """
     _test_truncation(max_len = 254, windows_safe = True)
-
