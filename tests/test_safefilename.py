@@ -79,10 +79,11 @@ def test_truncation_darwinlinux():
         import nose
         raise nose.SkipTest("Test only valid on Darwin and Linux platform")
 
-    _test_truncation(255, windows_safe = False)
+    _test_truncation(254, windows_safe = False)
 
 
 def test_truncation_windows():
     """Tests truncate works on Windows (using windows_safe=True)
     """
-    _test_truncation(max_len = 32, windows_safe = True)
+    _test_truncation(max_len = 254, windows_safe = True)
+
