@@ -253,7 +253,7 @@ def formatEpisodeName(names, join_with):
     names = []
     start, end = min(numbers), max(numbers)
     names.append("%s (%d-%d)" % (found_names[0], start, end))
-    return ", ".join(names)
+    return join_with.join(names)
 
 
 def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None, replace_with = "_"):
