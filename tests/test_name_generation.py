@@ -64,6 +64,34 @@ class test_name_generation_output_formats(unittest.TestCase):
             ep.generateFilename(),
             'Scrubs - [01x02] - My Mentor.avi')
 
+    def test_multi_episodes_continuous(self):
+        ep = EpisodeInfo(
+            seriesname = 'Stargate SG-1',
+            seasonnumber = 1,
+            episodenumber = [1, 2],
+            episodename = [
+                'Children of the Gods (1)',
+                'Children of the Gods (2)'],
+            filename = 'stargate.example.file.avi')
+
+        self.assertEquals(
+            ep.generateFilename(),
+            'Stargate SG-1 - [01x01-02] - Children of the Gods (1-2).avi')
+
+    def test_multi_episodes_seperate(self):
+        ep = EpisodeInfo(
+            seriesname = 'Stargate SG-1',
+            seasonnumber = 1,
+            episodenumber = [2, 3],
+            episodename = [
+                'Children of the Gods (2)',
+                'The Enemy Within'],
+            filename = 'stargate.example.file.avi')
+
+        self.assertEquals(
+            ep.generateFilename(),
+            'Stargate SG-1 - [01x02-03] - Children of the Gods (2), The Enemy Within.avi')
+
     def test_simple_no_ext(self):
         """Simple episode with out extension
         """
