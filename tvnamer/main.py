@@ -225,7 +225,7 @@ def main():
         opter.error("No filenames or directories supplied")
 
     try:
-        tvnamer(paths = args)
+        tvnamer(paths = sorted(args))
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
     except UserAbort, errormsg:
