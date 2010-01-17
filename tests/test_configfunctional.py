@@ -42,8 +42,7 @@ def test_simple_multiple_files():
 
     out_data = run_tvnamer(
         with_files = input_files,
-        with_input = "y\n1\ny\n1\ny\n1\ny\n"
-    )
+        with_input = "y\n1\ny\n1\ny\n1\ny\n")
 
     verify_out_data(out_data, expected_files)
 
