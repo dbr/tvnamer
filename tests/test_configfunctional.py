@@ -12,7 +12,7 @@
 from functional_runner import run_tvnamer, verify_out_data
 
 
-def test_batchconfig():
+def test_simple_single_file():
     """Test most simple usage
     """
 
