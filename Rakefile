@@ -39,17 +39,3 @@ task :test do
   title("Unit tests")
   puts `nosetests`
 end
-
-desc "Profile by running unittests"
-task :profile do
-  title("Profiling")
-  `nosetests --with-profile --profile-stats-file=tvnprofile.prof`
-  puts "Converting prof to dot"
-  `python tools/gprof2dot.py -o tvnprofile.dot -f pstats tvnprofile.prof`
-  puts "Generating graph"
-  `dot -Tpng -o tvnprofile.png tvnprofile.dot -Gbgcolor=black`
-  puts "Created tvnprofile.png"
-  puts "Cleanup"
-  rm "tvnprofile.dot"
-  rm "tvnprofile.prof"
-end
