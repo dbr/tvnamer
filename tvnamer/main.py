@@ -209,13 +209,17 @@ def main():
         opts.selectfirst = True
         opts.alwaysrename = True
 
-    Config['verbose'] = opts.verbose
+    if not Config['verbose']:
+        Config['verbose'] = opts.verbose
 
-    Config['recursive'] = opts.recursive
+    if not Config['recursive']:
+        Config['recursive'] = opts.recursive
 
-    Config['alwaysrename'] = opts.alwaysrename
+    if not Config['alwaysrename']:
+        Config['alwaysrename'] = opts.alwaysrename
 
-    Config['selectfirst'] = opts.selectfirst
+    if not Config['selectfirst']:
+        Config['selectfirst'] = opts.selectfirst
 
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
