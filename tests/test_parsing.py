@@ -93,7 +93,7 @@ def test_autogen_names():
                     for cur in names:
                         p = FileParser(cur).parse()
 
-                        assertEquals(p.episodenumber, name_data['epno'])
+                        assertEquals(p.episodenumber, [name_data['epno']])
                         assertEquals(p.seasonnumber, name_data['seasno'])
                         assertEquals(p.seriesname, name_data['seriesname'])
         #end cur_test

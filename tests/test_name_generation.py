@@ -56,7 +56,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = 1,
-            episodenumber = 2,
+            episodenumber = [2],
             episodename = 'My Mentor',
             filename = 'scrubs.example.file.avi')
 
@@ -98,7 +98,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = 1,
-            episodenumber = 2,
+            episodenumber = [2],
             episodename = 'My Mentor',
             filename = None)
 
@@ -112,7 +112,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = 1,
-            episodenumber = 2,
+            episodenumber = [2],
             episodename = None,
             filename = 'scrubs.example.file.avi')
 
@@ -126,7 +126,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = 1,
-            episodenumber = 2,
+            episodenumber = [2],
             episodename = None,
             filename = None)
 
@@ -140,7 +140,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = None,
-            episodenumber = 2,
+            episodenumber = [2],
             episodename = 'My Mentor',
             filename = None)
 

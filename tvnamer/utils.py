@@ -49,11 +49,6 @@ def getEpisodeName(tvdb_instance, episode):
         # Series was found, use corrected series name
         correctedShowName = show['seriesname']
 
-    if not isinstance(episode.episodenumber, list):
-        epNoList = [episode.episodenumber]
-    else:
-        epNoList = episode.episodenumber
-
     if episode.seasonnumber is None:
         # Series without concept of seasons have all episodes in season 1
         seasonnumber = 1
@@ -61,7 +56,7 @@ def getEpisodeName(tvdb_instance, episode):
         seasonnumber = episode.seasonnumber
 
     epnames = []
-    for cepno in epNoList:
+    for cepno in episode.episodenumber:
         try:
             episodeinfo = show[seasonnumber][cepno]
 
@@ -203,7 +198,7 @@ class FileParser(object):
                     episodenumber = range(start, end + 1)
 
                 elif 'episodenumber' in namedgroups:
-                    episodenumber = int(match.group('episodenumber'))
+                    episodenumber = [int(match.group('episodenumber')), ]
 
                 else:
                     raise InvalidConfigFile(
@@ -403,11 +398,11 @@ class EpisodeInfo(object):
         episode_separator # used to join multiple episode numbers
         """
         # Format episode number into string, or a list
-        if isinstance(self.episodenumber, list):
+        if len(self.episodenumber) == 1:
+            epno = Config['episode_single'] % self.episodenumber[0]
+        else:
             epno = Config['episode_separator'].join(
                 Config['episode_single'] % x for x in self.episodenumber)
-        else:
-            epno = Config['episode_single'] % self.episodenumber
 
         # Data made available to config'd output file format
         if self.extension is None:
