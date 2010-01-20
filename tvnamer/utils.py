@@ -21,7 +21,7 @@ tvdb_episodenotfound, tvdb_attributenotfound)
 from config import Config
 from tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound)
+EpisodeNameNotFound, InvalidConfigFile)
 
 
 def warn(text):
