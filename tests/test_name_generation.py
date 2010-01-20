@@ -22,7 +22,7 @@ def verify_name_gen(curtest, tvdb_instance):
     ep = EpisodeInfo(
         seriesname = curtest['parsedseriesname'],
         seasonnumber = curtest['seasonnumber'],
-        episodenumber = curtest['episodenumber'])
+        episodenumbers= curtest['episodenumbers'])
     correctedSeriesName, epName = getEpisodeName(tvdb_instance, ep)
 
     assert correctedSeriesName is not None, "Corrected series name was none"
@@ -56,7 +56,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = 1,
-            episodenumber = [2],
+            episodenumbers = [2],
             episodename = 'My Mentor',
             filename = 'scrubs.example.file.avi')
 
@@ -68,7 +68,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Stargate SG-1',
             seasonnumber = 1,
-            episodenumber = [1, 2],
+            episodenumbers = [1, 2],
             episodename = [
                 'Children of the Gods (1)',
                 'Children of the Gods (2)'],
@@ -82,7 +82,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Stargate SG-1',
             seasonnumber = 1,
-            episodenumber = [2, 3],
+            episodenumbers = [2, 3],
             episodename = [
                 'Children of the Gods (2)',
                 'The Enemy Within'],
@@ -98,7 +98,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = 1,
-            episodenumber = [2],
+            episodenumbers = [2],
             episodename = 'My Mentor',
             filename = None)
 
@@ -112,7 +112,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = 1,
-            episodenumber = [2],
+            episodenumbers = [2],
             episodename = None,
             filename = 'scrubs.example.file.avi')
 
@@ -126,7 +126,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = 1,
-            episodenumber = [2],
+            episodenumbers = [2],
             episodename = None,
             filename = None)
 
@@ -140,7 +140,7 @@ class test_name_generation_output_formats(unittest.TestCase):
         ep = EpisodeInfo(
             seriesname = 'Scrubs',
             seasonnumber = None,
-            episodenumber = [2],
+            episodenumbers = [2],
             episodename = 'My Mentor',
             filename = None)
 

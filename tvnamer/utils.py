@@ -56,7 +56,7 @@ def getEpisodeName(tvdb_instance, episode):
         seasonnumber = episode.seasonnumber
 
     epnames = []
-    for cepno in episode.episodenumber:
+    for cepno in episode.episodenumbers:
         try:
             episodeinfo = show[seasonnumber][cepno]
 
@@ -186,7 +186,7 @@ class FileParser(object):
                         if epnomatch:
                             epnos.append(int(match.group(cur)))
                     epnos.sort()
-                    episodenumber = epnos
+                    episodenumbers = epnos
 
                 elif 'episodenumberstart' in namedgroups:
                     # Multiple episodes, regex specifies start and end number
@@ -195,10 +195,10 @@ class FileParser(object):
                     if start > end:
                         # Swap start and end
                         start, end = end, start
-                    episodenumber = range(start, end + 1)
+                    episodenumbers = range(start, end + 1)
 
                 elif 'episodenumber' in namedgroups:
-                    episodenumber = [int(match.group('episodenumber')), ]
+                    episodenumbers = [int(match.group('episodenumber')), ]
 
                 else:
                     raise InvalidConfigFile(
@@ -220,7 +220,7 @@ class FileParser(object):
                 episode = EpisodeInfo(
                     seriesname = seriesname,
                     seasonnumber = seasonnumber,
-                    episodenumber = episodenumber,
+                    episodenumbers = episodenumbers,
                     filename = self.path)
                 return episode
         else:
@@ -361,13 +361,13 @@ class EpisodeInfo(object):
     def __init__(self,
         seriesname = None,
         seasonnumber = None,
-        episodenumber = None,
+        episodenumbers= None,
         episodename = None,
         filename = None):
 
         self.seriesname = seriesname
         self.seasonnumber = seasonnumber
-        self.episodenumber = episodenumber
+        self.episodenumbers = episodenumbers
         self.episodename = episodename
         self.fullpath = filename
 
@@ -398,17 +398,18 @@ class EpisodeInfo(object):
         episode_separator # used to join multiple episode numbers
         """
         # Format episode number into string, or a list
-        if len(self.episodenumber) == 1:
-            epno = Config['episode_single'] % self.episodenumber[0]
+        if len(self.episodenumbers) == 1:
+            epno = Config['episode_single'] % self.episodenumbers[0]
         else:
             epno = Config['episode_separator'].join(
-                Config['episode_single'] % x for x in self.episodenumber)
+                Config['episode_single'] % x for x in self.episodenumbers)
 
         # Data made available to config'd output file format
         if self.extension is None:
             prep_extension = ''
         else:
             prep_extension = '.%s' % self.extension
+
         epdata = {
             'seriesname': self.seriesname,
             'seasonno': self.seasonnumber,

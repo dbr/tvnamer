@@ -29,7 +29,7 @@ def processFile(tvdb_instance, episode):
     print "# Detected series: %s (season: %s, episode: %s)" % (
         episode.seriesname,
         episode.seasonnumber,
-        episode.episodenumber)
+        episode.episodenumbers)
 
     try:
         correctedSeriesName, epName = getEpisodeName(tvdb_instance, episode)
