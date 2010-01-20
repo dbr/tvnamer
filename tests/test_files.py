@@ -96,6 +96,18 @@ files['multiple_episodes'] = [
     'seasonnumber': 1, 'episodenumber': [23, 24],
     'episodenames': ['My Hero', 'My Last Day']},
 
+    {'input': 'scrubs.01x23x24',
+    'parsedseriesname': 'scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumber': [23, 24],
+    'episodenames': ['My Hero', 'My Last Day']},
+
+    {'input': 'scrubs.01x23-24',
+    'parsedseriesname': 'scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumber': [23, 24],
+    'episodenames': ['My Hero', 'My Last Day']},
+
     {'input': 'Stargate SG-1 - [01x01-02]',
     'parsedseriesname': 'Stargate SG-1',
     'correctedseriesname': 'Stargate SG-1',

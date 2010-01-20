@@ -163,6 +163,15 @@ class _ConfigManager(dict):
                 [\.\- ]?[Ee](?P<episodenumberend>[0-9]+) # final episode num
                 [^\/]*$''',
 
+                # foo.1x23x24*
+                '''
+                ^(?P<seriesname>.+?)[ \._\-]             # show name
+                (?P<seasonnumber>[0-9]+)                 # 1
+                x(?P<episodenumberstart>[0-9]+)          # first x23
+                (x[0-9]+)*                               # x24x25 etc
+                x(?P<episodenumberend>[0-9]+)            # final episode num
+                [^\/]*$''',
+
                 # foo.s01e23-24*
                 '''
                 ^(?P<seriesname>.+?)[ \._\-]             # show name
@@ -172,6 +181,18 @@ class _ConfigManager(dict):
                 (                                        # -24 etc
                      [\-]
                      [Ee]?[0-9]+
+                )*
+                     [\-]                                # separator
+                     (?P<episodenumberend>[0-9]+)        # final episode num
+                [^\/]*$''',
+
+                # foo.1x23-24*
+                '''
+                ^(?P<seriesname>.+?)[ \._\-]             # show name
+                (?P<seasonnumber>[0-9]+)                 # 1
+                x(?P<episodenumberstart>[0-9]+)          # first x23
+                (                                        # -24 etc
+                     [\-][0-9]+
                 )*
                      [\-]                                # separator
                      (?P<episodenumberend>[0-9]+)        # final episode num
