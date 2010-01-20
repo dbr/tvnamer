@@ -202,8 +202,15 @@ class FileParser(object):
                         start, end = end, start
                     episodenumber = range(start, end + 1)
 
-                else:
+                elif 'episodenumber' in namedgroups:
                     episodenumber = int(match.group('episodenumber'))
+
+                else:
+                    raise InvalidConfigFile(
+                        "Regex does not contain episode number group, should"
+                        "contain episodenumber, episodenumber1-9, or"
+                        "episodenumberstart and episodenumberend\n\nPattern"
+                        "was:\n" + cmatcher.pattern)
 
                 if 'seasonnumber' in namedgroups:
                     seasonnumber = int(match.group('seasonnumber'))
