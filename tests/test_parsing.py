@@ -65,7 +65,7 @@ def test_autogen_names():
     'name_data': {'seriesname': 'S-how name'}},
 
     {'name': 'test_name_parser_exclaim',
-    'description': 'Tests parsing show with explaimation mark',
+    'description': 'Tests parsing show with exclamation mark',
     'name_data': {'seriesname': 'Show name!'}},
 
     {'name': 'test_name_parser_shownumeric',
