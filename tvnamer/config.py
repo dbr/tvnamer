@@ -232,6 +232,12 @@ class _ConfigManager(dict):
                 [Ee]?(?P<episodenumber>[0-9]+)
                 [^\\/]*$''',
 
+                # Foo - S2 E 02 - etc
+                '''^(?P<seriesname>.+?)[ ]?[ \._\-][ ]?
+                [Ss](?P<seasonnumber>[0-9]+)[\.\- ]?
+                [Ee]?[ ]?(?P<episodenumber>[0-9]+)
+                [^\\/]*$''',
+
                 # foo.103*
                 '''^(?P<seriesname>.+)[ \._\-]
                 (?P<seasonnumber>[0-9]{1})
