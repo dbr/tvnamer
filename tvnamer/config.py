@@ -238,6 +238,20 @@ class _ConfigManager(dict):
                 [Ee]?[ ]?(?P<episodenumber>[0-9]+)
                 [^\\/]*$''',
 
+                # Show - Episode 9999 [S 12 - Ep 131] - etc
+                '''
+                (?P<seriesname>.+)                      # Showname
+                [ ]-[ ]                                 # -
+                [Ee]pisode[ ]\d+                        # Episode 1234 (ignored)
+                [ ]
+                \[                                      # [
+                [sS][ ]?(?P<seasonnumber>\d+)           # s 12
+                ([ ]|[ ]-[ ]|-)                         # space, or -
+                ([eE]|[eE]p)[ ]?(?P<episodenumber>\d+)  # e or ep 12
+                \]                                      # ]
+                .*$                                     # rest of file
+                ''',
+
                 # foo.103*
                 '''^(?P<seriesname>.+)[ \._\-]
                 (?P<seasonnumber>[0-9]{1})

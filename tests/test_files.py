@@ -87,6 +87,13 @@ files['misc'] = [
     'correctedseriesname': 'Total Access 24/7',
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': ['Episode #1']},
+
+    {'input': 'Neighbours - Episode 5824 [S 6 - Ep 003] - Fri 15 Jan 2010 [KCRT].avi',
+    'parsedseriesname': 'Neighbours',
+    'correctedseriesname': 'Neighbours',
+    'seasonnumber': 6, 'episodenumbers': [3],
+    'episodenames': ['Episode 1350']},
+
 ]
 
 files['multiple_episodes'] = [
