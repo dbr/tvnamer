@@ -61,6 +61,12 @@ files['s01e01_format'] = [
     'correctedseriesname': 'The Wire',
     'seasonnumber': 5, 'episodenumbers': [10],
     'episodenames': ['-30-']},
+
+    {'input': 'Arrested Development - S2 E 02 - Dummy Ep Name.blah',
+    'parsedseriesname': 'Arrested Development',
+    'correctedseriesname': 'Arrested Development',
+    'seasonnumber': 2, 'episodenumbers': [2],
+    'episodenames': ['The One Where They Build a House']},
 ]
 
 files['misc'] = [
