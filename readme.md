@@ -200,3 +200,24 @@ You can remove spaces in characters by adding a space to the option `custom_file
 `normalize_unicode_filenames` attempts to replace Unicode characters with their unaccented ASCII equivalent (`å` becomes `a` etc). Any untranslatable characters are removed.
 
 `selectfirst` and `alwaysrename` mirror the command line arguments `--selectfirst` and `--always` - one automatically selects the first series search result, the other always renames files. Setting both to True is equivalent to `--batch`. `recursive` also mirrors the command line argument
+
+# Custom filename parsing pattern
+
+`tvnamer` comes with a set of patterns to parse a majority of common (and many uncommon) TV episode file names. If these don't parse your files, you can write custom patterns.
+
+The patterns are regular expressions, compiled with the [`re.VERBOSE` flag](http://docs.python.org/library/re.html#re.VERBOSE). Each pattern must contain several named groups.
+
+Named groups are like regular groups, but the group starts with `?P<thegroupname>`. For example:
+
+    (?P<seriesname>.+?)
+
+All patterns must contain a named group `seriesname` - this is of course the name of the show the filename contains.
+
+Optionally you can parse a season number using the group `seasonnumber`. If this group is not specified, it will search for the episode(s) in season 1 (following the [thetvdb.com][tvdb] convention)
+
+You must also match an episode number group. For simple, single episode files use the group `episodenumber`
+
+If you wish to match multiple episodes in one file, there two options:
+
+- `episodenumber1` `episodenumber2` etc - match any number of episode numbers (can be non-consecutive), or..
+- Two groups, `episodenumberstart` and `episodenumberend` - you match the first and last numbers in the filename. If the start number is 2, and the end number is 5, the file contains episodes [2, 3, 4, 5].
