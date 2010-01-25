@@ -65,3 +65,43 @@ def test_batchconfig():
     expected_files = ['Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+def test_skip_file_on_error():
+    """Test the "skip file on error" config option works
+    """
+
+    conf = """
+<tvnamer version="1">
+  <option name="skip_file_on_error" type="bool">True</option>
+  <option name="alwaysrename" type="bool">True</option>
+</tvnamer>"""
+
+    out_data = run_tvnamer(
+        with_files = ['a.fake.episode.s01e01.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['a.fake.episode.s01e01.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+def test_do_not_skip_file_on_error():
+    """Test setting "skip file on error" config option to False
+    """
+
+    conf = """
+<tvnamer version="1">
+  <option name="skip_file_on_error" type="bool">False</option>
+  <option name="alwaysrename" type="bool">True</option>
+</tvnamer>"""
+
+    out_data = run_tvnamer(
+        with_files = ['a.fake.episode.s01e01.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['a fake episode - [01x01].avi']
+
+    verify_out_data(out_data, expected_files)
