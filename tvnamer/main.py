@@ -44,8 +44,8 @@ def processFile(tvdb_instance, episode):
         if Config['alwaysrename'] and Config['skip_file_on_error'] is True:
             warn("Skipping file due to error: %s" % errormsg)
             return
-        else:
-            warn(errormsg)
+
+        warn(errormsg)
         episode.seriesname = correctedSeriesName
     else:
         episode.seriesname = correctedSeriesName
