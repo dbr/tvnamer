@@ -41,7 +41,7 @@ def getEpisodeName(tvdb_instance, episode):
     try:
         show = tvdb_instance[episode.seriesname]
     except tvdb_error, errormsg:
-        raise DataRetrievalError("! Warning: Error contacting www.thetvdb.com: %s" % errormsg)
+        raise DataRetrievalError("Error contacting www.thetvdb.com: %s" % errormsg)
     except tvdb_shownotfound:
         # No such series found.
         raise ShowNotFound("Show %s not found on www.thetvdb.com" % episode.seriesname)
