@@ -41,6 +41,12 @@ def _serialiseElement(root, name, elem, etype='option'):
         for subelem in elem:
             _serialiseElement(celem, None, subelem, 'value')
         return
+    elif isinstance(elem, dict):
+        celem.set('type', 'dict')
+        for curkey, curvalue in elem.items():
+            dicttree = ET.SubElement(celem, 'item')
+            dicttree.set('key', curkey)
+            dicttree.text = _serialiseElement(dicttree, None, curvalue, etype='value')
     elif elem is None:
         celem.set('type', 'None')
         celem.text = 'None'
@@ -77,6 +83,15 @@ def _deserialiseItem(ctype, citem):
         ret = []
         for subitem in citem:
             ret.append(_deserialiseItem(subitem.attrib['type'], subitem))
+        return ret
+    elif ctype == 'dict':
+        ret = {}
+        for curkey in citem:
+            thekey = curkey.attrib['key']
+            value_item = curkey.find('value')
+            thevalue = _deserialiseItem(value_item.attrib['type'], value_item)
+
+            ret[thekey] = thevalue
         return ret
     else:
         raise ValueError("Element %r (type: %s) could not be deserialised" % (
