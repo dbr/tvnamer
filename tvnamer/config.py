@@ -349,7 +349,7 @@ class _ConfigManager(dict):
 
         return conf
 
-    def _saveConfig(self, configdict):
+    def _makeConfigXml(self, configdict):
         """Takes a config dictionary, returns XML as string
         """
         root = ET.Element('tvnamer')
@@ -378,7 +378,7 @@ class _ConfigManager(dict):
     def saveConfig(self, filename):
         """Stores config options into a file
         """
-        xmlsrc = self._saveConfig(self)
+        xmlsrc = self._makeConfigXml(self)
         try:
             fhandle = open(filename, 'w')
         except IOError, errormsg:
