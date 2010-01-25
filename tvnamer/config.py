@@ -125,18 +125,43 @@ class _ConfigManager(dict):
         skips any options, the missing settings are set to the defaults.
         """
         defaults = {
+            # Select first series search result
             'selectfirst': False,
+
+            # Always rename files
             'alwaysrename': False,
+
+            # Fail if error finding show data (thetvdb.com is down etc)
+            # Only functions when alwaysrename is True
+            'skip_file_on_error': True,
+
+            # Verbose mode (debugging info)
             'verbose': False,
+
+            # Recurse more than one level into folders. When False, only
+            # desends one level.
             'recursive': False,
+
+            # Force Windows safe filenames (always True on Windows)
             'windows_safe_filenames': False,
+
+            # Replace accented unicode characters with ASCII equivalents,
+            # removing characters than can't be translated.
             'normalize_unicode_filenames': False,
+
+            # Replace these characters
             'custom_filename_character_blacklist': '',
+
+            # Replacement characters for invalid/blacklisted filename characters
             'replace_blacklisted_characters_with': '_',
-            'multiep_join_name_with': ', ',
+
+            # Language to (try) and retrieve episode data in
             'language': 'en',
+
+            # Search in all possible languages
             'search_all_languages': True,
 
+            # Patterns to parse input filenames with
             'episode_patterns': [
                 # [group] Show - 01-02 [Etc]
                 '''^\[.+?\][ ]? # group name
@@ -272,6 +297,8 @@ class _ConfigManager(dict):
                 '''
             ],
 
+            # Formats for renamed files. Variations for with/without episode,
+            # and with/without season number.
             'filename_with_episode':
              '%(seriesname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s%(ext)s',
             'filename_without_episode':
@@ -281,8 +308,16 @@ class _ConfigManager(dict):
              'filename_without_episode_no_season':
               '%(seriesname)s - [%(episode)s]%(ext)s',
 
+            # Used to join multiple episode names together
+            'multiep_join_name_with': ', ',
+
+            # Format for numbers (python string format), %02d does 2-digit
+            # padding, %d will cause no padding
             'episode_single': '%02d',
-            'episode_separator': '-'}
+
+            # String to join multiple number
+            'episode_separator': '-',
+        }
 
         # Updates defaults dict with current settings
         for dkey, dvalue in defaults.items():
