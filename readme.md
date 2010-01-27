@@ -199,7 +199,7 @@ You can remove spaces in characters by adding a space to the option `custom_file
 
 `normalize_unicode_filenames` attempts to replace Unicode characters with their unaccented ASCII equivalent (`å` becomes `a` etc). Any untranslatable characters are removed.
 
-`selectfirst` and `alwaysrename` mirror the command line arguments `--selectfirst` and `--always` - one automatically selects the first series search result, the other always renames files. Setting both to True is equivalent to `--batch`. `recursive` also mirrors the command line argument
+`selectfirst` and `always_rename` mirror the command line arguments `--selectfirst` and `--always` - one automatically selects the first series search result, the other always renames files. Setting both to True is equivalent to `--batch`. `recursive` also mirrors the command line argument
 
 # Custom filename parsing pattern
 
