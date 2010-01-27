@@ -21,7 +21,7 @@ tvdb_episodenotfound, tvdb_attributenotfound)
 from config import Config
 from tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound, InvalidConfigFile)
+EpisodeNameNotFound, ConfigValueError)
 
 
 def warn(text):
@@ -201,7 +201,7 @@ class FileParser(object):
                     episodenumbers = [int(match.group('episodenumber')), ]
 
                 else:
-                    raise InvalidConfigFile(
+                    raise ConfigValueError(
                         "Regex does not contain episode number group, should"
                         "contain episodenumber, episodenumber1-9, or"
                         "episodenumberstart and episodenumberend\n\nPattern"
@@ -213,7 +213,11 @@ class FileParser(object):
                     # No season number specified, usually for Anime
                     seasonnumber = None
 
-                seriesname = match.group('seriesname')
+                if 'seriesname' in namedgroups:
+                    seriesname = match.group('seriesname')
+                else:
+                    raise ConfigValueError(
+                        "Regex must contain seriesname. Pattern was:\n" + cmatcher.pattern)
 
                 seriesname = cleanRegexedSeriesName(seriesname)
 
