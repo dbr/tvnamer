@@ -35,14 +35,14 @@ def processFile(tvdb_instance, episode):
     try:
         correctedSeriesName, epName = getEpisodeName(tvdb_instance, episode)
     except (DataRetrievalError, ShowNotFound), errormsg:
-        if Config['alwaysrename'] and Config['skip_file_on_error'] is True:
+        if Config['always_rename'] and Config['skip_file_on_error'] is True:
             warn("Skipping file due to error: %s" % errormsg)
             return
         else:
             warn(errormsg)
     except (SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound), errormsg:
         # Show was found, so use corrected series name
-        if Config['alwaysrename'] and Config['skip_file_on_error'] is True:
+        if Config['always_rename'] and Config['skip_file_on_error'] is True:
             warn("Skipping file due to error: %s" % errormsg)
             return
 
@@ -59,7 +59,7 @@ def processFile(tvdb_instance, episode):
     print "Old filename: %s" % episode.fullfilename
     print "New filename: %s" % newName
 
-    if Config['alwaysrename']:
+    if Config['always_rename']:
         try:
             cnamer.newName(newName)
         except OSError, e:
@@ -82,7 +82,7 @@ def processFile(tvdb_instance, episode):
         shouldRename = True
     elif ans == "a":
         print "Always renaming"
-        Config['alwaysrename'] = True
+        Config['always_rename'] = True
         shouldRename = True
     elif ans == "q":
         print "Quitting"
@@ -100,7 +100,6 @@ def processFile(tvdb_instance, episode):
             cnamer.newName(newName)
         except OSError, e:
             warn(e)
-
 
 
 def findFiles(paths):
@@ -147,7 +146,7 @@ def tvnamer(paths):
     print "# Found %d episodes" % len(episodes_found)
 
     tvdb_instance = Tvdb(
-        interactive=not Config['selectfirst'],
+        interactive=not Config['select_first'],
         debug = Config['verbose'],
         search_all_languages = Config['search_all_languages'],
         language = Config['language'])
