@@ -9,6 +9,8 @@
 """Main tvnamer utility functionality
 """
 
+import os
+
 import simplejson as json
 from tvdb_api import Tvdb
 
@@ -168,7 +170,19 @@ def main():
 
     # If a config is specified, load it, update the defaults using the loaded
     # values, then reparse the options with the updated defaults.
+    default_configuration = os.path.expanduser("~/.tvnamer.json")
+
     if opts.loadconfig is not None:
+        # Command line overrides loading ~/.tvnamer.json
+        configToLoad = opts.loadconfig
+    elif os.path.isfile(default_configuration):
+        # No --config arg, so load default config if it exists
+        configToLoad = default_configuration
+    else:
+        # No arg, nothing at default config location, don't load anything
+        configToLoad = None
+
+    if configToLoad is not None:
         print "Loading config: %s" % (opts.loadconfig)
         try:
             loadedConfig = json.load(open(opts.loadconfig))
