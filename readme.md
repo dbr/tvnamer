@@ -136,15 +136,15 @@ The most useful are most likely `--batch`, `--selectfirst` and `--always`:
 
 ## Configs
 
-One of the largest improvements in tvnamer v2 is the ability to have custom configuration. This allows you to customise behaviour without modifying the code, as was necessary with tvnamer v1.
+One of the largest improvements in tvnamer v2 is the ability to have custom configuration. This allows you to customise behaviour without modifying the code (as was necessary with tvnamer v1).
 
-To write the default configuration file, which is a good starting point for your modifications, simply run:
+To write the default JSON configuration file, which is a good starting point for your modifications, simply run:
 
-    tvnamer --save=./mytvnamerconfig.xml
+    tvnamer --save=./mytvnamerconfig.json
 
-To use your custom configuration, you must either specify the location using `tvnamer --config=/path/to/mytvnamerconfig.xml` or place the file at `~/.tvnamer.xml` (a file named `.tvnamer.xml` in your home directory)
+To use your custom configuration, you must either specify the location using `tvnamer --config=/path/to/mytvnamerconfig.json` or place the file at `~/.tvnamer.json` (a file named `.tvnamer.json` in your home directory)
 
-**Important:** If tvnamer's default settings change and your saved config contains the old settings, you may experience strange behaviour or bugs (the config may contain a buggy `episode_patterns` regex, for example). It is recommended you remove config options you are not altering (particularly `episode_patterns`). If you experience any strangeness, try disabling your custom configuration (moving it away from `~/.tvnamer.xml`)
+**Important:** If tvnamer's default settings change and your saved config contains the old settings, you may experience strange behaviour or bugs (the config may contain a buggy `filename_patterns` regex, for example). It is recommended you remove config options you are not altering (particularly `filename_patterns`). If you experience any strangeness, try disabling your custom configuration (moving it away from `~/.tvnamer.json`)
 
 If for example you wish to change the default language used, change the option `language` to another two-letter language code, such as `fr` for French.
 
