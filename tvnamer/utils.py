@@ -158,7 +158,7 @@ class FileParser(object):
         """Takes episode_patterns from config, compiles them all
         into self.compiled_regexs
         """
-        for cpattern in Config['episode_patterns']:
+        for cpattern in Config['filename_patterns']:
             try:
                 cregex = re.compile(cpattern, re.VERBOSE)
             except re.error, errormsg:
