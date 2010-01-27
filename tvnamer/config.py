@@ -9,8 +9,6 @@
 """Holds Config singleton
 """
 
-import os
-
 from config_defaults import defaults
 
 Config = dict(defaults)
