@@ -52,10 +52,9 @@ def test_batchconfig():
     """
 
     conf = """
-<tvnamer version="1">
-  <option name="alwaysrename" type="bool">True</option>
-  <option name="selectfirst" type="bool">True</option>
-</tvnamer>"""
+    {"always_rename": true,
+    "select_first": true}
+    """
 
     out_data = run_tvnamer(
         with_files = ['scrubs.s01e01.avi'],
@@ -72,10 +71,9 @@ def test_skip_file_on_error():
     """
 
     conf = """
-<tvnamer version="1">
-  <option name="skip_file_on_error" type="bool">True</option>
-  <option name="alwaysrename" type="bool">True</option>
-</tvnamer>"""
+    {"skip_file_on_error": true,
+    "always_rename":true}
+    """
 
     out_data = run_tvnamer(
         with_files = ['a.fake.episode.s01e01.avi'],
@@ -92,10 +90,9 @@ def test_do_not_skip_file_on_error():
     """
 
     conf = """
-<tvnamer version="1">
-  <option name="skip_file_on_error" type="bool">False</option>
-  <option name="alwaysrename" type="bool">True</option>
-</tvnamer>"""
+    {"skip_file_on_error": false,
+    "always_rename":true}
+    """
 
     out_data = run_tvnamer(
         with_files = ['a.fake.episode.s01e01.avi'],
