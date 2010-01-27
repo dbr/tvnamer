@@ -9,10 +9,11 @@
 """Main tvnamer utility functionality
 """
 
-from optparse import OptionParser
-
+import simplejson as json
 from tvdb_api import Tvdb
 
+import cliarg_parser
+from config_defaults import defaults
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
 getEpisodeName)
 
@@ -162,72 +163,49 @@ def tvnamer(paths):
 def main():
     """Parses command line arguments, displays errors from tvnamer in terminal
     """
-    opter = OptionParser()
-    opter.add_option(
-        "-c", "--config",
-        dest="config", help = "Override the config file path")
-    opter.add_option(
-        "-s", "--save",
-        dest="saveconfig", help = "Save (default) config to file")
-
-    opter.add_option(
-        "-v", "--verbose",
-        default=False, dest="verbose", action="store_true",
-        help="show debugging information")
-    opter.add_option(
-        "-r", "--recursive",
-        default = False, dest="recursive", action="store_true",
-        help="Descend more than one level directories supplied as arguments")
-    opter.add_option(
-        "-a", "--always",
-        default = False, dest="alwaysrename", action="store_true",
-        help="always renames files (but still prompts for correct series). Can be set at runtime with the 'a' prompt-option")
-    opter.add_option(
-        "-f", "--selectfirst",
-        default = False, dest="selectfirst", action="store_true",
-        help="select first series search result (instead of showing the select-series interface")
-    opter.add_option(
-        "-b", "--batch",
-        default = False, dest="batch", action="store_true",
-        help="rename without human intervention, selects first series and always renames, same as --always and --selectfirst")
-
+    opter = cliarg_parser.getCommandlineParser(defaults)
 
     opts, args = opter.parse_args()
 
-    if opts.config is not None:
-        print "Loading config from: %s" % (opts.config)
+    # If a config is specified, load it, update the defaults using the loaded
+    # values, then reparse the options with the updated defaults.
+    if opts.loadconfig is not None:
+        print "Loading config: %s" % (opts.loadconfig)
         try:
-            Config.loadConfig(opts.config)
-        except InvalidConfigFile:
-            warn("Invalid config file %s - using default configuration" % (
-                opts.config))
-            Config.useDefaultConfig()
-
-    if opts.saveconfig is not None:
-        print "Saving current config to %s" % (opts.saveconfig)
-        try:
-            Config.saveConfig(opts.saveconfig)
-        except InvalidConfigFile:
-            opter.error("Could not save config to %s" % opts.saveconfig)
+            loadedConfig = json.load(open(opts.loadconfig))
+        except ValueError, e:
+            print "Error loading config: %s" % e
+            opter.exit(1)
         else:
-            print "Done, exiting"
-            opter.exit(0)
+            # Config loaded, update optparser's defaults and reparse
+            defaults.update(loadedConfig)
+            opter = cliarg_parser.getCommandlineParser(defaults)
+            opts, args = opter.parse_args()
 
+    # Save config argument
+    if opts.saveconfig is not None:
+        print "Saving config: %s" % (opts.saveconfig)
+        json.dump(
+            opts.__dict__,
+            open(opts.saveconfig, "w+"),
+            sort_keys=True,
+            indent=4)
+
+        opter.exit(0)
+
+    # Show config argument
+    if opts.showconfig:
+        for k, v in opts.__dict__.items():
+            print k, "=", str(v)[:20]
+        return
+
+    # Process values
     if opts.batch:
-        opts.selectfirst = True
-        opts.alwaysrename = True
+        opts.select_first = True
+        opts.always_rename = True
 
-    if not Config['verbose']:
-        Config['verbose'] = opts.verbose
-
-    if not Config['recursive']:
-        Config['recursive'] = opts.recursive
-
-    if not Config['alwaysrename']:
-        Config['alwaysrename'] = opts.alwaysrename
-
-    if not Config['selectfirst']:
-        Config['selectfirst'] = opts.selectfirst
+    # Update global config object
+    Config.update(opts.__dict__)
 
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
