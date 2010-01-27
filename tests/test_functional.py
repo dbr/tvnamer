@@ -51,6 +51,7 @@ def test_simple_batch_functionality():
     ]
 
     for curtest in tests:
+
         def _the_test():
             out_data = run_tvnamer(
                 with_files = [curtest['in'], ],
