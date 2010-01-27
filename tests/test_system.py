@@ -13,6 +13,6 @@ import os
 
 
 def test_nosavedconfig():
-    """A config at ~/.tvnamer.xml could cause problems with some tests
+    """A config at ~/.tvnamer.json could cause problems with some tests
     """
-    assert not os.path.isfile(os.path.expanduser("~/.tvnamer.xml")), "~/.tvnamer.xml exists, which could cause problems with tests"
+    assert not os.path.isfile(os.path.expanduser("~/.tvnamer.json")), "~/.tvnamer.json exists, which could cause problems with some tests"
