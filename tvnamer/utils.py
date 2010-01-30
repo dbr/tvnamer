@@ -16,12 +16,12 @@ import shutil
 import platform
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
-tvdb_episodenotfound, tvdb_attributenotfound)
+tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
 
 from config import Config
 from tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound, ConfigValueError)
+EpisodeNameNotFound, ConfigValueError, UserAbort)
 
 
 def warn(text):
@@ -45,6 +45,8 @@ def getEpisodeName(tvdb_instance, episode):
     except tvdb_shownotfound:
         # No such series found.
         raise ShowNotFound("Show %s not found on www.thetvdb.com" % episode.seriesname)
+    except tvdb_userabort, e:
+        raise UserAbort(e.message)
     else:
         # Series was found, use corrected series name
         correctedShowName = show['seriesname']
