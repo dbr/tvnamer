@@ -40,6 +40,14 @@ defaults = {
     # Replacement characters for invalid filename characters
     'replace_invalid_characters_with': '_',
 
+    # Replacements performed on input file before parsing.
+    'input_filename_replacements': [
+    ],
+
+    # Replacements performed on files after the new name is generated.
+    'output_filename_replacements': [
+    ],
+
     # Language to (try) and retrieve episode data in
     'language': 'en',
 

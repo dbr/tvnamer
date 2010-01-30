@@ -17,7 +17,7 @@ from tvdb_api import Tvdb
 import cliarg_parser
 from config_defaults import defaults
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
-getEpisodeName)
+getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
@@ -29,6 +29,11 @@ def processFile(tvdb_instance, episode):
     """
     print "#" * 20
     print "# Processing file: %s" % episode.fullfilename
+
+    if len(Config['input_filename_replacements']) > 0:
+        replaced = applyCustomInputReplacements(episode.fullfilename)
+        print "# With custom replacements: %s" % (replaced)
+
     print "# Detected series: %s (season: %s, episode: %s)" % (
         episode.seriesname,
         episode.seasonnumber,
@@ -59,6 +64,14 @@ def processFile(tvdb_instance, episode):
 
     print "#" * 20
     print "Old filename: %s" % episode.fullfilename
+
+    if len(Config['output_filename_replacements']):
+        print "Before custom output replacements: %s" % (newName)
+        # Only apply to filename, not extension
+        newName, newExt = os.path.splitext(newName)
+        newName = applyCustomOutputReplacements(newName)
+        newName = newName + newExt
+
     print "New filename: %s" % newName
 
     if Config['always_rename']:

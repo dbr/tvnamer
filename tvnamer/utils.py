@@ -84,6 +84,35 @@ def getEpisodeName(tvdb_instance, episode):
     return correctedShowName, epnames
 
 
+def _applyReplacements(cfile, replacements):
+    """Applies custom replacements.
+
+    Argument cfile is string.
+
+    Argument replacements is a list of dicts, with keys "match",
+    "replacement", and (optional) "is_regex"
+    """
+    for rep in replacements:
+        if 'is_regex' in rep and rep['is_regex']:
+            cfile = re.sub(rep['match'], rep['replacement'], cfile)
+        else:
+            cfile = cfile.replace(rep['match'], rep['replacement'])
+
+    return cfile
+
+
+def applyCustomInputReplacements(cfile):
+    """Applies custom input filename replacements, wraps _applyReplacements
+    """
+    return _applyReplacements(cfile, Config['input_filename_replacements'])
+
+
+def applyCustomOutputReplacements(cfile):
+    """Applies custom output filename replacements, wraps _applyReplacements
+    """
+    return _applyReplacements(cfile, Config['output_filename_replacements'])
+
+
 def cleanRegexedSeriesName(seriesname):
     """Cleans up series name by removing any . and _
     characters, along with any trailing hyphens.
@@ -174,6 +203,8 @@ class FileParser(object):
         Returns an EpisodeInfo instance containing extracted data.
         """
         _, filename = os.path.split(self.path)
+
+        filename = applyCustomInputReplacements(filename)
 
         for cmatcher in self.compiled_regexs:
             match = cmatcher.match(filename)
