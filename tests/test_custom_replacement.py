@@ -119,3 +119,29 @@ def test_replacing_spaces():
     expected_files = ['Scrubs.-.[01x01].-.My.First.Day.avi']
 
     verify_out_data(out_data, expected_files)
+
+def test_replacing_ands():
+    """Tests removind "and" and "&" from input files
+    """
+    out_data = run_tvnamer(
+        with_files = ['Law & Order s01e01.avi'],
+        with_config = """
+{
+    "input_filename_replacements": [
+        {"is_regex": true,
+        "match": "( and | & )",
+        "replacement": " "}
+    ],
+    "output_filename_replacements": [
+        {"is_regex": false,
+        "match": " & ",
+        "replacement": " and "}
+    ],
+    "always_rename": true,
+    "select_first": true
+}
+""")
+
+    expected_files = ['Law and Order - [01x01] - Prescription For Death.avi']
+
+    verify_out_data(out_data, expected_files)
