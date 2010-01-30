@@ -37,9 +37,6 @@ defaults = {
     # removing characters than can't be translated.
     'normalize_unicode_filenames': False,
 
-    # Replace these characters
-    'custom_filename_character_blacklist': '',
-
     # Replacement characters for invalid/blacklisted filename characters
     'replace_blacklisted_characters_with': '_',
 

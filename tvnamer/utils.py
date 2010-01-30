@@ -444,7 +444,6 @@ class EpisodeInfo(object):
             fname,
             normalize_unicode = Config['normalize_unicode_filenames'],
             windows_safe = Config['windows_safe_filenames'],
-            custom_blacklist = Config['custom_filename_character_blacklist'],
             replace_with = Config['replace_blacklisted_characters_with'])
 
     def __repr__(self):
