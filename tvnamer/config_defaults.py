@@ -37,8 +37,8 @@ defaults = {
     # removing characters than can't be translated.
     'normalize_unicode_filenames': False,
 
-    # Replacement characters for invalid/blacklisted filename characters
-    'replace_blacklisted_characters_with': '_',
+    # Replacement characters for invalid filename characters
+    'replace_invalid_characters_with': '_',
 
     # Language to (try) and retrieve episode data in
     'language': 'en',
