@@ -211,8 +211,12 @@ def main():
     # Save config argument
     if opts.saveconfig is not None:
         print "Saving config: %s" % (opts.saveconfig)
+        configToSave = dict(opts.__dict__)
+        del configToSave['saveconfig']
+        del configToSave['loadconfig']
+        del configToSave['showconfig']
         json.dump(
-            opts.__dict__,
+            configToSave,
             open(opts.saveconfig, "w+"),
             sort_keys=True,
             indent=4)
