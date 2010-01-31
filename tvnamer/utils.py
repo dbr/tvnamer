@@ -45,8 +45,8 @@ def getEpisodeName(tvdb_instance, episode):
     except tvdb_shownotfound:
         # No such series found.
         raise ShowNotFound("Show %s not found on www.thetvdb.com" % episode.seriesname)
-    except tvdb_userabort, e:
-        raise UserAbort(e.message)
+    except tvdb_userabort, error:
+        raise UserAbort(unicode(error))
     else:
         # Series was found, use corrected series name
         correctedShowName = show['seriesname']
