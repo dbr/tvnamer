@@ -222,7 +222,7 @@ def main():
     # Show config argument
     if opts.showconfig:
         for k, v in opts.__dict__.items():
-            print k, "=", str(v)[:20]
+            print k, "=", str(v)
         return
 
     # Process values
