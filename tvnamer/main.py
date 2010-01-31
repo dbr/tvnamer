@@ -196,9 +196,9 @@ def main():
         configToLoad = None
 
     if configToLoad is not None:
-        print "Loading config: %s" % (opts.loadconfig)
+        print "Loading config: %s" % (configToLoad)
         try:
-            loadedConfig = json.load(open(opts.loadconfig))
+            loadedConfig = json.load(open(configToLoad))
         except ValueError, e:
             print "Error loading config: %s" % e
             opter.exit(1)
