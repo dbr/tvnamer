@@ -134,45 +134,65 @@ def cleanRegexedSeriesName(seriesname):
 
 
 class FileFinder(object):
-    """Given a file, it will verify it exists, given a folder it will descend
+    """Given a file, it will verify it exists. Given a folder it will descend
     one level into it and return a list of files, unless the recursive argument
     is True, in which case it finds all files contained within the path.
+
+    The with_extension argument is a list of valid extensions, without leading
+    spaces. If an empty list (or None) is supplied, no extension checking is
+    performed.
     """
 
-    def __init__(self, path, recursive = False):
+    def __init__(self, path, with_extension = None, recursive = False):
         self.path = path
+        if with_extension is None:
+            self.with_extension = []
+        else:
+            self.with_extension = with_extension
         self.recursive = recursive
 
     def findFiles(self):
         """Returns list of files found at path
         """
         if os.path.isfile(self.path):
-            return [os.path.abspath(self.path)]
+            if self._checkExtension(self.path):
+                return [os.path.abspath(self.path)]
+            else:
+                return []
         elif os.path.isdir(self.path):
             return self._findFilesInPath(self.path)
         else:
             raise InvalidPath("%s is not a valid file/directory" % self.path)
 
+    def _checkExtension(self, fname):
+        if len(self.with_extension) == 0:
+            return True
+
+        _, extension = os.path.splitext(fname)
+        for cext in self.with_extension:
+            cext = ".%s" % cext
+            if extension == cext:
+                return True
+        else:
+            return False
+
     def _findFilesInPath(self, startpath):
         """Finds files from startpath, could be called recursively
         """
         allfiles = []
-        if os.path.isfile(startpath):
-            allfiles.append(os.path.abspath(startpath))
-
-        elif os.path.isdir(startpath):
-            for subf in os.listdir(startpath):
-                newpath = os.path.join(startpath, subf)
-                newpath = os.path.abspath(newpath)
-                if os.path.isfile(newpath):
-                    allfiles.append(newpath)
-                else:
-                    if self.recursive:
-                        allfiles.extend(self._findFilesInPath(newpath))
-                    #end if recursive
-                #end if isfile
-            #end for sf
-        #end if isdir
+        for subf in os.listdir(startpath):
+            if not self._checkExtension(subf):
+                continue
+            newpath = os.path.join(startpath, subf)
+            newpath = os.path.abspath(newpath)
+            if os.path.isfile(newpath):
+                allfiles.append(newpath)
+            else:
+                if self.recursive:
+                    allfiles.extend(self._findFilesInPath(newpath))
+                #end if recursive
+            #end if isfile
+        #end for sf
         return allfiles
 
 

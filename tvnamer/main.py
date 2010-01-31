@@ -123,7 +123,11 @@ def findFiles(paths):
     valid_files = []
 
     for cfile in paths:
-        cur = FileFinder(cfile, recursive = Config['recursive'])
+        cur = FileFinder(
+            cfile,
+            with_extension = Config['valid_extensions'],
+            recursive = Config['recursive'])
+
         try:
             valid_files.extend(cur.findFiles())
         except InvalidPath:
