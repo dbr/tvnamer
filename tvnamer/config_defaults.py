@@ -30,6 +30,10 @@ defaults = {
     # desends one level.
     'recursive': False,
 
+    # When non-empty, only look for files with this extension.
+    # No leading dot, for example: ['avi', 'mkv', 'mp4']
+    'valid_extensions': [],
+
     # Force Windows safe filenames (always True on Windows)
     'windows_safe_filenames': False,
 
