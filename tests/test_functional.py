@@ -12,6 +12,19 @@
 from functional_runner import run_tvnamer, verify_out_data
 
 
+def test_simple_single_file():
+    """Test most simple usage
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_input = "1\ny\n")
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
 def test_simple_multiple_files():
     """Tests simple interactive usage with multiple files
     """
