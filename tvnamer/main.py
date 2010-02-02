@@ -10,6 +10,10 @@
 """
 
 import os
+try:
+    import readline
+except ImportError:
+    pass
 
 import simplejson as json
 from tvdb_api import Tvdb
