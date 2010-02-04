@@ -74,3 +74,27 @@ def test_simple_batch_functionality():
 
         _the_test.description = "test_simple_functionality_%s" % curtest['in']
         yield _the_test
+
+
+def test_interactive_always_option():
+    """Tests the "a" always rename option in interactive UI
+    """
+
+    input_files = [
+        'scrubs.s01e01.hdtv.fake.avi',
+        'my.name.is.earl.s01e01.fake.avi',
+        'a.fake.show.s12e24.fake.avi',
+        'total.access.s01e01.avi']
+
+    expected_files = [
+        'Scrubs - [01x01] - My First Day.avi',
+        'My Name Is Earl - [01x01] - Pilot.avi',
+        'a fake show - [12x24].avi',
+         'Total Access 24_7 - [01x01] - Episode #1.avi']
+
+    out_data = run_tvnamer(
+        with_files = input_files,
+        with_flags = ["--selectfirst"],
+        with_input = "a\n")
+
+    verify_out_data(out_data, expected_files)
