@@ -13,6 +13,7 @@ import os
 import re
 import sys
 import shutil
+import logging
 import platform
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
@@ -22,6 +23,12 @@ from config import Config
 from tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, ConfigValueError, UserAbort)
+
+
+def log():
+    """Returns the logger for current file
+    """
+    return logging.getLogger(__name__)
 
 
 def warn(text):

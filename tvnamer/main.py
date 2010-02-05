@@ -10,6 +10,8 @@
 """
 
 import os
+import logging
+
 try:
     import readline
 except ImportError:
@@ -26,6 +28,12 @@ getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements)
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
 InvalidFilename, DataRetrievalError)
+
+
+def log():
+    """Returns the logger for current file
+    """
+    return logging.getLogger(__name__)
 
 
 def processFile(tvdb_instance, episode):
@@ -170,7 +178,6 @@ def tvnamer(paths):
 
     tvdb_instance = Tvdb(
         interactive=not Config['select_first'],
-        debug = Config['verbose'],
         search_all_languages = Config['search_all_languages'],
         language = Config['language'])
 
@@ -188,6 +195,13 @@ def main():
     opter = cliarg_parser.getCommandlineParser(defaults)
 
     opts, args = opter.parse_args()
+
+    if opts.verbose:
+        logging.basicConfig(
+            level = logging.DEBUG,
+            format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    else:
+        logging.basicConfig()
 
     # If a config is specified, load it, update the defaults using the loaded
     # values, then reparse the options with the updated defaults.
