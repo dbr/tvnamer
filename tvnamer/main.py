@@ -176,6 +176,9 @@ def tvnamer(paths):
 
     print "# Found %d episodes" % len(episodes_found)
 
+    # Sort episodes by series name, season and episode number
+    episodes_found.sort(key = lambda x: (x.seriesname, x.seasonnumber, x.episodenumbers))
+
     tvdb_instance = Tvdb(
         interactive=not Config['select_first'],
         search_all_languages = Config['search_all_languages'],
