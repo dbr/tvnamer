@@ -98,3 +98,18 @@ def test_interactive_always_option():
         with_input = "a\n")
 
     verify_out_data(out_data, expected_files)
+
+def test_unicode_in_inputname():
+    """Tests parsing a file with unicode in the input filename
+    """
+    input_files = [
+        u'The Big Bang Theory - S02E07 - The Panty Pi\xf1ata Polarization.avi',
+    ]
+    expected_files = [
+        u'The Big Bang Theory - [02x07] - The Panty Pi\xf1ata Polarization.avi',
+    ]
+    out_data = run_tvnamer(
+        with_files = input_files,
+        with_flags = ["--batch"],
+    )
+    verify_out_data(out_data, expected_files)

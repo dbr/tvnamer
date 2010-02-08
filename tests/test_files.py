@@ -176,6 +176,12 @@ files['unicode'] = [
     'correctedseriesname': u'Virtues Of Harmony II',
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': [u'T\xecnh Ng\u01b0\u1eddi Hi\u1ec7n \u0110\u1ea1i - Virtues Of Harmony II']},
+
+    {'input': u'The Big Bang Theory - S02E07 - The Panty Pi\xf1ata Polarization.avi',
+    'parsedseriesname': u'The Big Bang Theory',
+    'correctedseriesname': u'The Big Bang Theory',
+    'seasonnumber': 2, 'episodenumbers': [7],
+    'episodenames': [u'The Panty Pi\xf1ata Polarization']},
 ]
 
 files['anime'] = [
