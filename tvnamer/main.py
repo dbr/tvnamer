@@ -163,6 +163,7 @@ def tvnamer(paths):
     episodes_found = []
 
     for cfile in findFiles(paths):
+        cfile = cfile.decode("utf-8")
         parser = FileParser(cfile)
         try:
             episode = parser.parse()
