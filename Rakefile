@@ -31,7 +31,7 @@ end
 desc "Lints code with PyLint"
 task :pylint do
   title("PyLint")
-  puts `pylint --reports=n --disable-msg=#{pylint_disable} *.py tests/*.py`
+  puts `pylint --reports=n --disable-msg=#{pylint_disable} tvnamer/*.py tests/*.py`
 end
 
 desc "Runs unit tests using nosetests"
