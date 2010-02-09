@@ -10,6 +10,9 @@
 """
 
 import os
+import sys
+import codecs
+import locale
 import logging
 
 try:
@@ -28,6 +31,10 @@ getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements)
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
 InvalidFilename, DataRetrievalError)
+
+# Character encoding is fun. http://stackoverflow.com/questions/492483
+sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+sys.stderr = codecs.getwriter(locale.getpreferredencoding())(sys.stderr)
 
 
 def log():
@@ -126,7 +133,7 @@ def processFile(tvdb_instance, episode):
         try:
             cnamer.newName(newName)
         except OSError, e:
-            warn(e)
+            warn(unicode(e))
 
 
 def findFiles(paths):

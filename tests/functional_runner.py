@@ -109,6 +109,7 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     stdout, stderr = proc.communicate()
 
     files = os.listdir(episodes_location)
+    files = [x.decode("utf-8") for x in files]
 
     # Clean up dummy files and config
     clear_temp_dir(episodes_location)
@@ -141,5 +142,4 @@ def verify_out_data(out_data, expected_files):
 
     for cur in expected_files:
         if cur not in out_data['files']:
-            raise AssertionError(
-                "File named %r not created" % (cur))
+            raise AssertionError("File named %r not created" % (cur))
