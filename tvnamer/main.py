@@ -12,7 +12,6 @@
 import os
 import sys
 import codecs
-import locale
 import logging
 
 try:
@@ -33,8 +32,8 @@ EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
 InvalidFilename, DataRetrievalError)
 
 # Character encoding is fun. http://stackoverflow.com/questions/492483
-sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
-sys.stderr = codecs.getwriter(locale.getpreferredencoding())(sys.stderr)
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout)
+sys.stderr = codecs.getwriter("utf-8")(sys.stderr)
 
 
 def log():
