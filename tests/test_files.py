@@ -23,6 +23,12 @@ files['default_format'] = [
     'correctedseriesname': 'Scrubs',
     'seasonnumber': 2, 'episodenumbers': [11],
     'episodenames': ['My Sex Buddy']},
+
+    {'input': 'Scrubs - [04X19] - My Best Laid Plans',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 4, 'episodenumbers': [19],
+    'episodenames': ['My Best Laid Plans']},
 ]
 
 files['s01e01_format'] = [
