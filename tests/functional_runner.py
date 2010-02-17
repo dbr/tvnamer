@@ -73,8 +73,8 @@ def make_dummy_files(files, location):
 
 
 def clear_temp_dir(location):
-    print "Clearing %s" % location
-    for f in os.listdir(location):
+    print "Clearing %s" % unicode(location)
+    for f in os.listdir(unicode(location)):
         fullpath = os.path.join(location, f)
         os.unlink(fullpath)
 
@@ -108,8 +108,7 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     proc.stdin.write(with_input)
     stdout, stderr = proc.communicate()
 
-    files = os.listdir(episodes_location)
-    files = [x.decode("utf-8") for x in files]
+    files = os.listdir(unicode(episodes_location))
 
     # Clean up dummy files and config
     clear_temp_dir(episodes_location)
