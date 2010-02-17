@@ -114,6 +114,21 @@ def test_unicode_in_inputname():
     )
     verify_out_data(out_data, expected_files)
 
+def test_unicode_in_search_results():
+    """Show with unicode in search results
+    """
+    input_files = [
+        'psych.s04e11.avi'
+    ]
+    expected_files = [
+        'Psych - [04x11] - Thrill Seekers & Hell Raisers.avi'
+    ]
+    out_data = run_tvnamer(
+        with_files = input_files,
+        with_input = '1\ny\n'
+    )
+    verify_out_data(out_data, expected_files)
+
 def test_renaming_always_doesnt_overwrite():
     """If trying to rename a file that exists, should not create new file
     """
