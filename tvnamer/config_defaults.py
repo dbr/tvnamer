@@ -74,6 +74,22 @@ defaults = {
         [ ]?[-_][ ]?(?P<episodenumber>\d+)
         [^\/]*$''',
 
+        # foo s01e23 s01e24 s01e25 *
+        '''
+        ^(?P<seriesname>.+?)[ \._\-]            # show name
+        [Ss](?P<seasonnumber>[0-9]+)             # s01
+        [\.\- ]?                                 # separator
+        [Ee](?P<episodenumberstart>[0-9]+)       # first e23
+        ([\.\- ]+                                # separator
+        [Ss](?P=seasonnumber)                    # s01
+        [\.\- ]?                                 # separator
+        [Ee][0-9]+)*                             # e24 etc (middle groups)
+        ([\.\- ]+                                # separator
+        [Ss](?P=seasonnumber)                    # last s01
+        [\.\- ]?                                 # separator
+        [Ee](?P<episodenumberend>[0-9]+))        # final episode number
+        [^\/]*$''',
+
         # foo.s01e23e24*
         '''
         ^(?P<seriesname>.+?)[ \._\-]             # show name

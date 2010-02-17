@@ -156,6 +156,18 @@ files['multiple_episodes'] = [
     'correctedseriesname': 'Flight of the Conchords',
     'seasonnumber': 1, 'episodenumbers': [1, 2],
     'episodenames': ['Sally', 'Bret Gives Up The Dream']},
+
+    {'input': 'Scrubs s01e22 s01e23 s01e24.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumbers': [22, 23, 24],
+    'episodenames': ['My  Occurrence', 'My Hero', 'My Last Day']},
+
+    {'input': 'Scrubs s01e22 s01e23.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumbers': [22, 23],
+    'episodenames': ['My  Occurrence', 'My Hero']},
 ]
 
 files['unicode'] = [
