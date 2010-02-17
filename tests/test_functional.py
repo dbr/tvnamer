@@ -113,3 +113,20 @@ def test_unicode_in_inputname():
         with_flags = ["--batch"],
     )
     verify_out_data(out_data, expected_files)
+
+def test_renaming_always_doesnt_overwrite():
+    """If trying to rename a file that exists, should not create new file
+    """
+    input_files = [
+        'Scrubs.s01e01.avi',
+        'Scrubs - [01x01] - My First Day.avi'
+    ]
+    expected_files = [
+        'Scrubs.s01e01.avi',
+        'Scrubs - [01x01] - My First Day.avi'
+    ]
+    out_data = run_tvnamer(
+        with_files = input_files,
+        with_flags = ['--batch']
+    )
+    verify_out_data(out_data, expected_files)
