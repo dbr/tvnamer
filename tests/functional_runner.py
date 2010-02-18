@@ -78,6 +78,8 @@ def clear_temp_dir(location):
     for f in os.listdir(unicode(location)):
         fullpath = os.path.join(location, f)
         os.unlink(fullpath)
+    p("Removing path %s" % unicode(location))
+    os.rmdir(location)
 
 
 def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = None):
