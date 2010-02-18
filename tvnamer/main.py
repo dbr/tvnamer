@@ -24,16 +24,14 @@ from tvdb_api import Tvdb
 
 import cliarg_parser
 from config_defaults import defaults
+
+from unicode_helper import p, unicodify
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
 getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
 InvalidFilename, DataRetrievalError)
-
-# Character encoding is fun. http://stackoverflow.com/questions/492483
-sys.stdout = codecs.getwriter("utf-8")(sys.stdout)
-sys.stderr = codecs.getwriter("utf-8")(sys.stderr)
 
 
 def log():
@@ -45,17 +43,17 @@ def log():
 def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
-    print "#" * 20
-    print "# Processing file: %s" % episode.fullfilename
+    p("#" * 20)
+    p("# Processing file: %s" % episode.fullfilename)
 
     if len(Config['input_filename_replacements']) > 0:
         replaced = applyCustomInputReplacements(episode.fullfilename)
-        print "# With custom replacements: %s" % (replaced)
+        p("# With custom replacements: %s" % (replaced))
 
-    print "# Detected series: %s (season: %s, episode: %s)" % (
+    p("# Detected series: %s (season: %s, episode: %s)" % (
         episode.seriesname,
         episode.seasonnumber,
-        ", ".join([str(x) for x in episode.episodenumbers]))
+        ", ".join([str(x) for x in episode.episodenumbers])))
 
     try:
         correctedSeriesName, epName = getEpisodeName(tvdb_instance, episode)
@@ -80,53 +78,53 @@ def processFile(tvdb_instance, episode):
     cnamer = Renamer(episode.fullpath)
     newName = episode.generateFilename()
 
-    print "#" * 20
-    print "Old filename: %s" % episode.fullfilename
+    p("#" * 20)
+    p("Old filename: %s" % episode.fullfilename)
 
     if len(Config['output_filename_replacements']):
-        print "Before custom output replacements: %s" % (newName)
+        p("Before custom output replacements: %s" % (newName))
         # Only apply to filename, not extension
         newName, newExt = os.path.splitext(newName)
         newName = applyCustomOutputReplacements(newName)
         newName = newName + newExt
 
-    print "New filename: %s" % newName
+    p("New filename: %s" % newName)
 
     if Config['always_rename']:
         try:
             cnamer.newName(newName)
         except OSError, e:
-            warn(e)
+            warn(unicode(e))
         return
 
     ans = None
     while ans not in ['y', 'n', 'a', 'q', '']:
-        print "Rename?"
-        print "([y]/n/a/q)",
+        p("Rename?")
+        p("([y]/n/a/q)", end="")
         try:
             ans = raw_input().strip()
         except KeyboardInterrupt, errormsg:
-            print "\n", errormsg
+            p("\n", errormsg)
             raise UserAbort(errormsg)
 
     shouldRename = False
     if len(ans) == 0:
-        print "Renaming (default)"
+        p("Renaming (default)")
         shouldRename = True
     elif ans == "a":
-        print "Always renaming"
+        p("Always renaming")
         Config['always_rename'] = True
         shouldRename = True
     elif ans == "q":
-        print "Quitting"
+        p("Quitting")
         raise UserAbort("User exited with q")
     elif ans == "y":
-        print "Renaming"
+        p("Renaming")
         shouldRename = True
     elif ans == "n":
-        print "Skipping"
+        p("Skipping")
     else:
-        print "Invalid input, skipping"
+        p("Invalid input, skipping")
 
     if shouldRename:
         try:
@@ -163,8 +161,8 @@ def findFiles(paths):
 def tvnamer(paths):
     """Main tvnamer function, takes an array of paths, does stuff.
     """
-    print "#" * 20
-    print "# Starting tvnamer"
+    p("#" * 20)
+    p("# Starting tvnamer")
 
     episodes_found = []
 
@@ -181,7 +179,7 @@ def tvnamer(paths):
     if len(episodes_found) == 0:
         raise NoValidFilesFoundError()
 
-    print "# Found %d episodes" % len(episodes_found)
+    p("# Found %d episodes" % len(episodes_found))
 
     # Sort episodes by series name, season and episode number
     episodes_found.sort(key = lambda x: (x.seriesname, x.seasonnumber, x.episodenumbers))
@@ -193,10 +191,10 @@ def tvnamer(paths):
 
     for episode in episodes_found:
         processFile(tvdb_instance, episode)
-        print
+        p('')
 
-    print "#" * 20
-    print "# Done"
+    p("#" * 20)
+    p("# Done")
 
 
 def main():
@@ -228,11 +226,11 @@ def main():
         configToLoad = None
 
     if configToLoad is not None:
-        print "Loading config: %s" % (configToLoad)
+        p("Loading config: %s" % (configToLoad))
         try:
             loadedConfig = json.load(open(configToLoad))
         except ValueError, e:
-            print "Error loading config: %s" % e
+            p("Error loading config: %s" % e)
             opter.exit(1)
         else:
             # Config loaded, update optparser's defaults and reparse
@@ -242,7 +240,7 @@ def main():
 
     # Save config argument
     if opts.saveconfig is not None:
-        print "Saving config: %s" % (opts.saveconfig)
+        p("Saving config: %s" % (opts.saveconfig))
         configToSave = dict(opts.__dict__)
         del configToSave['saveconfig']
         del configToSave['loadconfig']
@@ -258,7 +256,7 @@ def main():
     # Show config argument
     if opts.showconfig:
         for k, v in opts.__dict__.items():
-            print k, "=", str(v)
+            p(k, "=", str(v))
         return
 
     # Process values

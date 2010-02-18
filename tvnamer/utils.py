@@ -19,6 +19,8 @@ import platform
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
 
+from unicode_helper import p
+
 from config import Config
 from tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
@@ -34,7 +36,7 @@ def log():
 def warn(text):
     """Displays message to sys.stdout
     """
-    sys.stderr.write("%s\n" % text)
+    p(text, file = sys.stderr)
 
 
 def getEpisodeName(tvdb_instance, episode):

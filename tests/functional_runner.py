@@ -32,6 +32,7 @@ import sys
 import tempfile
 from subprocess import Popen, PIPE
 
+from tvnamer.unicode_helper import p
 
 def make_temp_config(config):
     (fhandle, fname) = tempfile.mkstemp()
@@ -53,7 +54,7 @@ def get_tvnamer_path():
         if os.path.isfile(tvnamer_location):
             return tvnamer_location
         else:
-            print tvnamer_location
+            p(tvnamer_location)
     else:
         raise IOError("tvnamer could not be found in . or ..")
 
@@ -73,7 +74,7 @@ def make_dummy_files(files, location):
 
 
 def clear_temp_dir(location):
-    print "Clearing %s" % unicode(location)
+    p("Clearing %s" % unicode(location))
     for f in os.listdir(unicode(location)):
         fullpath = os.path.join(location, f)
         os.unlink(fullpath)
@@ -96,8 +97,8 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
 
     # Construct command
     cmd = [sys.executable, tvnpath] + conf_args + with_flags + dummy_files
-    print "Running command:"
-    print " ".join(cmd)
+    p("Running command:")
+    p(" ".join(cmd))
 
     proc = Popen(
         cmd,
@@ -128,16 +129,16 @@ def verify_out_data(out_data, expected_files):
     If an assertion fails, nosetest will handily print the stdout/etc.
     """
 
-    print "Expected files:", expected_files
-    print "Got files:", out_data['files']
+    p("Expected files:", expected_files)
+    p("Got files:", out_data['files'])
 
-    print "\n" + "*" * 20 + "\n"
-    print "stdout:\n"
-    print out_data['stdout']
+    p("\n" + "*" * 20 + "\n")
+    p("stdout:\n")
+    p(out_data['stdout'])
 
-    print "\n" + "*" * 20 + "\n"
-    print "stderr:\n"
-    print out_data['stderr']
+    p("\n" + "*" * 20 + "\n")
+    p("stderr:\n")
+    p(out_data['stderr'])
 
     for cur in expected_files:
         if cur not in out_data['files']:
