@@ -31,7 +31,13 @@ def p(*args, **kw):
     kw.setdefault('end', '\n')
     kw.setdefault('file', sys.stdout)
 
-    args = [repr(x) for x in args if not isinstance(x, basestring)]
-    out = kw['sep'].join(x.encode(kw['encoding']) for x in args)
+    new_args = []
+    for x in args:
+        if not isinstance(x, basestring):
+            new_args.append(repr(x))
+        else:
+            new_args.append(x)
+
+    out = kw['sep'].join(x.encode(kw['encoding']) for x in new_args)
 
     kw['file'].write(out + kw['end'])
