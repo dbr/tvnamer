@@ -145,3 +145,27 @@ def test_replacing_ands():
     expected_files = ['Law and Order - [01x01] - Prescription For Death.avi']
 
     verify_out_data(out_data, expected_files)
+
+def test_multiple_replacements():
+    """Tests multiple replacements on one file
+    """
+    out_data = run_tvnamer(
+    with_files = ['scrubs.s01e01.avi'],
+    with_config = """
+{
+    "output_filename_replacements": [
+        {"is_regex": true,
+        "match": "[ua]+",
+        "replacement": "v"},
+        {"is_regex": false,
+        "match": "v",
+        "replacement": "_"}
+    ],
+    "always_rename": true,
+    "select_first": true
+}
+""")
+
+    expected_files = ['Scr_bs - [01x01] - My First D_y.avi']
+
+    verify_out_data(out_data, expected_files)
