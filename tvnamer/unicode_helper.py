@@ -12,11 +12,11 @@
 import sys
 
 
-def unicodify(object, encoding = "utf-8"):
-    if isinstance(object, basestring):
-        if not isinstance(object, unicode):
-            object = unicode(object, encoding)
-    return object
+def unicodify(obj, encoding = "utf-8"):
+    if isinstance(obj, basestring):
+        if not isinstance(obj, unicode):
+            object = unicode(obj, encoding)
+    return obj
 
 
 def p(*args, **kw):
