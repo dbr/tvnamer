@@ -32,7 +32,7 @@ import sys
 import tempfile
 from subprocess import Popen, PIPE
 
-from tvnamer.unicode_helper import p
+from tvnamer.unicode_helper import p, unicodify
 
 def make_temp_config(config):
     (fhandle, fname) = tempfile.mkstemp()
@@ -110,6 +110,7 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
 
     proc.stdin.write(with_input)
     stdout, stderr = proc.communicate()
+    stdout, stderr = [unicodify(x) for x in (stdout, stderr)]
 
     files = os.listdir(unicode(episodes_location))
 
