@@ -36,8 +36,11 @@ def p(*args, **kw):
         if not isinstance(x, basestring):
             new_args.append(repr(x))
         else:
-            new_args.append(x)
+            if kw['encoding'] is not None:
+                new_args.append(x.encode(kw['encoding']))
+            else:
+                new_args.append(x)
 
-    out = kw['sep'].join(x.encode(kw['encoding']) for x in new_args)
+    out = kw['sep'].join(new_args)
 
     kw['file'].write(out + kw['end'])
