@@ -15,7 +15,7 @@ import sys
 def unicodify(obj, encoding = "utf-8"):
     if isinstance(obj, basestring):
         if not isinstance(obj, unicode):
-            object = unicode(obj, encoding)
+            obj = unicode(obj, encoding)
     return obj
 
 
