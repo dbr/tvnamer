@@ -31,6 +31,7 @@ def test_simple_realtive_move():
 
     verify_out_data(out_data, expected_files)
 
+
 def test_dynamic_destination():
     """Move file to simple relative static dir
     """
@@ -43,9 +44,21 @@ def test_dynamic_destination():
 
     out_data = run_tvnamer(
         with_files = ['scrubs.s01e01.avi'],
-        with_config = conf,
-        with_input = "")
+        with_config = conf)
 
     expected_files = ['tv/Scrubs/season 1/Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+def test_cli_destination():
+    """Tests specifying the destination via command line argument
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_flags = ['--batch', '--move', '--movedestination=season %(seasonnumber)d/'])
+
+    expected_files = ['season 1/Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
