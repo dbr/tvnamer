@@ -162,7 +162,8 @@ def processFile(tvdb_instance, episode):
 
     if Config['always_rename']:
         doRenameFile(cnamer, newName)
-        doMoveFile(cnamer, newPath)
+        if Config['move_files_confirmation']:
+            doMoveFile(cnamer, newPath)
         return
 
     ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
