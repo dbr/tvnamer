@@ -39,8 +39,19 @@ def log():
     return logging.getLogger(__name__)
 
 
-def doRenameFile(cnamer, newName, episode):
-    """Renames and optionally moves the file. cnamer should be Renamer instance,
+def getDestinationFolder(episode):
+    """Constructs the location to move/copy the file
+    """
+    destdir = Config['move_files_destination'] % {
+        'seriesname': episode.seriesname,
+        'seasonnumber': episode.seasonnumber,
+        'episodenumbers': formatEpisodeNumbers(episode.episodenumbers)
+    }
+    return destdir
+
+
+def doRenameFile(cnamer, newName):
+    """Renames the file. cnamer should be Renamer instance,
     newName should be string containing new filename.
     """
     try:
@@ -48,17 +59,50 @@ def doRenameFile(cnamer, newName, episode):
     except OSError, e:
         warn(unicode(e))
 
+
+def doMoveFile(cnamer, destDir):
+    """Moves file to destDir"""
+    if not Config['move_files_enable']:
+        raise ValueError("move_files feature is disabled but doMoveFile was called")
+
+    if Config['move_files_destination'] is None:
+        raise ValueError("Config value for move_files_destination cannot be None if move_files_enabled is True")
+
     if Config['move_files_enable'] and Config['move_files_destination'] is not None:
-        destdir = Config['move_files_destination'] % {
-            'seriesname': episode.seriesname,
-            'seasonnumber': episode.seasonnumber,
-            'episodenumbers': formatEpisodeNumbers(episode.episodenumbers)
-        }
-        p("New directory:", destdir)
+        p("New directory:", destDir)
         try:
-            cnamer.newPath(destdir)
-        except IOError, e:
+            cnamer.newPath(destDir)
+        except OSError, e:
             warn(unicode(e))
+
+
+def confirm(question, options, default = "y"):
+    """Takes a question (string), list of options and a default value (used
+    when user simply hits enter).
+    Asks until valid option is entered.
+    """
+    # Highlight default option with [ ]
+    options_str = []
+    for x in options:
+        if x == default:
+            x = "[%s]" % x
+        if x != '':
+            options_str.append(x)
+    options_str = "/".join(options_str)
+
+    while True:
+        p(question)
+        p("(%s) " % (options_str), end="")
+        try:
+            ans = raw_input().strip()
+        except KeyboardInterrupt, errormsg:
+            p("\n", errormsg)
+            raise UserAbort(errormsg)
+
+        if ans in options:
+            return ans
+        elif ans == '':
+            return default
 
 
 def processFile(tvdb_instance, episode):
@@ -111,26 +155,21 @@ def processFile(tvdb_instance, episode):
 
     p("New filename: %s" % newName)
 
+    if Config['move_files_enable']:
+        newPath = getDestinationFolder(episode)
+        p("New path: %s" % newPath)
+    else:
+        newPath = None
 
     if Config['always_rename']:
-        doRenameFile(cnamer, newName, episode)
+        doRenameFile(cnamer, newName)
+        doMoveFile(cnamer, newPath)
         return
 
-    ans = None
-    while ans not in ['y', 'n', 'a', 'q', '']:
-        p("Rename?")
-        p("([y]/n/a/q) ", end="")
-        try:
-            ans = raw_input().strip()
-        except KeyboardInterrupt, errormsg:
-            p("\n", errormsg)
-            raise UserAbort(errormsg)
+    ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
 
     shouldRename = False
-    if len(ans) == 0:
-        p("Renaming (default)")
-        shouldRename = True
-    elif ans == "a":
+    if ans == "a":
         p("Always renaming")
         Config['always_rename'] = True
         shouldRename = True
@@ -146,7 +185,16 @@ def processFile(tvdb_instance, episode):
         p("Invalid input, skipping")
 
     if shouldRename:
-        doRenameFile(cnamer, newName, episode)
+        doRenameFile(cnamer, newName)
+
+        if Config['move_files_confirmation']:
+            ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
+            if ans == 'y':
+                p("Moving file")
+                doMoveFile(cnamer, newPath)
+            elif ans == 'q':
+                p("Quitting")
+                raise UserAbort("user exited with q")
 
 
 def findFiles(paths):
