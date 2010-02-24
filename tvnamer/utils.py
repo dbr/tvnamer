@@ -553,7 +553,7 @@ class Renamer(object):
         os.rename(self.filename, newpath)
         self.filename = newpath
 
-    def newPath(self, new_path, force = False, always_copy = False, always_move = False):
+    def newPath(self, new_path, force = False, always_copy = False, always_move = False, create_dirs = True):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)
@@ -561,13 +561,24 @@ class Renamer(object):
         If the target file already exists, it will raise OSError unless force is True.
         """
 
-        raise NotImplementedError('The function is not tested at all, needs testing before use')
-
         if always_copy and always_move:
             raise ValueError("Both always_copy and always_move cannot be specified")
 
-        _, old_filename = os.path.split(self.filename)
-        new_fullpath = os.path.abspath(os.path.join(new_path, old_filename))
+        old_dir, old_filename = os.path.split(self.filename)
+
+        # Join new filepath to old one (to handle realtive dirs)
+        new_dir = os.path.abspath(os.path.join(old_dir, new_path))
+
+        # Join new filename onto new filepath
+        new_fullpath = os.path.join(new_dir, old_filename)
+
+        if create_dirs:
+            print "Creating %s" % new_dir
+            try:
+                os.makedirs(new_dir)
+            except OSError, e:
+                if e.errno != 17:
+                    raise
 
         if os.path.isfile(new_fullpath):
             # If the destination exists, raise exception unless force is True
@@ -575,7 +586,8 @@ class Renamer(object):
                 raise OSError("File %s already exists, not forcefully moving %s" % (
                     new_fullpath, self.filename))
 
-        if same_partition(self.filename, new_path):
+
+        if same_partition(self.filename, new_dir):
             if always_copy:
                 # Same partition, but forced to copy
                 print "copy %s to %s" % (self.filename, new_fullpath)
