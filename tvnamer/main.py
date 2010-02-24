@@ -48,15 +48,17 @@ def doRenameFile(cnamer, newName, episode):
     except OSError, e:
         warn(unicode(e))
 
-    if Config['move_files_enable']:
+    if Config['move_files_enable'] and Config['move_files_destination'] is not None:
         destdir = Config['move_files_destination'] % {
             'seriesname': episode.seriesname,
             'seasonnumber': episode.seasonnumber,
             'episodenumbers': formatEpisodeNumbers(episode.episodenumbers)
         }
         p("New directory:", destdir)
-        cnamer.newPath(destdir)
-
+        try:
+            cnamer.newPath(destdir)
+        except IOError, e:
+            warn(unicode(e))
 
 
 def processFile(tvdb_instance, episode):
