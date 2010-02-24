@@ -68,12 +68,11 @@ def doMoveFile(cnamer, destDir):
     if Config['move_files_destination'] is None:
         raise ValueError("Config value for move_files_destination cannot be None if move_files_enabled is True")
 
-    if Config['move_files_enable'] and Config['move_files_destination'] is not None:
-        p("New directory:", destDir)
-        try:
-            cnamer.newPath(destDir)
-        except OSError, e:
-            warn(unicode(e))
+    p("New directory:", destDir)
+    try:
+        cnamer.newPath(destDir)
+    except OSError, e:
+        warn(unicode(e))
 
 
 def confirm(question, options, default = "y"):
