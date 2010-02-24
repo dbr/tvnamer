@@ -25,7 +25,8 @@ from config_defaults import defaults
 
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
-getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements)
+getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements,
+formatEpisodeNumbers)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
@@ -36,6 +37,26 @@ def log():
     """Returns the logger for current file
     """
     return logging.getLogger(__name__)
+
+
+def doRenameFile(cnamer, newName, episode):
+    """Renames and optionally moves the file. cnamer should be Renamer instance,
+    newName should be string containing new filename.
+    """
+    try:
+        cnamer.newName(newName)
+    except OSError, e:
+        warn(unicode(e))
+
+    if Config['move_files_enable']:
+        destdir = Config['move_files_destination'] % {
+            'seriesname': episode.seriesname,
+            'seasonnumber': episode.seasonnumber,
+            'episodenumbers': formatEpisodeNumbers(episode.episodenumbers)
+        }
+        p("New directory:", destdir)
+        cnamer.newPath(destdir)
+
 
 
 def processFile(tvdb_instance, episode):
@@ -88,11 +109,9 @@ def processFile(tvdb_instance, episode):
 
     p("New filename: %s" % newName)
 
+
     if Config['always_rename']:
-        try:
-            cnamer.newName(newName)
-        except OSError, e:
-            warn(unicode(e))
+        doRenameFile(cnamer, newName, episode)
         return
 
     ans = None
@@ -125,10 +144,7 @@ def processFile(tvdb_instance, episode):
         p("Invalid input, skipping")
 
     if shouldRename:
-        try:
-            cnamer.newName(newName)
-        except OSError, e:
-            warn(unicode(e))
+        doRenameFile(cnamer, newName, episode)
 
 
 def findFiles(paths):
