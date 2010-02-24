@@ -13,12 +13,12 @@ from functional_runner import run_tvnamer, verify_out_data
 
 
 def test_simple_realtive_move():
-    """
+    """Move file to simple relative static dir
     """
 
     conf = """
     {"move_files_enable": true,
-    "move_files_desination": "test/",
+    "move_files_destination": "test/",
     "batch": true}
     """
 
@@ -28,5 +28,24 @@ def test_simple_realtive_move():
         with_input = "")
 
     expected_files = ['test/Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+def test_dynamic_destination():
+    """Move file to simple relative static dir
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['tv/Scrubs/season 1/Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
