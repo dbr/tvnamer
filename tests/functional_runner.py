@@ -142,7 +142,7 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     return {
         'stdout': stdout,
         'stderr': stderr,
-        'files': files}
+        'files': created_files}
 
 
 def verify_out_data(out_data, expected_files):
