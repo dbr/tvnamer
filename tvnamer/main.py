@@ -117,7 +117,7 @@ def processFile(tvdb_instance, episode):
     ans = None
     while ans not in ['y', 'n', 'a', 'q', '']:
         p("Rename?")
-        p("([y]/n/a/q)", end="")
+        p("([y]/n/a/q) ", end="")
         try:
             ans = raw_input().strip()
         except KeyboardInterrupt, errormsg:
