@@ -189,7 +189,7 @@ class FileFinder(object):
         """Finds files from startpath, could be called recursively
         """
         allfiles = []
-        for subf in os.listdir(startpath):
+        for subf in os.listdir(unicode(startpath)):
             if not self._checkExtension(subf):
                 continue
             newpath = os.path.join(startpath, subf)
