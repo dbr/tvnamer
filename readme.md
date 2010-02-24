@@ -8,7 +8,7 @@
 
 # `tvnamer`
 
-`tvnamer` is a utility which uses [`tvdb_api`](http://github.com/dbr/tvdb_api) to rename files from `some.show.s01e03.blah.abc.avi` to `Some Show - [01x03] - The Episode Name.avi` (by retrieving the episode name using `tvdb_api`)
+`tvnamer` is a utility which to rename files from `some.show.s01e03.blah.abc.avi` to `Some Show - [01x03] - The Episode Name.avi` (by retrieving the episode name using data from [`tvdb_api`](http://github.com/dbr/tvdb_api))
 
 ## To install
 
