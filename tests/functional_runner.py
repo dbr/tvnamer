@@ -125,7 +125,14 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     stdout, stderr = proc.communicate()
     stdout, stderr = [unicodify(x) for x in (stdout, stderr)]
 
-    files = os.listdir(unicode(episodes_location))
+    created_files = []
+    for walkroot, walkdirs, walkfiles in os.walk(episodes_location):
+        curlist = [os.path.join(walkroot, episodes_location) for name in walkfiles]
+
+        # Remove episodes_location from start of path
+        curlist = [os.path.relpath(x) for x in curlist]
+
+        created_files.extend(curlist)
 
     # Clean up dummy files and config
     clear_temp_dir(episodes_location)
