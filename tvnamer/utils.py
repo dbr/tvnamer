@@ -525,6 +525,10 @@ def same_partition(f1, f2):
     return os.stat(f1).st_dev == os.stat(f2).st_dev
 
 
+def delete_file(fpath):
+    raise NotImplementedError("delete_file not yet implimented")
+
+
 class Renamer(object):
     """Deals with renaming of files
     """
