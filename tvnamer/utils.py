@@ -547,7 +547,7 @@ class Renamer(object):
         if os.path.isfile(newpath):
             # If the destination exists, raise exception unless force is True
             if not force:
-                raise OSError("File %s already exists, not forcefully moving %s" % (
+                raise OSError("File %s already exists, not forcefully renaming %s" % (
                     newpath, self.filename))
 
         os.rename(self.filename, newpath)
