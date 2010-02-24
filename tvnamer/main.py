@@ -193,7 +193,7 @@ def tvnamer(paths):
     if len(episodes_found) == 0:
         raise NoValidFilesFoundError()
 
-    p("# Found %d episodes" % len(episodes_found))
+    p("# Found %d episode" % len(episodes_found) + ("s" * (len(episodes_found) > 1)))
 
     # Sort episodes by series name, season and episode number
     episodes_found.sort(key = lambda x: (x.seriesname, x.seasonnumber, x.episodenumbers))
