@@ -44,8 +44,9 @@ tvnamer v2 is a near-complete rewrite of the tvnamer released as part of `tvdb_a
 
 - Support for anime filenames, such as `[Shinsen-Subs] Beet - 19 [24DAB497].mkv`
 - Support for multi-episode files, such as `scrubs.s01e23e24.avi`
-- Custom configuration options (via an XML config file)
+- Custom configuration options (via a JSON config file) and improved command line argument handling
 - Better support for Unicode filenames
+- Support for moving files to specific location after renaming (`/media/tv/{series name}/season {seasonnumber}/` for example)
 
 ## Bugs?
 
