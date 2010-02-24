@@ -69,7 +69,7 @@ defaults = {
     # - %(seriesname)s
     # - %(seasonnumber)d
     # - %(episodenumber)d
-    'move_files_desination': '.',
+    'move_files_destination': '.',
 
     # Patterns to parse input filenames with
     'filename_patterns': [
