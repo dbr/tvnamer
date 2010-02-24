@@ -580,10 +580,6 @@ class Renamer(object):
                 if e.errno != 17:
                     raise
 
-        if os.path.samefile(self.filename, new_fullpath):
-            print "Can't move file to same location %s" % (self.filename)
-            return
-
         if os.path.isfile(new_fullpath):
             # If the destination exists, raise exception unless force is True
             if not force:
