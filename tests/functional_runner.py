@@ -29,6 +29,7 @@ expected file is not found.
 
 import os
 import sys
+import shutil
 import tempfile
 from subprocess import Popen, PIPE
 
@@ -91,11 +92,7 @@ def make_dummy_files(files, location):
 
 def clear_temp_dir(location):
     p("Clearing %s" % unicode(location))
-    for f in os.listdir(unicode(location)):
-        fullpath = os.path.join(location, f)
-        os.unlink(fullpath)
-    p("Removing path %s" % unicode(location))
-    os.rmdir(location)
+    shutil.rmtree(location)
 
 
 def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = None):
