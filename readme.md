@@ -146,9 +146,15 @@ To use your custom configuration, you must either specify the location using `tv
 
 **Important:** If tvnamer's default settings change and your saved config contains the old settings, you may experience strange behaviour or bugs (the config may contain a buggy `filename_patterns` regex, for example). It is recommended you remove config options you are not altering (particularly `filename_patterns`). If you experience any strangeness, try disabling your custom configuration (moving it away from `~/.tvnamer.json`)
 
-If for example you wish to change the default language used, change the option `language` to another two-letter language code, such as `fr` for French.
+If for example you wish to change the default language used to retrieve data, change the option `language` to another two-letter language code, such as `fr` for French. Your config file would look like:
 
-`search_all_languages` makes tvnamer search for the series in all languages, and allows you to select the appropriate one. If this is False, tvnamer will search in the language specified in the option `language`
+    {
+        "language": "fr"
+    }
+
+For an always up-to-date description of all config options, see the comments in [`config_defaults.py`](http://github.com/dbr/tvnamer/blob/master/tvnamer/config_defaults.py)
+
+# Custom output filenames
 
 If you wish to change the output filename format, there are several options you must change:
 
