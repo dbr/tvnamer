@@ -68,7 +68,8 @@ defaults = {
     # Use Python's string formatting to add dynamic paths. Available variables:
     # - %(seriesname)s
     # - %(seasonnumber)d
-    # - %(episodenumber)d
+    # - %(episodenumbers)s (Note: this is a string, formatted with config
+    #                       variable episode_single and joined with episode_separator)
     'move_files_destination': '.',
 
     # Patterns to parse input filenames with
