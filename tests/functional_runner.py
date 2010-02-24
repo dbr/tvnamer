@@ -67,6 +67,13 @@ def make_temp_dir():
 def make_dummy_files(files, location):
     dummies = []
     for f in files:
+        # Removing leading slash to prevent files being created outside
+        # location. This is necessary because..
+        # os.path.join('tempdir', '/otherpath/example.avi)
+        # ..will return '/otherpath/example.avi'
+        if f.startswith("/"):
+            f = f.replace("/", "", 1)
+
         floc = os.path.join(location, f)
         open(floc, "w").close()
         dummies.append(floc)
