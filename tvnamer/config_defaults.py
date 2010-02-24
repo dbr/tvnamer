@@ -61,9 +61,14 @@ defaults = {
     # Move renamed files to directory?
     'move_files_enable': False,
 
-    # Destination to move files to. Realtive or absolute paths.
-    # Trailing slash is not necessary. Use forward slashes, even on Windows.
-    # A value of None or '.' will effectivly disable this.
+    # Seperation confirmation of moving or copying renamed file?
+    # If False, will move files when renaming.
+    'move_files_confirmation': True,
+
+    # Destination to move files to. Trailing slash is not necessary.
+    # Use forward slashes, even on Windows. Realtive paths are realtive to
+    # the existing file's path (not current working dir). A value of '.' will
+    # not move the file anywhere.
     #
     # Use Python's string formatting to add dynamic paths. Available variables:
     # - %(seriesname)s
