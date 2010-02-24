@@ -10,8 +10,6 @@
 """
 
 import os
-import sys
-import codecs
 import logging
 
 try:
@@ -25,7 +23,7 @@ from tvdb_api import Tvdb
 import cliarg_parser
 from config_defaults import defaults
 
-from unicode_helper import p, unicodify
+from unicode_helper import p
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
 getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements)
 

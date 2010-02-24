@@ -32,6 +32,7 @@ def test_no_extensions():
 
     verify_out_data(out_data, expected_files)
 
+
 def test_single_extensions():
     """Tests one valid extension with multiple files
     """

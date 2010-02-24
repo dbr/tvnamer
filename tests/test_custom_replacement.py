@@ -11,6 +11,7 @@
 
 from functional_runner import run_tvnamer, verify_out_data
 
+
 def test_simple_input_replacements():
     """Tests replacing strings in input files
     """
@@ -120,6 +121,7 @@ def test_replacing_spaces():
 
     verify_out_data(out_data, expected_files)
 
+
 def test_replacing_ands():
     """Tests removind "and" and "&" from input files
     """
@@ -145,6 +147,7 @@ def test_replacing_ands():
     expected_files = ['Law and Order - [01x01] - Prescription For Death.avi']
 
     verify_out_data(out_data, expected_files)
+
 
 def test_multiple_replacements():
     """Tests multiple replacements on one file

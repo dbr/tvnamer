@@ -34,6 +34,7 @@ from subprocess import Popen, PIPE
 
 from tvnamer.unicode_helper import p, unicodify
 
+
 def make_temp_config(config):
     (fhandle, fname) = tempfile.mkstemp()
     f = open(fname, 'w+')
