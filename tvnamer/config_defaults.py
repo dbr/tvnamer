@@ -58,6 +58,19 @@ defaults = {
     # Search in all possible languages
     'search_all_languages': True,
 
+    # Move renamed files to directory?
+    'move_files_enable': False,
+
+    # Destination to move files to. Realtive or absolute paths.
+    # Trailing slash is not necessary. Use forward slashes, even on Windows.
+    # A value of None or '.' will effectivly disable this.
+    #
+    # Use Python's string formatting to add dynamic paths. Available variables:
+    # - %(seriesname)s
+    # - %(seasonnumber)d
+    # - %(episodenumber)d
+    'move_files_desination': '.',
+
     # Patterns to parse input filenames with
     'filename_patterns': [
         # [group] Show - 01-02 [Etc]
