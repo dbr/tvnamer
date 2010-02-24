@@ -62,8 +62,11 @@ def getCommandlineParser(defaults):
     with Group(parser, "Misc") as g:
         g.add_option("-r", "--recursive", action="store_true", dest = "recursive", help = "Descend more than one level directories supplied as arguments")
         g.add_option("--not-recursive", action="store_false", dest = "recursive", help = "Only descend one level into directories")
-        
-        g.add_option("-h", "--help", action="help", help = "show this help message and exit")
+
+        g.add_option("-m", "--move", action="store_true", dest="move_files_enable", help = "Move files to destination specified in config or with --movedestination argument")
+        g.add_option("--not-move", action="store_false", dest="move_files_enable", help = "Files will remain in current directory")
+
+        g.add_option("-d", "--movedestination", action="store", dest = "move_files_destination", help = "Destination to move files to. Variables: %%(seriesname)s %%(seasonnumber)d %%(episodenumbers)s")
 
     return parser
 
