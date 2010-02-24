@@ -127,10 +127,10 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
 
     created_files = []
     for walkroot, walkdirs, walkfiles in os.walk(episodes_location):
-        curlist = [os.path.join(walkroot, episodes_location) for name in walkfiles]
+        curlist = [os.path.join(walkroot, name) for name in walkfiles]
 
         # Remove episodes_location from start of path
-        curlist = [os.path.relpath(x) for x in curlist]
+        curlist = [os.path.relpath(x, episodes_location) for x in curlist]
 
         created_files.extend(curlist)
 
