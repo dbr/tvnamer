@@ -419,6 +419,17 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
     return value + extension
 
 
+def formatEpisodeNumbers(episodenumbers):
+    """Format episode number(s) into string, using configured values
+    """
+    if len(episodenumbers) == 1:
+        epno = Config['episode_single'] % episodenumbers[0]
+    else:
+        epno = Config['episode_separator'].join(
+            Config['episode_single'] % x for x in episodenumbers)
+
+    return epno
+
 class EpisodeInfo(object):
     """Stores information (season, episode number, episode name), and contains
     logic to generate new name
@@ -464,11 +475,7 @@ class EpisodeInfo(object):
         episode_separator # used to join multiple episode numbers
         """
         # Format episode number into string, or a list
-        if len(self.episodenumbers) == 1:
-            epno = Config['episode_single'] % self.episodenumbers[0]
-        else:
-            epno = Config['episode_separator'].join(
-                Config['episode_single'] % x for x in self.episodenumbers)
+        epno = formatEpisodeNumbers(self.episodenumbers)
 
         # Data made available to config'd output file format
         if self.extension is None:
