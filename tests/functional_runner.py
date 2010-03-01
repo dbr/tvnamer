@@ -80,7 +80,7 @@ def get_tvnamer_path():
         else:
             p(tvnamer_location)
     else:
-        raise IOError("tvnamer could not be found in . or ..")
+        raise IOError("tvnamer/main.py could not be found in . or ..")
 
 
 def make_temp_dir():
