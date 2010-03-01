@@ -187,7 +187,7 @@ def processFile(tvdb_instance, episode):
     if shouldRename:
         doRenameFile(cnamer, newName)
 
-        if Config['move_files_confirmation']:
+        if Config['move_files_enable'] and Config['move_files_confirmation']:
             ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
             if ans == 'y':
                 p("Moving file")
