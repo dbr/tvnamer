@@ -36,6 +36,39 @@ from subprocess import Popen, PIPE
 from tvnamer.unicode_helper import p, unicodify
 
 
+try:
+    # os.path.relpath was added in 2.6, use custom implimentation if not found
+    relpath = os.path.relpath
+except AttributeError:
+    def relpath(path, start=None):
+        """Return a relative version of a path"""
+
+        if start is None:
+            start = os.getcwd()
+
+        start_list = os.path.abspath(start).split(os.path.sep)
+        path_list = os.path.abspath(path).split(os.path.sep)
+        if start_list[0].lower() != path_list[0].lower():
+            unc_path, rest = splitunc(path)
+            unc_start, rest = splitunc(start)
+            if bool(unc_path) ^ bool(unc_start):
+                raise ValueError("Cannot mix UNC and non-UNC paths (%s and %s)" % (path, start))
+            else:
+                raise ValueError("path is on drive %s, start on drive %s" % (path_list[0],start_list[0]))
+
+        # Work out how much of the filepath is shared by start and path.
+        for i in range(min(len(start_list), len(path_list))):
+            if start_list[i].lower() != path_list[i].lower():
+                break
+        else:
+            i += 1
+
+        rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
+        if not rel_list:
+            return curdir
+        return os.path.join(*rel_list)
+
+
 def make_temp_config(config):
     (fhandle, fname) = tempfile.mkstemp()
     f = open(fname, 'w+')
@@ -130,7 +163,7 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
         curlist = [os.path.join(walkroot, name) for name in walkfiles]
 
         # Remove episodes_location from start of path
-        curlist = [os.path.relpath(x, episodes_location) for x in curlist]
+        curlist = [relpath(x, episodes_location) for x in curlist]
 
         created_files.extend(curlist)
 
