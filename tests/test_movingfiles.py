@@ -103,7 +103,7 @@ def test_move_interactive_allno():
 
     verify_out_data(out_data, expected_files)
 
-def test_move_interactive_allno():
+def test_move_interactive_somefiles():
     """Tests interactive UI allows not renaming some files, renaming/moving others
 
     Rename and move first file, don't rename second file (so no move), and
