@@ -59,6 +59,8 @@ except AttributeError:
 
 
 def make_temp_config(config):
+    """Creates a temporary file containing the supplied config (string)
+    """
     (fhandle, fname) = tempfile.mkstemp()
     f = open(fname, 'w+')
     f.write(config)
@@ -84,10 +86,14 @@ def get_tvnamer_path():
 
 
 def make_temp_dir():
+    """Creates a temp folder and returns the path
+    """
     return tempfile.mkdtemp()
 
 
 def make_dummy_files(files, location):
+    """Creates dummy files at location.
+    """
     dummies = []
     for f in files:
         # Removing leading slash to prevent files being created outside
@@ -113,11 +119,21 @@ def make_dummy_files(files, location):
 
 
 def clear_temp_dir(location):
+    """Removes file or directory at specified location
+    """
     p("Clearing %s" % unicode(location))
     shutil.rmtree(location)
 
 
 def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = None):
+    """Runs tvnamer on list of file-names in with_files.
+    with_files is a list of strings.
+    with_flags is a list of command line arguments to pass to tvnamer.
+    with_input is the sent to tvnamer's stdin
+    with_config is a string containing the tvnamer to run tvnamer with.
+
+    Returns a dict with stdout, stderr and a list of files created
+    """
     # Create dummy files (config and episodes)
     tvnpath = get_tvnamer_path()
     episodes_location = make_temp_dir()
