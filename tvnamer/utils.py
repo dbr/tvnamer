@@ -287,7 +287,8 @@ class FileParser(object):
                     raise ConfigValueError(
                         "Regex must contain seriesname. Pattern was:\n" + cmatcher.pattern)
 
-                seriesname = cleanRegexedSeriesName(seriesname)
+                if seriesname != None:
+                    seriesname = cleanRegexedSeriesName(seriesname)
 
                 episode = EpisodeInfo(
                     seriesname = seriesname,
