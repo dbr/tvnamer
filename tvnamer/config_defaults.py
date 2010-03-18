@@ -125,6 +125,19 @@ defaults = {
         [\.\- ]?[Ee](?P<episodenumberend>[0-9]+) # final episode num
         [^\/]*$''',
 
+        # foo.1x23 1x24 1x25
+        '''
+        ^((?P<seriesname>.+?)[ \._\-])?          # show name
+        (?P<seasonnumber>[0-9]+)                 # first season number (1)
+        [xX](?P<episodenumberstart>[0-9]+)       # first episode (x23)
+        ([ \._\-]+                               # separator
+        (?P=seasonnumber)                        # more season numbers (1)
+        [xX][0-9]+)*                             # more episode numbers (x24)
+        ([ \._\-]+                               # separator
+        (?P=seasonnumber)                        # last season number (1)
+        [xX](?P<episodenumberend>[0-9]+))        # last episode number (x25)
+        [^\/]*$''',
+
         # foo.1x23x24*
         '''
         ^(?P<seriesname>.+?)[ \._\-]             # show name
