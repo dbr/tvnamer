@@ -581,6 +581,7 @@ class Renamer(object):
         if len(Config['move_files_fullpath_replacements']) > 0:
             p("Before custom full path replacements: %s" % (new_fullpath))
             new_fullpath = applyCustomFullpathReplacements(new_fullpath)
+            new_dir = os.path.dirname(new_fullpath)
 
         p("New path: %s" % new_fullpath)
 
