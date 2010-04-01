@@ -185,7 +185,7 @@ def test_fullpath_replacements():
     "move_files_destination": "%(seriesname)s",
     "move_files_fullpath_replacements": [
         {"is_regex": true,
-        "match": "Scu.*?s",
+        "match": "Scr.*?s",
         "replacement": "A Test"}
     ],
     "always_rename": true,
