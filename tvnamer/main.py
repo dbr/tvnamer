@@ -62,7 +62,7 @@ def doRenameFile(cnamer, newName):
         warn(unicode(e))
 
 
-def doMoveFile(cnamer, destDir, getPathPreview):
+def doMoveFile(cnamer, destDir, getPathPreview = False):
     """Moves file to destDir"""
     if not Config['move_files_enable']:
         raise ValueError("move_files feature is disabled but doMoveFile was called")
