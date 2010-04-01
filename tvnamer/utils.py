@@ -559,7 +559,7 @@ class Renamer(object):
         os.rename(self.filename, newpath)
         self.filename = newpath
 
-    def newPath(self, new_path, force = False, always_copy = False, always_move = False, create_dirs = True):
+    def newPath(self, new_path, force = False, always_copy = False, always_move = False, create_dirs = True, getPathPreview = False):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)
@@ -584,6 +584,9 @@ class Renamer(object):
             new_dir = os.path.dirname(new_fullpath)
 
         p("New path: %s" % new_fullpath)
+
+        if getPathPreview:
+            return new_dir
 
         if create_dirs:
             p("Creating %s" % new_dir)

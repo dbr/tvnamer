@@ -62,7 +62,7 @@ def doRenameFile(cnamer, newName):
         warn(unicode(e))
 
 
-def doMoveFile(cnamer, destDir):
+def doMoveFile(cnamer, destDir, getPathPreview):
     """Moves file to destDir"""
     if not Config['move_files_enable']:
         raise ValueError("move_files feature is disabled but doMoveFile was called")
@@ -70,9 +70,8 @@ def doMoveFile(cnamer, destDir):
     if Config['move_files_destination'] is None:
         raise ValueError("Config value for move_files_destination cannot be None if move_files_enabled is True")
 
-    p("New directory:", destDir)
     try:
-        cnamer.newPath(destDir)
+        cnamer.newPath(destDir, getPathPreview = getPathPreview)
     except OSError, e:
         warn(unicode(e))
 
@@ -158,13 +157,14 @@ def processFile(tvdb_instance, episode):
 
     if Config['move_files_enable']:
         newPath = getDestinationFolder(episode)
+        preview_path = doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
     else:
         newPath = None
 
     if Config['always_rename']:
         doRenameFile(cnamer, newName)
         if Config['move_files_enable']:
-            doMoveFile(cnamer, newPath)
+            doMoveFile(cnamer = cnamer, destDir = newPath)
         return
 
     ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
