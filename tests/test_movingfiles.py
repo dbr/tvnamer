@@ -126,3 +126,22 @@ def test_move_interactive_somefiles():
         'Scrubs - [01x03] - My Best Friend\'s Mistake.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+def test_with_invalid_seriesname():
+    """Tests series name containing invalid filename characters
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination": "%(seriesname)s",
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['csi.miami.s01e01.avi'],
+        with_config = conf)
+
+    expected_files = ['CSI_ Miami/CSI_ Miami - [01x01] - Golden Parachute.avi']
+
+    verify_out_data(out_data, expected_files)
