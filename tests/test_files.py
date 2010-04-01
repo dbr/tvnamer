@@ -177,12 +177,6 @@ files['multiple_episodes'] = [
 ]
 
 files['unicode'] = [
-    {'input': u'DARKER THAN BLACK -\u9ed2\u306e\u5951\u7d04\u8005- - S01E01 (21st copy)',
-    'parsedseriesname': u'darker than black -\u9ed2\u306e\u5951\u7d04\u8005-',
-    'correctedseriesname': u'Darker than Black',
-    'seasonnumber': 1, 'episodenumbers': [1],
-    'episodenames': [u'\u5951\u7d04\u306e\u661f\u306f\u6d41\u308c\u305f\u2026\u524d\u7de8']},
-
     {'input': u'Carniv\xe0le 1x11 - The Day of the Dead',
     'parsedseriesname': u'Carniv\xe0le',
     'correctedseriesname': u'Carniv\xe0le',
