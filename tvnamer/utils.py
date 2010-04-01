@@ -122,6 +122,12 @@ def applyCustomOutputReplacements(cfile):
     return _applyReplacements(cfile, Config['output_filename_replacements'])
 
 
+def applyCustomFullpathReplacements(cfile):
+    """Applies custom replacements to full path, wraps _applyReplacements
+    """
+    return _applyReplacements(cfile, Config['move_files_fullpath_replacements'])
+
+
 def cleanRegexedSeriesName(seriesname):
     """Cleans up series name by removing any . and _
     characters, along with any trailing hyphens.
@@ -571,6 +577,12 @@ class Renamer(object):
 
         # Join new filename onto new filepath
         new_fullpath = os.path.join(new_dir, old_filename)
+
+        if len(Config['move_files_fullpath_replacements']) > 0:
+            p("Before custom full path replacements: %s" % (new_fullpath))
+            new_fullpath = applyCustomFullpathReplacements(new_fullpath)
+
+        p("New path: %s" % new_fullpath)
 
         if create_dirs:
             print "Creating %s" % new_dir

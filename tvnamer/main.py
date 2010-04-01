@@ -158,7 +158,6 @@ def processFile(tvdb_instance, episode):
 
     if Config['move_files_enable']:
         newPath = getDestinationFolder(episode)
-        p("New path: %s" % newPath)
     else:
         newPath = None
 
