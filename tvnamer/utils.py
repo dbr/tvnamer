@@ -586,7 +586,7 @@ class Renamer(object):
         p("New path: %s" % new_fullpath)
 
         if create_dirs:
-            print "Creating %s" % new_dir
+            p("Creating %s" % new_dir)
             try:
                 os.makedirs(new_dir)
             except OSError, e:
@@ -602,19 +602,19 @@ class Renamer(object):
         if same_partition(self.filename, new_dir):
             if always_copy:
                 # Same partition, but forced to copy
-                print "copy %s to %s" % (self.filename, new_fullpath)
+                p("copy %s to %s" % (self.filename, new_fullpath))
                 shutil.copyfile(self.filename, new_fullpath)
             else:
                 # Same partition, just rename the file to move it
-                print "move %s to %s" % (self.filename, new_fullpath)
+                p("move %s to %s" % (self.filename, new_fullpath))
                 os.rename(self.filename, new_fullpath)
         else:
             # File is on different partition (different disc), copy it
-            print "copy %s to %s" % (self.filename, new_fullpath)
+            p("copy %s to %s" % (self.filename, new_fullpath))
             shutil.copyfile(self.filename, new_fullpath)
             if always_move:
                 # Forced to move file, we just trash old file
-                print "Deleting %s" % (self.filename)
+                p("Deleting %s" % (self.filename))
                 delete_file(self.filename)
 
         self.filename = new_fullpath
