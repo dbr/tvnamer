@@ -172,3 +172,29 @@ def test_multiple_replacements():
     expected_files = ['Scr_bs - [01x01] - My First D_y.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+def test_fullpath_replacements():
+    """Tests replacing strings in output path
+    """
+    out_data = run_tvnamer(
+    with_files = ['scrubs.s01e01.avi'],
+    with_config = """
+{
+    "move_files_enable": true,
+    "move_files_destination": "%(seriesname)s",
+    "move_files_fullpath_replacements": [
+        {"is_regex": true,
+        "match": "Scu.*?s",
+        "replacement": "A Test"}
+    ],
+    "always_rename": true,
+    "select_first": true
+}
+""")
+
+    expected_files = ['A Test/A Test - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
