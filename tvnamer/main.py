@@ -26,7 +26,7 @@ from config_defaults import defaults
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
 getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements,
-formatEpisodeNumbers)
+formatEpisodeNumbers, makeValidFilename)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
@@ -42,10 +42,12 @@ def log():
 def getDestinationFolder(episode):
     """Constructs the location to move/copy the file
     """
+
+    # Calls makeValidFilename on series name, as it must valid for a filename
     destdir = Config['move_files_destination'] % {
-        'seriesname': episode.seriesname,
+        'seriesname': makeValidFilename(episode.seriesname),
         'seasonnumber': episode.seasonnumber,
-        'episodenumbers': formatEpisodeNumbers(episode.episodenumbers)
+        'episodenumbers': makeValidFilename(formatEpisodeNumbers(episode.episodenumbers))
     }
     return destdir
 
