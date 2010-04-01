@@ -40,6 +40,7 @@ try:
     # os.path.relpath was added in 2.6, use custom implimentation if not found
     relpath = os.path.relpath
 except AttributeError:
+
     def relpath(path, start=None):
         """Return a relative version of a path"""
 

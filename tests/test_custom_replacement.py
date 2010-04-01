@@ -196,5 +196,3 @@ def test_fullpath_replacements():
     expected_files = ['A Test/A Test - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
-
-
