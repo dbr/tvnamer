@@ -73,6 +73,24 @@ files['s01e01_format'] = [
     'correctedseriesname': 'Arrested Development',
     'seasonnumber': 2, 'episodenumbers': [2],
     'episodenames': ['The One Where They Build a House']},
+
+    {'input': 'Horizon - s2008e02 - Total Isolation.avi',
+    'parsedseriesname': 'Horizon',
+    'correctedseriesname': 'Horizon',
+    'seasonnumber': 2008, 'episodenumbers': [2],
+    'episodenames': ['My First Day']},
+
+    {'input': 'Horizon.s2008e02.Total Isolation.avi',
+    'parsedseriesname': 'Horizon',
+    'correctedseriesname': 'Horizon',
+    'seasonnumber': 2008, 'episodenumbers': [2],
+    'episodenames': ['Total Isolation']},
+
+    {'input': 'Horizon - [2008x02] - Total Isolation.avi',
+    'parsedseriesname': 'Horizon',
+    'correctedseriesname': 'Horizon',
+    'seasonnumber': 2008, 'episodenumbers': [2],
+    'episodenames': ['Total Isolation']},
 ]
 
 files['misc'] = [
