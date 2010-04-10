@@ -190,7 +190,7 @@ defaults = {
         [Ss](?P<seasonnumber>[0-9]{2})
         [\.\- ]?
         (?P<episodenumber>[0-9]{2})
-        [^\\/]*$''',
+        [^0-9]*$''',
 
         # foo.1x09*
         '''^((?P<seriesname>.+?)[ \._\-])?       # show name and padding
