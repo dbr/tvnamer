@@ -92,6 +92,11 @@ files['s01e01_format'] = [
     'seasonnumber': 2008, 'episodenumbers': [3],
     'episodenames': ['What on Earth is Wrong With Gravity?']},
 
+    {'input': 'Scrubs.0101.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumbers': [1],
+    'episodenames': ['My First Day']},
 ]
 
 files['misc'] = [
