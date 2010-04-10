@@ -78,7 +78,7 @@ files['s01e01_format'] = [
     'parsedseriesname': 'Horizon',
     'correctedseriesname': 'Horizon',
     'seasonnumber': 2008, 'episodenumbers': [2],
-    'episodenames': ['My First Day']},
+    'episodenames': ['Total Isolation']},
 
     {'input': 'Horizon.s2008e02.Total Isolation.avi',
     'parsedseriesname': 'Horizon',
@@ -86,11 +86,12 @@ files['s01e01_format'] = [
     'seasonnumber': 2008, 'episodenumbers': [2],
     'episodenames': ['Total Isolation']},
 
-    {'input': 'Horizon - [2008x02] - Total Isolation.avi',
+    {'input': 'Horizon - [2008x03] - Total Isolation.avi',
     'parsedseriesname': 'Horizon',
     'correctedseriesname': 'Horizon',
-    'seasonnumber': 2008, 'episodenumbers': [2],
-    'episodenames': ['Total Isolation']},
+    'seasonnumber': 2008, 'episodenumbers': [3],
+    'episodenames': ['What on Earth is Wrong With Gravity?']},
+
 ]
 
 files['misc'] = [
