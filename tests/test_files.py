@@ -237,6 +237,12 @@ files['unicode'] = [
     'correctedseriesname': u'The Big Bang Theory',
     'seasonnumber': 2, 'episodenumbers': [7],
     'episodenames': [u'The Panty Pi\xf1ata Polarization']},
+
+    {'input': u'Der gefa\u0308hrlichste Job Alaskas s01e01.avi',
+    'parsedseriesname': u'Der gefa\u0308hrlichste Job Alaskas',
+    'correctedseriesname': u'Der gefa\u0308hrlichste Job Alaskas',
+    'seasonnumber': 1, 'episodenumbers': [1],
+    'episodenames': [u'FIXME']},
 ]
 
 files['anime'] = [
