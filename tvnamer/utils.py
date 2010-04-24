@@ -587,7 +587,7 @@ class Renamer(object):
         p("New path: %s" % new_fullpath)
 
         if getPathPreview:
-            return new_dir
+            return new_fullpath
 
         if create_dirs:
             p("Creating %s" % new_dir)
