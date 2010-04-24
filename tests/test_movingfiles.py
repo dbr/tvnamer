@@ -148,3 +148,27 @@ def test_with_invalid_seriesname():
     expected_files = ['CSI_ Miami/CSI_ Miami - [01x01] - Golden Parachute.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+def test_with_invalid_seriesname_test2():
+    """Another test for series name containing invalid filename characters
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination": "%(seriesname)s",
+    "batch": true,
+    "move_files_fullpath_replacements": [
+         {"is_regex": true,
+          "match": "CSI_ Miami",
+          "replacement": "CSI"}]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['csi.miami.s01e01.avi'],
+        with_config = conf)
+
+    expected_files = ['CSI/CSI - [01x01] - Golden Parachute.avi']
+
+    verify_out_data(out_data, expected_files)
