@@ -9,6 +9,7 @@
 """Utilities for tvnamer, including filename parsing
 """
 
+import datetime
 import os
 import re
 import sys
@@ -268,6 +269,12 @@ class FileParser(object):
                 elif 'episodenumber' in namedgroups:
                     episodenumbers = [int(match.group('episodenumber')), ]
 
+                elif 'date' in namedgroups:
+                    dateMatch = re.match(Config['date_pattern'], match.group('date'))
+                    episodenumbers = [datetime.date(int(dateMatch.group(1)),
+                                                    int(dateMatch.group(2)),
+                                                    int(dateMatch.group(3)))]
+
                 else:
                     raise ConfigValueError(
                         "Regex does not contain episode number group, should"
@@ -277,6 +284,8 @@ class FileParser(object):
 
                 if 'seasonnumber' in namedgroups:
                     seasonnumber = int(match.group('seasonnumber'))
+                elif 'date' in namedgroups:
+                    seasonnumber = -1
                 else:
                     # No season number specified, usually for Anime
                     seasonnumber = None
@@ -482,7 +491,10 @@ class EpisodeInfo(object):
         episode_separator # used to join multiple episode numbers
         """
         # Format episode number into string, or a list
-        epno = formatEpisodeNumbers(self.episodenumbers)
+        if self.seasonnumber != -1:
+            epno = formatEpisodeNumbers(self.episodenumbers)
+        else:
+            epno = str(self.episodenumbers[0])
 
         # Data made available to config'd output file format
         if self.extension is None:
@@ -500,6 +512,8 @@ class EpisodeInfo(object):
         if self.episodename is None:
             if self.seasonnumber is None:
                 fname = Config['filename_without_episode_no_season'] % epdata
+            elif self.seasonnumber == -1:
+                fname = Config['filename_with_date_without_episode'] % epdata
             else:
                 fname = Config['filename_without_episode'] % epdata
         else:
@@ -511,6 +525,8 @@ class EpisodeInfo(object):
 
             if self.seasonnumber is None:
                 fname = Config['filename_with_episode_no_season'] % epdata
+            elif self.seasonnumber == -1:
+                fname = Config['fisename_with_date_and_episode'] % epdata
             else:
                 fname = Config['filename_with_episode'] % epdata
 

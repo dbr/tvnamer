@@ -98,6 +98,16 @@ defaults = {
         [ ]?[-_][ ]?(?P<episodenumber>\d+)
         [^\/]*$''',
 
+        # foo.2010.01.02.etc
+        '''
+        ^((?P<seriesname>.+?)[ \._\-])?          # show name
+        (?P<date>\d{4}                           # year
+        [ \._\-]                                 # separator
+        \d{2}                                    # month
+        [ \._\-]                                 # separator
+        \d{2})                                   # day
+        [^\/]*$''',
+
         # foo s01e23 s01e24 s01e25 *
         '''
         ^((?P<seriesname>.+?)[ \._\-])?          # show name
