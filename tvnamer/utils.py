@@ -526,7 +526,7 @@ class EpisodeInfo(object):
             if self.seasonnumber is None:
                 fname = Config['filename_with_episode_no_season'] % epdata
             elif self.seasonnumber == -1:
-                fname = Config['fisename_with_date_and_episode'] % epdata
+                fname = Config['filename_with_date_and_episode'] % epdata
             else:
                 fname = Config['filename_with_episode'] % epdata
 
