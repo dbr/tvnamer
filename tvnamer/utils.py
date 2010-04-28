@@ -275,9 +275,9 @@ class FileParser(object):
                             "Date-based regex must contain groups 'year', 'month' and 'day'")
                     match.group('year')
 
-                    episodenumbers = [datetime.date(int(dateMatch.group('year')),
-                                                    int(dateMatch.group('month')),
-                                                    int(dateMatch.group('day')))]
+                    episodenumbers = [datetime.date(int(match.group('year')),
+                                                    int(match.group('month')),
+                                                    int(match.group('day')))]
 
                 else:
                     raise ConfigValueError(
