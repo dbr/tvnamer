@@ -182,8 +182,9 @@ defaults = {
         )*
              [\-]                                # separator
              (?P<episodenumberend>[0-9]+)        # final episode num
-        [\.\- ]                                  # must have a separator (prevents 1x01-720p from being 720 episodes)
-        [^\/]*$''',
+        ([\.\- ].*                               # must have a separator (prevents 1x01-720p from being 720 episodes)
+        |
+        $)''',
 
         # foo.[1x09-11]*
         '''^(?P<seriesname>.+?)[ \._\-]          # show name and padding
