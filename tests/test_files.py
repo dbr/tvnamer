@@ -97,6 +97,12 @@ files['s01e01_format'] = [
     'correctedseriesname': 'Scrubs',
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': ['My First Day']},
+
+    {'input': 'Scrubs 1x01-720p.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumbers': [1],
+    'episodenames': ['My First Day']},
 ]
 
 files['misc'] = [
@@ -216,7 +222,6 @@ files['multiple_episodes'] = [
     'correctedseriesname': 'Scrubs',
     'seasonnumber': 1, 'episodenumbers': [22, 23],
     'episodenames': ['My Occurrence', 'My Hero']},
-
 ]
 
 files['unicode'] = [
