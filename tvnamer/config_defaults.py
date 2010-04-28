@@ -251,18 +251,15 @@ defaults = {
 
         # foo.2010.01.02.etc
         '''
-        ^((?P<seriesname>.+?)[ \._\-])?          # show name
-        (?P<date>\d{4}                           # year
+        ^((?P<seriesname>.+?)[ \._\-])?         # show name
+        (?P<year>\d{4})                          # year
         [ \._\-]                                 # separator
-        \d{2}                                    # month
+        (?P<month>\d{2})                         # month
         [ \._\-]                                 # separator
-        \d{2})                                   # day
+        (?P<day>\d{2})                           # day
         [^\/]*$''',
 
     ],
-
-    # Format to parse date with
-    'date_pattern': "(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})",
 
     # Formats for renamed files. Variations for with/without episode,
     # and with/without season number.

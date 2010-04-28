@@ -269,8 +269,11 @@ class FileParser(object):
                 elif 'episodenumber' in namedgroups:
                     episodenumbers = [int(match.group('episodenumber')), ]
 
-                elif 'date' in namedgroups:
-                    dateMatch = re.match(Config['date_pattern'], match.group('date'))
+                elif 'year' in namedgroups or 'month' in namedgroups or 'day' in namedgroups:
+                    if not all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
+                        raise ConfigValueError(
+                            "Date-based regex must contain groups 'year', 'month' and 'day'")
+                    match.group('year')
 
                     episodenumbers = [datetime.date(int(dateMatch.group('year')),
                                                     int(dateMatch.group('month')),
