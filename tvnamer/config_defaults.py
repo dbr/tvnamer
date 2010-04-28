@@ -210,6 +210,16 @@ defaults = {
         [Ee]?(?P<episodenumber>[0-9]+)
         [^\\/]*$''',
 
+        # foo.2010.01.02.etc
+        '''
+        ^((?P<seriesname>.+?)[ \._\-])?         # show name
+        (?P<year>\d{4})                          # year
+        [ \._\-]                                 # separator
+        (?P<month>\d{2})                         # month
+        [ \._\-]                                 # separator
+        (?P<day>\d{2})                           # day
+        [^\/]*$''',
+
         # Foo - S2 E 02 - etc
         '''^(?P<seriesname>.+?)[ ]?[ \._\-][ ]?
         [Ss](?P<seasonnumber>[0-9]+)[\.\- ]?
@@ -248,16 +258,6 @@ defaults = {
         [Ee](?P<episodenumber>[0-9]+)            # E123
         [\._ -][^\\/]*$                          # More padding, then anything
         ''',
-
-        # foo.2010.01.02.etc
-        '''
-        ^((?P<seriesname>.+?)[ \._\-])?         # show name
-        (?P<year>\d{4})                          # year
-        [ \._\-]                                 # separator
-        (?P<month>\d{2})                         # month
-        [ \._\-]                                 # separator
-        (?P<day>\d{2})                           # day
-        [^\/]*$''',
 
     ],
 
