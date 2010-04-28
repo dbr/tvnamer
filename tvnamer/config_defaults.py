@@ -260,6 +260,9 @@ defaults = {
         '''
     ],
 
+    # Format to parse date with
+    'date_pattern': "(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})",
+
     # Formats for renamed files. Variations for with/without episode,
     # and with/without season number.
     'filename_with_episode':
