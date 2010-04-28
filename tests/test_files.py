@@ -9,6 +9,9 @@
 """Test file names for tvnamer
 """
 
+import datetime
+
+
 files = {}
 
 files['default_format'] = [
@@ -294,6 +297,13 @@ files['anime'] = [
     'episodenames': ['Broken World']},
 ]
 
+files['misc'] = [
+    {'input': 'Scrubs.2001-10-02.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': None, 'episodenumbers': [datetime.date(2001, 10, 2)],
+    'episodenames': ['My First Day']},
+]
 
 def test_verify_test_data_sanity():
     """Checks all test data is consistent
