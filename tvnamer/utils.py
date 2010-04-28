@@ -271,9 +271,10 @@ class FileParser(object):
 
                 elif 'date' in namedgroups:
                     dateMatch = re.match(Config['date_pattern'], match.group('date'))
-                    episodenumbers = [datetime.date(int(dateMatch.group(1)),
-                                                    int(dateMatch.group(2)),
-                                                    int(dateMatch.group(3)))]
+
+                    episodenumbers = [datetime.date(int(dateMatch.group('year')),
+                                                    int(dateMatch.group('month')),
+                                                    int(dateMatch.group('day')))]
 
                 else:
                     raise ConfigValueError(
