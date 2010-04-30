@@ -61,6 +61,17 @@ def getEpisodeName(tvdb_instance, episode):
         # Series was found, use corrected series name
         correctedShowName = show['seriesname']
 
+    if episode.seasonnumber == -1:
+        # Date-based episode
+        epnames = []
+        for cepno in episode.episodenumbers:
+            try:
+                epnames.append(show.airedOn(cepno)['episodename'])
+            except tvdb_episodenotfound:
+                raise EpisodeNotFound(
+                    "Episode that aired on %s could not be found" % (
+                    cepno))
+
     if episode.seasonnumber is None:
         # Series without concept of seasons have all episodes in season 1
         seasonnumber = 1
