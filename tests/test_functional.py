@@ -185,26 +185,3 @@ def test_not_recursive():
         run_on_directory = True)
 
     verify_out_data(out_data, expected_files)
-
-
-def test_not_recursive():
-    """Tests the nested files aren't found when not recursive
-    """
-    input_files = [
-        'Scrubs.s01e01.avi',
-        'nested/subdir/Scrubs.s01e02.avi']
-
-    expected_files = [
-        'Scrubs - [01x01] - My First Day.avi',
-        'nested/subdir/Scrubs - [01x02] - My Mentor.avi']
-
-    out_data = run_tvnamer(
-        with_files = input_files,
-        with_flags = ['--recursive', '--batch'],
-        run_on_directory = True)
-
-    verify_out_data(out_data, expected_files)
-
-
-if __name__ == '__main__':
-    test_not_overwritting_unicode_filename()
