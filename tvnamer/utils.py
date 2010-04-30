@@ -288,7 +288,7 @@ class FileParser(object):
 
                 if 'seasonnumber' in namedgroups:
                     seasonnumber = int(match.group('seasonnumber'))
-                elif 'date' in namedgroups:
+                elif 'year' in namedgroups and 'month' in namedgroups and 'day' in namedgroups:
                     seasonnumber = -1
                 else:
                     # No season number specified, usually for Anime

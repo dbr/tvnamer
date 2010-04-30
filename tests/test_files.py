@@ -301,7 +301,7 @@ files['misc'] = [
     {'input': 'Scrubs.2001-10-02.avi',
     'parsedseriesname': 'Scrubs',
     'correctedseriesname': 'Scrubs',
-    'seasonnumber': None, 'episodenumbers': [datetime.date(2001, 10, 2)],
+    'seasonnumber': -1, 'episodenumbers': [datetime.date(2001, 10, 2)],
     'episodenames': ['My First Day']},
 ]
 
