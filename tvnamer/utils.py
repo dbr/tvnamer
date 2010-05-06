@@ -404,7 +404,7 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
         # : is technically allowed, but Finder will treat it as / and will
         # generally cause weird behaviour, so treat it as invalid.
         blacklist = r"/:"
-    elif sysname == 'Linux':
+    elif sysname in ['Linux', 'FreeBSD']:
         blacklist = r"/"
     else:
         # platform.system docs say it could also return "Windows" or "Java".
