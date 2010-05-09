@@ -39,3 +39,22 @@ task :test do
   title("Unit tests")
   puts `nosetests`
 end
+
+desc "Upload current version to PyPi"
+task :topypi => :test do
+  cur_file = File.open("tvnamer/__init__.py").read()
+  tvnamer_version = cur_file.scan(/__version__ = \((.*)\)/)
+  tvnamer_version = tvnamer_version[0][0].to_f
+
+  puts "Build sdist and send tvnamer v#{tvnamer_version} to PyPi?"
+  if $stdin.gets.chomp == "y"
+    puts "Sending source-dist (sdist) to PyPi"
+
+    if system("python setup.py sdist register upload")
+      print "tvnamer uploaded!"
+    end
+
+  else
+    puts "Cancelled"
+  end
+end
