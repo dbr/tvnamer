@@ -305,6 +305,15 @@ files['misc'] = [
     'episodenames': ['My First Day']},
 ]
 
+files['x_of_x'] = [
+    {'input': 'Scrubs.1of5.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': None, 'episodenumbers': [1],
+    'episodenames': ['My First Day']},
+]
+
+
 def test_verify_test_data_sanity():
     """Checks all test data is consistent
     """

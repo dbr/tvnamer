@@ -240,6 +240,16 @@ defaults = {
         .*$                                      # rest of file
         ''',
 
+        # show.name.e123.abc
+        '''^(?P<seriesname>.+?)                  # Show name
+        [ \._\-]                                 # Padding
+        (?P<episodenumber>[0-9]+)                # 2
+        of                                       # of
+        [ \._\-]?                                # Padding
+        \d+                                      # 6
+        ([\._ -]|$|[^\\/]*$)                     # More padding, then anything
+        ''',
+
         # foo.103*
         '''^(?P<seriesname>.+)[ \._\-]
         (?P<seasonnumber>[0-9]{1})
