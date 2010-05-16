@@ -145,6 +145,8 @@ If for example you wish to change the default language used to retrieve data, ch
         "language": "fr"
     }
 
+If `search_all_languages` is true, tvnamer will return multilingual search results. If false, it will return results only in the preferred language.
+
 For an always up-to-date description of all config options, see the comments in [`config_defaults.py`](http://github.com/dbr/tvnamer/blob/master/tvnamer/config_defaults.py)
 
 # Custom output filenames
