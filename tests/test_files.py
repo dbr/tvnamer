@@ -225,6 +225,13 @@ files['multiple_episodes'] = [
     'correctedseriesname': 'Scrubs',
     'seasonnumber': 1, 'episodenumbers': [22, 23],
     'episodenames': ['My Occurrence', 'My Hero']},
+
+    {'input': 'Scrubs.S01E01-E04.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumbers': [1, 2, 3, 4],
+    'episodenames': ['My First Day', 'My Mentor', 'My Best Friend\'s Mistake', 'My Old Lady']},
+
 ]
 
 files['unicode'] = [
