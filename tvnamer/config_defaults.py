@@ -158,7 +158,7 @@ defaults = {
              [Ee]?[0-9]+
         )*
              [\-]                                # separator
-             [Ee]?(?P<episodenumberend>[0-9]+)        # final episode num
+             [Ee]?(?P<episodenumberend>[0-9]+)   # final episode num
         [\.\- ]                                  # must have a separator (prevents s01e01-720p from being 720 episodes)
         [^\/]*$''',
 
@@ -212,7 +212,7 @@ defaults = {
 
         # foo.2010.01.02.etc
         '''
-        ^((?P<seriesname>.+?)[ \._\-])?         # show name
+        ^((?P<seriesname>.+?)[ \._\-])?          # show name
         (?P<year>\d{4})                          # year
         [ \._\-]                                 # separator
         (?P<month>\d{2})                         # month

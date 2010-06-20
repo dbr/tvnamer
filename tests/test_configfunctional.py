@@ -78,7 +78,7 @@ def test_issue_55():
     ]
 
     expected_files = [
-        u'NCIS - [01x16] - Be\u0302te Noire.avi'
+        u'NCIS - [01x16] - Be\u0302te Noire.avi',
     ]
 
     conf = """
