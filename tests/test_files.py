@@ -245,6 +245,12 @@ files['unicode'] = [
     'correctedseriesname': u'The Big Bang Theory',
     'seasonnumber': 2, 'episodenumbers': [7],
     'episodenames': [u'The Panty Pi\xf1ata Polarization']},
+
+    {'input': u'NCIS - 1x16.avi',
+    'parsedseriesname': u'NCIS',
+    'correctedseriesname': u'NCIS',
+    'seasonnumber': 1, 'episodenumbers': [16],
+    'episodenames': [u'B\xeate Noire']},
 ]
 
 files['anime'] = [
