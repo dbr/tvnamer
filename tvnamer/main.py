@@ -277,6 +277,8 @@ def main():
 
     opts, args = opter.parse_args()
 
+    args = [x.decode("utf-8") for x in args]
+
     if opts.verbose:
         logging.basicConfig(
             level = logging.DEBUG,
