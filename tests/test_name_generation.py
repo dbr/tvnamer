@@ -26,7 +26,7 @@ def verify_name_gen(curtest, tvdb_instance):
             seriesname = curtest['parsedseriesname'],
             seasonnumber = curtest['seasonnumber'],
             episodenumbers = curtest['episodenumbers'])
-    elif any([isinstance(x, datetime.datetime) for x in curtest['episodenumbers']]):
+    elif any([isinstance(x, datetime.date) for x in curtest['episodenumbers']]):
         ep = DatedEpisodeInfo(
             seriesname = curtest['parsedseriesname'],
             episodenumbers = curtest['episodenumbers'])
