@@ -184,7 +184,7 @@ def processFile(tvdb_instance, episode):
 
         if Config['move_files_enable']:
             newPath = getDestinationFolder(episode)
-            previewPath = doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+            doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
 
             if Config['move_files_confirmation']:
                 ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
