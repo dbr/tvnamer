@@ -320,7 +320,7 @@ files['date_based'] = [
     'parsedseriesname': 'yes we canberra',
     'correctedseriesname': 'Yes We Canberra',
     'episodenumbers': [datetime.date(2010, 8, 18)],
-    'episodenames': ['My First Day']},
+    'episodenames': ['Episode 4']},
 ]
 
 files['x_of_x'] = [
