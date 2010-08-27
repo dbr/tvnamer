@@ -9,20 +9,32 @@
 """Test tvnamer's EpisodeInfo file name generation
 """
 
-import unittest
+import datetime
+
 from helpers import assertEquals
 
-from tvnamer.utils import getEpisodeName, EpisodeInfo
+from tvnamer.utils import (getEpisodeName, EpisodeInfo, DatedEpisodeInfo,
+NoSeasonEpisodeInfo)
 from test_files import files
 
 from tvdb_api import Tvdb
 
 
 def verify_name_gen(curtest, tvdb_instance):
-    ep = EpisodeInfo(
-        seriesname = curtest['parsedseriesname'],
-        seasonnumber = curtest['seasonnumber'],
-        episodenumbers= curtest['episodenumbers'])
+    if "seasonnumber" in curtest:
+        ep = EpisodeInfo(
+            seriesname = curtest['parsedseriesname'],
+            seasonnumber = curtest['seasonnumber'],
+            episodenumbers = curtest['episodenumbers'])
+    elif any([isinstance(x, datetime.datetime) for x in curtest['episodenumbers']]):
+        ep = DatedEpisodeInfo(
+            seriesname = curtest['parsedseriesname'],
+            episodenumbers = curtest['episodenumbers'])
+    else:
+        ep = NoSeasonEpisodeInfo(
+            seriesname = curtest['parsedseriesname'],
+            episodenumbers = curtest['episodenumbers'])
+
     correctedSeriesName, epName = getEpisodeName(tvdb_instance, ep)
 
     assert correctedSeriesName is not None, "Corrected series name was none"
