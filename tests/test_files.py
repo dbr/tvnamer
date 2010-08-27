@@ -310,11 +310,16 @@ files['anime'] = [
     'episodenames': ['Broken World']},
 ]
 
-files['misc'] = [
+files['date_based'] = [
     {'input': 'Scrubs.2001-10-02.avi',
     'parsedseriesname': 'Scrubs',
     'correctedseriesname': 'Scrubs',
-    'seasonnumber': -1, 'episodenumbers': [datetime.date(2001, 10, 2)],
+    'episodenumbers': [datetime.date(2001, 10, 2)],
+    'episodenames': ['My First Day']},
+    {'input': 'yes.we.canberra.2010.08.18.pdtv.xvid',
+    'parsedseriesname': 'yes we canberra',
+    'correctedseriesname': 'Yes We Canberra',
+    'episodenumbers': [datetime.date(2010, 8, 18)],
     'episodenames': ['My First Day']},
 ]
 
