@@ -328,15 +328,15 @@ files['x_of_x'] = [
 
 
 def test_verify_test_data_sanity():
-    """Checks all test data is consistent
+    """Checks all test data is consistent.
+
+    Keys within each test category must be consistent, but keys can vary
+    category to category. E.g date-based episodes do not have a season number
     """
     from helpers import assertEquals
 
-    keys = []
-    for alltests in files.values():
-        for ctest in alltests:
-            keys.append(ctest.keys())
-
-    for k1 in keys:
-        for k2 in keys:
-            assertEquals(sorted(k1), sorted(k2))
+    for test_category, testcases in files.items():
+        keys = [ctest.keys() for ctest in testcases]
+        for k1 in keys:
+            for k2 in keys:
+                assertEquals(sorted(k1), sorted(k2))
