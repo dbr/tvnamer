@@ -12,3 +12,9 @@
 
 def assertEquals(a, b):
     assert a == b, "Error, %r not equal to %r" % (a, b)
+
+
+def assertType(obj, type):
+    assert isinstance(obj, type), "Expecting %s, got %r" % (
+        type(obj),
+        type)
