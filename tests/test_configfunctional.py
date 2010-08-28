@@ -10,8 +10,10 @@
 """
 
 from functional_runner import run_tvnamer, verify_out_data
+from nose.plugins.attrib import attr
 
 
+@attr("functional")
 def test_batchconfig():
     """Test configured batch mode works
     """
@@ -31,6 +33,7 @@ def test_batchconfig():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_skip_file_on_error():
     """Test the "skip file on error" config option works
     """
@@ -50,6 +53,7 @@ def test_skip_file_on_error():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_do_not_skip_file_on_error():
     """Test setting "skip file on error" config option to False
     """

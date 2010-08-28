@@ -10,8 +10,10 @@
 """
 
 from functional_runner import run_tvnamer, verify_out_data
+from nose.plugins.attrib import attr
 
 
+@attr("functional")
 def test_no_extensions():
     """Tests empty list of extensions is parsed as expected
     """
@@ -33,6 +35,7 @@ def test_no_extensions():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_single_extensions():
     """Tests one valid extension with multiple files
     """

@@ -10,8 +10,10 @@
 """
 
 from functional_runner import run_tvnamer, verify_out_data
+from nose.plugins.attrib import attr
 
 
+@attr("functional")
 def test_simple_single_file():
     """Test most simple usage
     """
@@ -25,6 +27,7 @@ def test_simple_single_file():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_simple_multiple_files():
     """Tests simple interactive usage with multiple files
     """
@@ -48,6 +51,7 @@ def test_simple_multiple_files():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_simple_batch_functionality():
     """Tests renaming single files at a time, in batch mode
     """
@@ -76,6 +80,7 @@ def test_simple_batch_functionality():
         yield _the_test
 
 
+@attr("functional")
 def test_interactive_always_option():
     """Tests the "a" always rename option in interactive UI
     """
@@ -100,6 +105,7 @@ def test_interactive_always_option():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_unicode_in_inputname():
     """Tests parsing a file with unicode in the input filename
     """
@@ -116,6 +122,7 @@ def test_unicode_in_inputname():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_unicode_in_search_results():
     """Show with unicode in search results
     """
@@ -132,6 +139,7 @@ def test_unicode_in_search_results():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_renaming_always_doesnt_overwrite():
     """If trying to rename a file that exists, should not create new file
     """
@@ -150,6 +158,7 @@ def test_renaming_always_doesnt_overwrite():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_not_overwritting_unicode_filename():
     """Test no error occurs when warning about a unicode filename being overwritten
     """
@@ -168,6 +177,7 @@ def test_not_overwritting_unicode_filename():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_not_recursive():
     """Tests the nested files aren't found when not recursive
     """

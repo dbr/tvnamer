@@ -10,8 +10,10 @@
 """
 
 from functional_runner import run_tvnamer, verify_out_data
+from nose.plugins.attrib import attr
 
 
+@attr("functional")
 def test_simple_realtive_move():
     """Move file to simple relative static dir
     """
@@ -32,6 +34,7 @@ def test_simple_realtive_move():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_dynamic_destination():
     """Move file to simple relative static dir
     """
@@ -51,6 +54,7 @@ def test_dynamic_destination():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_cli_destination():
     """Tests specifying the destination via command line argument
     """
@@ -64,6 +68,7 @@ def test_cli_destination():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_move_interactive_allyes():
     """Tests interactive UI for moving all files
     """
@@ -85,6 +90,7 @@ def test_move_interactive_allyes():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_move_interactive_allno():
     """Tests interactive UI allows not moving any files
     """
@@ -106,6 +112,7 @@ def test_move_interactive_allno():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_move_interactive_somefiles():
     """Tests interactive UI allows not renaming some files, renaming/moving others
 
@@ -131,6 +138,7 @@ def test_move_interactive_somefiles():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_with_invalid_seriesname():
     """Tests series name containing invalid filename characters
     """
@@ -150,6 +158,7 @@ def test_with_invalid_seriesname():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_with_invalid_seriesname_test2():
     """Another test for series name containing invalid filename characters
     """

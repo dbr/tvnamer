@@ -10,8 +10,10 @@
 """
 
 from functional_runner import run_tvnamer, verify_out_data
+from nose.plugins.attrib import attr
 
 
+@attr("functional")
 def test_simple_input_replacements():
     """Tests replacing strings in input files
     """
@@ -34,6 +36,7 @@ def test_simple_input_replacements():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_simple_output_replacements():
     """Tests replacing strings in input files
     """
@@ -56,6 +59,7 @@ def test_simple_output_replacements():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_regex_input_replacements():
     """Tests regex replacement in input files
     """
@@ -78,6 +82,7 @@ def test_regex_input_replacements():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_regex_output_replacements():
     """Tests regex replacement in output files
     """
@@ -100,6 +105,7 @@ def test_regex_output_replacements():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_replacing_spaces():
     """Tests more practical use of replacements, removing spaces
     """
@@ -122,6 +128,7 @@ def test_replacing_spaces():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_replacing_ands():
     """Tests removind "and" and "&" from input files
     """
@@ -149,6 +156,7 @@ def test_replacing_ands():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_multiple_replacements():
     """Tests multiple replacements on one file
     """
@@ -174,6 +182,7 @@ def test_multiple_replacements():
     verify_out_data(out_data, expected_files)
 
 
+@attr("functional")
 def test_fullpath_replacements():
     """Tests replacing strings in output path
     """
