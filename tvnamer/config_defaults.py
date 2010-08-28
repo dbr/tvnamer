@@ -206,8 +206,10 @@ defaults = {
 
         # foo.s01.e01, foo.s01_e01
         '''^((?P<seriesname>.+?)[ \._\-])?
+        \[?
         [Ss](?P<seasonnumber>[0-9]+)[\.\- ]?
         [Ee]?(?P<episodenumber>[0-9]+)
+        \]?
         [^\\/]*$''',
 
         # foo.2010.01.02.etc
