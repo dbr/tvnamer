@@ -115,10 +115,7 @@ def processFile(tvdb_instance, episode):
         replaced = applyCustomInputReplacements(episode.fullfilename)
         p("# With custom replacements: %s" % (replaced))
 
-    p("# Detected series: %s (season: %s, episode: %s)" % (
-        episode.seriesname,
-        episode.seasonnumber,
-        ", ".join([str(x) for x in episode.episodenumbers])))
+    p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
 
     try:
         correctedSeriesName, epName = getEpisodeName(tvdb_instance, episode)
@@ -255,7 +252,7 @@ def tvnamer(paths):
     p("# Found %d episode" % len(episodes_found) + ("s" * (len(episodes_found) > 1)))
 
     # Sort episodes by series name, season and episode number
-    episodes_found.sort(key = lambda x: (x.seriesname, x.seasonnumber, x.episodenumbers))
+    episodes_found.sort(key = lambda x: x.sortable_info())
 
     tvdb_instance = Tvdb(
         interactive=not Config['select_first'],

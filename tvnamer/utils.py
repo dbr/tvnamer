@@ -510,7 +510,19 @@ class EpisodeInfo(object):
     def fullfilename(self):
         return u"%s.%s" % (self.filename, self.extension)
 
-    def generateFilename(self):
+    def sortable_info(self):
+        """Returns a tuple of sortable information
+        """
+        return (self.seriesname, self.seasonnumber, self.episodenumbers)
+
+    def number_string(self):
+        """Used in UI
+        """
+        return "season: %s, episode: %s" % (
+            self.seasonnumber,
+            ", ".join([str(x) for x in self.episodenumbers]))
+
+    def generateFilename(self): #TODO: Simplify this method
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found
@@ -580,15 +592,27 @@ class DatedEpisodeInfo(EpisodeInfo):
         self.episodename = episodename
         self.fullpath = filename
 
-    @property
-    def seasonnumber(self):
-        import warnings
-        warnings.warn("DatedEpisodeInfo should not have a season attribute")
-        return None
+    def sortable_info(self):
+        """Returns a tuple of sortable information
+        """
+        return (self.seriesname, self.episodenumbers)
+
+    def number_string(self):
+        """Used in UI
+        """
+        return "episode: %s" % (
+            ", ".join([str(x) for x in self.episodenumbers]))
 
     def generateFilename(self):
         # Format episode number into string, or a list
         dates = str(self.episodenumbers[0])
+        if isinstance(self.episodename, list):
+            prep_episodename = formatEpisodeName(
+                self.episodename,
+                join_with = Config['multiep_join_name_with']
+            )
+
+        episodename = self.episodename[0]
 
         # Data made available to config'd output file format
         if self.extension is None:
@@ -598,29 +622,15 @@ class DatedEpisodeInfo(EpisodeInfo):
 
         epdata = {
             'seriesname': self.seriesname,
-            'seasonno': self.seasonnumber,
             'episode': dates,
-            'episodename': self.episodename,
+            'dates': dates
+            'episodename': prep_episodename,
             'ext': prep_extension}
 
         if self.episodename is None:
-            if self.seasonnumber is None:
-                fname = Config['filename_without_episode_no_season'] % epdata
-            else:
-                fname = Config['filename_without_episode'] % epdata
+            fname = Config['filename_with_date_without_episode'] % epdata
         else:
-            if isinstance(self.episodename, list):
-                epdata['episodename'] = formatEpisodeName(
-                    self.episodename,
-                    join_with = Config['multiep_join_name_with']
-                )
-
-            if self.seasonnumber is None:
-                fname = Config['filename_with_episode_no_season'] % epdata
-            elif self.seasonnumber == -1:
-                fname = Config['filename_with_date_and_episode'] % epdata
-            else:
-                fname = Config['filename_with_episode'] % epdata
+            fname = Config['filename_with_date_and_episode'] % epdata
 
         return makeValidFilename(
             fname,
@@ -641,11 +651,16 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
         self.episodename = episodename
         self.fullpath = filename
 
-    @property
-    def seasonnumber(self):
-        import warnings
-        warnings.warn("Episodes without season no longer have a season attribute")
-        return None
+    def sortable_info(self):
+        """Returns a tuple of sortable information
+        """
+        return (self.seriesname, self.episodenumbers)
+
+    def number_string(self):
+        """Used in UI
+        """
+        return "episode: %s" % (
+            ", ".join([str(x) for x in self.episodenumbers]))
 
     def generateFilename(self):
         """

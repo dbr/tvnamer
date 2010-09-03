@@ -284,6 +284,12 @@ defaults = {
     'filename_without_episode_no_season':
      '%(seriesname)s - [%(episode)s]%(ext)s',
 
+    'filename_with_date_and_episode':
+     '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
+
+    'filename_with_date_without_episode':
+     '%(seriesname)s - [%(episode)s]%(ext)s',
+
     # Used to join multiple episode names together
     'multiep_join_name_with': ', ',
 
