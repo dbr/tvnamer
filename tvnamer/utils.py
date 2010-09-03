@@ -611,8 +611,8 @@ class DatedEpisodeInfo(EpisodeInfo):
                 self.episodename,
                 join_with = Config['multiep_join_name_with']
             )
-
-        episodename = self.episodename[0]
+        else:
+            prep_episodename = self.episodename
 
         # Data made available to config'd output file format
         if self.extension is None:
@@ -623,7 +623,6 @@ class DatedEpisodeInfo(EpisodeInfo):
         epdata = {
             'seriesname': self.seriesname,
             'episode': dates,
-            'dates': dates
             'episodename': prep_episodename,
             'ext': prep_extension}
 
