@@ -40,7 +40,7 @@ def test_skip_file_on_error():
 
     conf = """
     {"skip_file_on_error": true,
-    "always_rename":true}
+    "always_rename": true}
     """
 
     out_data = run_tvnamer(
@@ -60,7 +60,7 @@ def test_do_not_skip_file_on_error():
 
     conf = """
     {"skip_file_on_error": false,
-    "always_rename":true}
+    "always_rename": true}
     """
 
     out_data = run_tvnamer(
@@ -71,6 +71,7 @@ def test_do_not_skip_file_on_error():
     expected_files = ['a fake episode - [01x01].avi']
 
     verify_out_data(out_data, expected_files)
+
 
 @attr("functional")
 def test_lowercase_names():

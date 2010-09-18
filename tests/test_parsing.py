@@ -11,8 +11,7 @@
 
 from helpers import assertEquals
 
-from tvnamer.utils import (FileParser, EpisodeInfo, DatedEpisodeInfo,
-NoSeasonEpisodeInfo)
+from tvnamer.utils import (FileParser, DatedEpisodeInfo, NoSeasonEpisodeInfo)
 
 from test_files import files
 

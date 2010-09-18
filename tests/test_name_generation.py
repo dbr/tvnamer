@@ -161,6 +161,7 @@ def test_no_series_number():
         ep.generateFilename(),
         'Scrubs - [02] - My Mentor')
 
+
 def test_downcase():
     """Simple episode name, converted to lowercase
     """
