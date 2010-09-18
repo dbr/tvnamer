@@ -71,3 +71,23 @@ def test_do_not_skip_file_on_error():
     expected_files = ['a fake episode - [01x01].avi']
 
     verify_out_data(out_data, expected_files)
+
+@attr("functional")
+def test_lowercase_names():
+    """Test setting "lowercase_filename" config option
+    """
+
+    conf = """
+    {"lowercase_filename": true,
+    "always_rename": true,
+    "select_first": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['scrubs - [01x01] - my first day.avi']
+
+    verify_out_data(out_data, expected_files)
