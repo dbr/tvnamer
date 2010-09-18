@@ -522,7 +522,7 @@ class EpisodeInfo(object):
             self.seasonnumber,
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def generateFilename(self): #TODO: Simplify this method
+    def generateFilename(self, lowercase = False): #TODO: Simplify this method
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found
@@ -568,6 +568,9 @@ class EpisodeInfo(object):
             else:
                 fname = Config['filename_with_episode'] % epdata
 
+        if lowercase or Config['lowercase_filename']:
+            fname = fname.lower()
+
         return makeValidFilename(
             fname,
             normalize_unicode = Config['normalize_unicode_filenames'],
@@ -603,7 +606,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         return "episode: %s" % (
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def generateFilename(self):
+    def generateFilename(self, lowercase = False):
         # Format episode number into string, or a list
         dates = str(self.episodenumbers[0])
         if isinstance(self.episodename, list):
@@ -630,6 +633,9 @@ class DatedEpisodeInfo(EpisodeInfo):
             fname = Config['filename_with_date_without_episode'] % epdata
         else:
             fname = Config['filename_with_date_and_episode'] % epdata
+
+        if lowercase or Config['lowercase_filename']:
+            fname = fname.lower()
 
         return makeValidFilename(
             fname,
@@ -661,7 +667,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
         return "episode: %s" % (
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def generateFilename(self):
+    def generateFilename(self, lowercase = False):
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found
@@ -694,6 +700,9 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
                 )
 
             fname = Config['filename_with_episode_no_season'] % epdata
+
+        if lowercase or Config['lowercase_filename']:
+            fname = fname.lower()
 
         return makeValidFilename(
             fname,

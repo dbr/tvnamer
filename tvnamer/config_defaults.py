@@ -41,6 +41,9 @@ defaults = {
     # removing characters than can't be translated.
     'normalize_unicode_filenames': False,
 
+    # Convert output filenames to lower case (applied after replacements)
+    'lowercase_filename': False,
+
     # Replacement characters for invalid filename characters
     'replace_invalid_characters_with': '_',
 
