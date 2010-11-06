@@ -393,10 +393,11 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
     # If the filename starts with a . prepend it with an underscore, so it
     # doesn't become hidden.
 
-    # This is done before calling splitext to handle filename of "."
+    # This is done before calling splitext to handle filename of ".", as
     # splitext acts differently in python 2.5 and 2.6 - 2.5 returns ('', '.')
     # and 2.6 returns ('.', ''), so rather than special case '.', this
-    # special-cases all files starting with "." equally (since dotfiles have)
+    # special-cases all files starting with "." equally (since dotfiles have
+    # no extension)
     if value.startswith("."):
         value = "_" + value
 
