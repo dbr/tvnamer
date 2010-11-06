@@ -271,7 +271,7 @@ files['anime'] = [
     'parsedseriesname': 'Fullmetal Alchemist Brotherhood',
     'correctedseriesname': 'Fullmetal Alchemist: Brotherhood',
     'seasonnumber': None, 'episodenumbers': [2],
-    'episodenames': ['The Day of the Beginning']},
+    'episodenames': ['The First Day']},
 
     {'input': '[Shinsen-Subs] Armored Trooper Votoms - Pailsen Files - 01 [9E3F1D1C]',
     'parsedseriesname': 'armored trooper votoms - pailsen files',
