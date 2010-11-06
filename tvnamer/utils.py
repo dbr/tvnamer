@@ -458,6 +458,7 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
             new_length = max_len - len(value)
             extension = extension[:new_length]
         else:
+            # File name is longer than extension, truncate filename.
             new_length = max_len - len(extension)
             value = value[:new_length]
 
@@ -474,6 +475,7 @@ def formatEpisodeNumbers(episodenumbers):
             Config['episode_single'] % x for x in episodenumbers)
 
     return epno
+
 
 class EpisodeInfo(object):
     """Stores information (season, episode number, episode name), and contains
@@ -669,14 +671,6 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
             ", ".join([str(x) for x in self.episodenumbers]))
 
     def generateFilename(self, lowercase = False):
-        """
-        Uses the following config options:
-        filename_with_episode # Filename when episode name is found
-        filename_without_episode # Filename when no episode can be found
-        episode_single # formatting for a single episode number
-        episode_separator # used to join multiple episode numbers
-        """
-
         epno = formatEpisodeNumbers(self.episodenumbers)
 
         # Data made available to config'd output file format
