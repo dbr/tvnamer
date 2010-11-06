@@ -148,11 +148,10 @@ def test_no_name_no_ext():
 
 
 def test_no_series_number():
-    """Episode without series number
+    """Episode without season number
     """
-    ep = EpisodeInfo(
+    ep = NoSeasonEpisodeInfo(
         seriesname = 'Scrubs',
-        seasonnumber = None,
         episodenumbers = [2],
         episodename = 'My Mentor',
         filename = None)
