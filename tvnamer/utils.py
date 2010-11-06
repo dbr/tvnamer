@@ -553,23 +553,14 @@ class EpisodeInfo(object):
             'ext': prep_extension}
 
         if self.episodename is None:
-            if self.seasonnumber is None:
-                fname = Config['filename_without_episode_no_season'] % epdata
-            else:
-                fname = Config['filename_without_episode'] % epdata
+            fname = Config['filename_without_episode'] % epdata
         else:
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
                     join_with = Config['multiep_join_name_with']
                 )
-
-            if self.seasonnumber is None:
-                fname = Config['filename_with_episode_no_season'] % epdata
-            elif self.seasonnumber == -1:
-                fname = Config['filename_with_date_and_episode'] % epdata
-            else:
-                fname = Config['filename_with_episode'] % epdata
+            fname = Config['filename_with_episode'] % epdata
 
         if lowercase or Config['lowercase_filename']:
             fname = fname.lower()
