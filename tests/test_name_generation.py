@@ -136,8 +136,8 @@ def test_no_name():
         'Scrubs - [01x02].avi')
 
 
-def test_no_name_no_ext():
-    """Episode with no name or extension
+def test_episode_no_name_no_ext():
+    """EpisodeInfo with no name or extension
     """
     ep = EpisodeInfo(
         seriesname = 'Scrubs',
@@ -149,6 +149,34 @@ def test_no_name_no_ext():
     assertEquals(
         ep.generateFilename(),
         'Scrubs - [01x02]')
+
+
+def test_noseason_no_name_no_ext():
+    """NoSeasonEpisodeInfo with no name or extension
+    """
+    ep = NoSeasonEpisodeInfo(
+        seriesname = 'Scrubs',
+        episodenumbers = [2],
+        episodename = None,
+        filename = None)
+
+    assertEquals(
+        ep.generateFilename(),
+        'Scrubs - [02]')
+
+
+def test_datedepisode_no_name_no_ext():
+    """DatedEpisodeInfo with no name or extension
+    """
+    ep = DatedEpisodeInfo(
+        seriesname = 'Scrubs',
+        episodenumbers = [datetime.date(2010, 11, 23)],
+        episodename = None,
+        filename = None)
+
+    assertEquals(
+        ep.generateFilename(),
+        'Scrubs - [2010-11-23]')
 
 
 def test_no_series_number():
