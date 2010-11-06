@@ -73,6 +73,8 @@ def test_single_episode():
 
 
 def test_multi_episodes_continuous():
+    """A two-part episode should not have the episode name repeated
+    """
     ep = EpisodeInfo(
         seriesname = 'Stargate SG-1',
         seasonnumber = 1,
@@ -88,6 +90,8 @@ def test_multi_episodes_continuous():
 
 
 def test_multi_episodes_seperate():
+    """File with two episodes, but with different names
+    """
     ep = EpisodeInfo(
         seriesname = 'Stargate SG-1',
         seasonnumber = 1,
