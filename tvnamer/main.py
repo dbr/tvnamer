@@ -140,60 +140,63 @@ def processFile(tvdb_instance, episode):
     cnamer = Renamer(episode.fullpath)
     newName = episode.generateFilename()
 
-    p("#" * 20)
-    p("Old filename: %s" % episode.fullfilename)
-
-    if len(Config['output_filename_replacements']):
-        p("Before custom output replacements: %s" % (newName))
-        # Only apply to filename, not extension
-        newName, newExt = os.path.splitext(newName)
-        newName = applyCustomOutputReplacements(newName)
-        newName = newName + newExt
-
-    p("New filename: %s" % newName)
-
-    if Config['always_rename']:
-        doRenameFile(cnamer, newName)
-        if Config['move_files_enable']:
-            doMoveFile(cnamer = cnamer, destDir = getDestinationFolder(episode))
-        return
-
-    ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
-
-    shouldRename = False
-    if ans == "a":
-        p("Always renaming")
-        Config['always_rename'] = True
-        shouldRename = True
-    elif ans == "q":
-        p("Quitting")
-        raise UserAbort("User exited with q")
-    elif ans == "y":
-        p("Renaming")
-        shouldRename = True
-    elif ans == "n":
-        p("Skipping")
+    if newName == episode.fullfilename:
+        p("Skipping: filename is already right")
     else:
-        p("Invalid input, skipping")
+        p("#" * 20)
+        p("Old filename: %s" % episode.fullfilename)
 
-    if shouldRename:
-        doRenameFile(cnamer, newName)
+        if len(Config['output_filename_replacements']):
+            p("Before custom output replacements: %s" % (newName))
+            # Only apply to filename, not extension
+            newName, newExt = os.path.splitext(newName)
+            newName = applyCustomOutputReplacements(newName)
+            newName = newName + newExt
 
-        if Config['move_files_enable']:
-            newPath = getDestinationFolder(episode)
-            doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+        p("New filename: %s" % newName)
 
-            if Config['move_files_confirmation']:
-                ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
-            else:
-                ans = 'y'
+        if Config['always_rename']:
+            doRenameFile(cnamer, newName)
+            if Config['move_files_enable']:
+                doMoveFile(cnamer = cnamer, destDir = getDestinationFolder(episode))
+            return
 
-            if ans == 'y':
-                p("Moving file")
-                doMoveFile(cnamer, newPath)
-            elif ans == 'q':
-                p("Quitting")
-                raise UserAbort("user exited with q")
+        ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
+
+        shouldRename = False
+        if ans == "a":
+            p("Always renaming")
+            Config['always_rename'] = True
+            shouldRename = True
+        elif ans == "q":
+            p("Quitting")
+            raise UserAbort("User exited with q")
+        elif ans == "y":
+            p("Renaming")
+            shouldRename = True
+        elif ans == "n":
+            p("Skipping")
+        else:
+            p("Invalid input, skipping")
+
+        if shouldRename:
+            doRenameFile(cnamer, newName)
+
+            if Config['move_files_enable']:
+                newPath = getDestinationFolder(episode)
+                doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+
+                if Config['move_files_confirmation']:
+                    ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
+                else:
+                    ans = 'y'
+
+                if ans == 'y':
+                    p("Moving file")
+                    doMoveFile(cnamer, newPath)
+                elif ans == 'q':
+                    p("Quitting")
+                    raise UserAbort("user exited with q")
 
 
 def findFiles(paths):
