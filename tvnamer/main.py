@@ -141,7 +141,7 @@ def processFile(tvdb_instance, episode):
     newName = episode.generateFilename()
 
     if newName == episode.fullfilename:
-        p("Skipping: filename is already right")
+        p("Skipping: existing filename is correct")
     else:
         p("#" * 20)
         p("Old filename: %s" % episode.fullfilename)
