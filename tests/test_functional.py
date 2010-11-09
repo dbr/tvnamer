@@ -195,3 +195,31 @@ def test_not_recursive():
         run_on_directory = True)
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_correct_filename():
+    """If the filename is already correct, don't prompt
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['Scrubs - [01x01] - My First Day.avi'],
+        with_input = "1\ny\n")
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_filename_already_exists():
+    """If the filename is already correct, don't prompt
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs.s01e01.avi'],
+        with_input = "1\ny\n")
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs.s01e01.avi']
+
+    verify_out_data(out_data, expected_files)
