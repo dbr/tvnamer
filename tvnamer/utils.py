@@ -525,7 +525,7 @@ class EpisodeInfo(object):
             self.seasonnumber,
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def generateFilename(self, lowercase = False): #TODO: Simplify this method
+    def generateFilename(self, lowercase = False):
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found
@@ -534,10 +534,7 @@ class EpisodeInfo(object):
         episode_separator # used to join multiple episode numbers
         """
         # Format episode number into string, or a list
-        if self.seasonnumber != -1:
-            epno = formatEpisodeNumbers(self.episodenumbers)
-        else:
-            epno = str(self.episodenumbers[0])
+        epno = formatEpisodeNumbers(self.episodenumbers)
 
         # Data made available to config'd output file format
         if self.extension is None:
