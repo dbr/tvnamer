@@ -207,6 +207,13 @@ def verify_out_data(out_data, expected_files):
     p("stderr:\n")
     p(out_data['stderr'])
 
+    # Check number of files
+    if len(expected_files) != len(out_data['files']):
+        raise AssertionError("Expected %d files, but got %d" % (
+            len(expected_files),
+            len(out_data['files'])))
+
+    # Check all files were created
     for cur in expected_files:
         if cur not in out_data['files']:
             raise AssertionError("File named %r not created" % (cur))
