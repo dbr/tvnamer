@@ -196,7 +196,18 @@ You could change this to `e`, and by altering the `filename_*` options you could
 
 By default, tvnamer will sanitise files for the current operating system - either POSIX-compatible (OS X, Linux, FreeBSD) or Windows. You can force Windows compatible filenames by setting the option `windows_safe_filenames` to True
 
-You can remove spaces in characters by adding a space to the option `custom_filename_character_blacklist` and changing the option `replace_blacklisted_characters_with` to `.`
+The preferred way to replace spaces with another character is to use the custom replacements feature. For example, to replace spaces with `.` you would use the config:
+
+    {
+        "output_filename_replacements": [
+            {"is_regex": true,
+            "match": "[ ]",
+            "replacement": "."}
+        ]
+    }
+
+
+You can also remove spaces in characters by adding a space to the option `custom_filename_character_blacklist` and changing the option `replace_blacklisted_characters_with` to `.`
 
 `normalize_unicode_filenames` attempts to replace Unicode characters with their unaccented ASCII equivalent (`å` becomes `a` etc). Any untranslatable characters are removed.
 
