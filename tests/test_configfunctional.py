@@ -92,3 +92,25 @@ def test_lowercase_names():
     expected_files = ['scrubs - [01x01] - my first day.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_lowercase_names():
+    """Test custom blacklist to replace " " with "_"
+    """
+
+    conf = """
+    {"custom_filename_character_blacklist": " ",
+    "replace_blacklisted_characters_with": "_",
+    "always_rename": true,
+    "select_first": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['Scrubs_-_[01x01]_-_My_First_Day.avi']
+
+    verify_out_data(out_data, expected_files)
