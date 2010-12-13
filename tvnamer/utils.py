@@ -213,6 +213,10 @@ class FileFinder(object):
         """Finds files from startpath, could be called recursively
         """
         allfiles = []
+        if not os.access(startpath, os.R_OK):
+            log().info("Skipping inaccessible path %s" % startpath)
+            return allfiles
+
         for subf in os.listdir(unicode(startpath)):
             if not self._checkExtension(subf):
                 continue
