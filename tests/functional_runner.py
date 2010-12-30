@@ -186,7 +186,8 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     return {
         'stdout': stdout,
         'stderr': stderr,
-        'files': created_files}
+        'files': created_files,
+        'returncode': proc.returncode}
 
 
 def verify_out_data(out_data, expected_files):
@@ -195,6 +196,8 @@ def verify_out_data(out_data, expected_files):
     Prints the stdout/stderr/files, then asserts all files exist.
     If an assertion fails, nosetest will handily print the stdout/etc.
     """
+
+    p("Return code: %d" % out_data['returncode'])
 
     p("Expected files:", expected_files)
     p("Got files:", out_data['files'])
@@ -217,3 +220,7 @@ def verify_out_data(out_data, expected_files):
     for cur in expected_files:
         if cur not in out_data['files']:
             raise AssertionError("File named %r not created" % (cur))
+
+    # Check exit code is zero
+    if out_data['returncode'] != 0:
+        raise AssertionError("Exit code was %d, not 0 (zero)" % out_data['returncode'])
