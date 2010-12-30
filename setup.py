@@ -4,7 +4,7 @@
 from setuptools import setup
 setup(
 name = 'tvnamer',
-version='2.0',
+version='2.1',
 
 author='dbr/Ben',
 description='Automatic TV episode namer',
