@@ -43,11 +43,24 @@ def getDestinationFolder(episode):
     """Constructs the location to move/copy the file
     """
 
+    #TODO: Write functional test to ensure this valid'ifying works
+    def wrap_validfname(fname):
+        """Wrap the makeValidFilename function as it's called twice
+        and this is slightly long..
+        """
+        return makeValidFilename(
+            fname,
+            normalize_unicode = Config['normalize_unicode_filenames'],
+            windows_safe = Config['windows_safe_filenames'],
+            custom_blacklist = Config['custom_filename_character_blacklist'],
+            replace_with = Config['replace_invalid_characters_with'])
+
+
     # Calls makeValidFilename on series name, as it must valid for a filename
     destdir = Config['move_files_destination'] % {
-        'seriesname': makeValidFilename(episode.seriesname),
+        'seriesname': wrap_validfname(episode.seriesname),
         'seasonnumber': episode.seasonnumber,
-        'episodenumbers': makeValidFilename(formatEpisodeNumbers(episode.episodenumbers))
+        'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers))
     }
     return destdir
 
