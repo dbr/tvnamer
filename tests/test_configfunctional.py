@@ -114,3 +114,26 @@ def test_lowercase_names():
     expected_files = ['Scrubs_-_[01x01]_-_My_First_Day.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_abs_epnmber():
+    """Ensure the absolute episode number is available for custom
+    filenames in config
+    """
+
+    conf = """
+    {"filename_with_episode": "%(seriesname)s - %(absoluteepisode)s%(ext)s",
+    "always_rename": true,
+    "select_first": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['Scrubs - 01.avi']
+
+    verify_out_data(out_data, expected_files)
+
