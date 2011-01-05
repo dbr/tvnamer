@@ -95,7 +95,7 @@ def test_lowercase_names():
 
 
 @attr("functional")
-def test_lowercase_names():
+def test_replace_with_underscore():
     """Test custom blacklist to replace " " with "_"
     """
 
