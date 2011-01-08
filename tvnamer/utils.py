@@ -35,7 +35,7 @@ def log():
 
 
 def warn(text):
-    """Displays message to sys.stdout
+    """Displays message to sys.stderr
     """
     p(text, file = sys.stderr)
 
