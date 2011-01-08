@@ -11,12 +11,15 @@
 
 from functional_runner import run_tvnamer, verify_out_data
 from nose.plugins.attrib import attr
+from nose import SkipTest
 
 
 @attr("functional")
 def test_simple_single_file():
     """Files without series name should be skipped
     """
+
+    raise SkipTest("TODO")
 
     out_data = run_tvnamer(
         with_files = ['S01E02 - Some File.avi'],
