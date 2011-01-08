@@ -72,7 +72,7 @@ def doRenameFile(cnamer, newName):
     try:
         cnamer.newName(newName)
     except OSError, e:
-        warn(unicode(e))
+        warn(e)
 
 
 def doMoveFile(cnamer, destDir, getPathPreview = False):
