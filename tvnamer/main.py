@@ -272,7 +272,7 @@ def tvnamer(paths):
     episodes_found.sort(key = lambda x: x.sortable_info())
 
     tvdb_instance = Tvdb(
-        interactive=not Config['select_first'],
+        interactive = not Config['select_first'],
         search_all_languages = Config['search_all_languages'],
         language = Config['language'])
 
