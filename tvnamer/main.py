@@ -258,7 +258,10 @@ def tvnamer(paths):
         except InvalidFilename:
             warn("Invalid filename %s" % cfile)
         else:
-            episodes_found.append(episode)
+            if episode.seriesname is None:
+                warn("Parsed filename did not contain series name, skipping: %s" % cfile)
+            else:
+                episodes_found.append(episode)
 
     if len(episodes_found) == 0:
         raise NoValidFilesFoundError()
