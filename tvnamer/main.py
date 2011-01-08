@@ -140,7 +140,7 @@ def processFile(tvdb_instance, episode):
             warn(errormsg)
     except (SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound), errormsg:
         # Show was found, so use corrected series name
-        if Config['always_rename'] and Config['skip_file_on_error'] is True:
+        if Config['always_rename'] and Config['skip_file_on_error']:
             warn("Skipping file due to error: %s" % errormsg)
             return
 
