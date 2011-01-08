@@ -497,7 +497,7 @@ class EpisodeInfo(object):
             self.episodename = epnames
             return
 
-        if self.seasonnumber is None:
+        if not hasattr(self, "seasonnumber") or self.seasonnumber is None:
             # Series without concept of seasons have all episodes in season 1
             seasonnumber = 1
         else:
