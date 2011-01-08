@@ -25,7 +25,7 @@ from config_defaults import defaults
 
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
-getEpisodeName, applyCustomInputReplacements, applyCustomOutputReplacements,
+applyCustomInputReplacements, applyCustomOutputReplacements,
 formatEpisodeNumbers, makeValidFilename)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
@@ -131,7 +131,7 @@ def processFile(tvdb_instance, episode):
     p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
 
     try:
-        correctedSeriesName, epName = getEpisodeName(tvdb_instance, episode)
+        episode.populateFromTvdb(tvdb_instance)
     except (DataRetrievalError, ShowNotFound), errormsg:
         if Config['always_rename'] and Config['skip_file_on_error'] is True:
             warn("Skipping file due to error: %s" % errormsg)
@@ -145,10 +145,6 @@ def processFile(tvdb_instance, episode):
             return
 
         warn(errormsg)
-        episode.seriesname = correctedSeriesName
-    else:
-        episode.seriesname = correctedSeriesName
-        episode.episodename = epName
 
     cnamer = Renamer(episode.fullpath)
     newName = episode.generateFilename()

@@ -40,77 +40,6 @@ def warn(text):
     p(text, file = sys.stderr)
 
 
-def getEpisodeName(tvdb_instance, episode):
-    """Queries the tvdb_api.Tvdb instance for episode name and corrected
-    series name.
-    If series cannot be found, it will warn the user. If the episode is not
-    found, it will use the corrected show name and not set an episode name.
-    If the site is unreachable, it will warn the user. If the user aborts
-    it will catch tvdb_api's user abort error and raise tvnamer's
-    """
-    try:
-        show = tvdb_instance[episode.seriesname]
-    except tvdb_error, errormsg:
-        raise DataRetrievalError("Error contacting www.thetvdb.com: %s" % errormsg)
-    except tvdb_shownotfound:
-        # No such series found.
-        raise ShowNotFound("Show %s not found on www.thetvdb.com" % episode.seriesname)
-    except tvdb_userabort, error:
-        raise UserAbort(unicode(error))
-    else:
-        # Series was found, use corrected series name
-        correctedShowName = show['seriesname']
-
-    if isinstance(episode, DatedEpisodeInfo):
-        # Date-based episode
-        epnames = []
-        for cepno in episode.episodenumbers:
-            try:
-                sr = show.airedOn(cepno)
-                if len(sr) > 1:
-                    raise EpisodeNotFound(
-                        "Ambigious air date %s, there were %s episodes on that day" % (
-                        cepno, len(sr)))
-                epnames.append(sr[0]['episodename'])
-            except tvdb_episodenotfound:
-                raise EpisodeNotFound(
-                    "Episode that aired on %s could not be found" % (
-                    cepno))
-        return correctedShowName, epnames
-
-    if episode.seasonnumber is None:
-        # Series without concept of seasons have all episodes in season 1
-        seasonnumber = 1
-    else:
-        seasonnumber = episode.seasonnumber
-
-    epnames = []
-    for cepno in episode.episodenumbers:
-        try:
-            episodeinfo = show[seasonnumber][cepno]
-
-        except tvdb_seasonnotfound:
-            raise SeasonNotFound(
-                "Season %s of show %s could not be found" % (
-                episode.seasonnumber,
-                episode.seriesname))
-
-        except tvdb_episodenotfound:
-            raise EpisodeNotFound(
-                "Episode %s of show %s, season %s could not be found" % (
-                    cepno,
-                    episode.seriesname,
-                    episode.seasonnumber))
-
-        except tvdb_attributenotfound:
-            raise EpisodeNameNotFound(
-                "Could not find episode name for %s" % episode)
-        else:
-            epnames.append(episodeinfo['episodename'])
-
-    return correctedShowName, epnames
-
-
 def _applyReplacements(cfile, replacements):
     """Applies custom replacements.
 
@@ -528,6 +457,78 @@ class EpisodeInfo(object):
         return "season: %s, episode: %s" % (
             self.seasonnumber,
             ", ".join([str(x) for x in self.episodenumbers]))
+
+    def populateFromTvdb(self, tvdb_instance):
+        """Queries the tvdb_api.Tvdb instance for episode name and corrected
+        series name.
+        If series cannot be found, it will warn the user. If the episode is not
+        found, it will use the corrected show name and not set an episode name.
+        If the site is unreachable, it will warn the user. If the user aborts
+        it will catch tvdb_api's user abort error and raise tvnamer's
+        """
+        try:
+            show = tvdb_instance[self.seriesname]
+        except tvdb_error, errormsg:
+            raise DataRetrievalError("Error contacting www.thetvdb.com: %s" % errormsg)
+        except tvdb_shownotfound:
+            # No such series found.
+            raise ShowNotFound("Show %s not found on www.thetvdb.com" % self.seriesname)
+        except tvdb_userabort, error:
+            raise UserAbort(unicode(error))
+        else:
+            # Series was found, use corrected series name
+            self.seriesname = show['seriesname']
+
+        if isinstance(self, DatedEpisodeInfo):
+            # Date-based episode
+            epnames = []
+            for cepno in self.episodenumbers:
+                try:
+                    sr = show.airedOn(cepno)
+                    if len(sr) > 1:
+                        raise EpisodeNotFound(
+                            "Ambigious air date %s, there were %s episodes on that day" % (
+                            cepno, len(sr)))
+                    epnames.append(sr[0]['episodename'])
+                except tvdb_episodenotfound:
+                    raise EpisodeNotFound(
+                        "Episode that aired on %s could not be found" % (
+                        cepno))
+            self.episodename = epnames
+            return
+
+        if self.seasonnumber is None:
+            # Series without concept of seasons have all episodes in season 1
+            seasonnumber = 1
+        else:
+            seasonnumber = self.seasonnumber
+
+        epnames = []
+        for cepno in self.episodenumbers:
+            try:
+                episodeinfo = show[seasonnumber][cepno]
+
+            except tvdb_seasonnotfound:
+                raise SeasonNotFound(
+                    "Season %s of show %s could not be found" % (
+                    seasonnumber,
+                    self.seriesname))
+
+            except tvdb_episodenotfound:
+                raise EpisodeNotFound(
+                    "Episode %s of show %s, season %s could not be found" % (
+                        cepno,
+                        self.seriesname,
+                        seasonnumber))
+
+            except tvdb_attributenotfound:
+                raise EpisodeNameNotFound(
+                    "Could not find episode name for %s" % cepno)
+            else:
+                epnames.append(episodeinfo['episodename'])
+
+        self.episodename = epnames
+
 
     def generateFilename(self, lowercase = False):
         """
