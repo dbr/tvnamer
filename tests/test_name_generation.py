@@ -13,8 +13,7 @@ import datetime
 
 from helpers import assertEquals
 
-from tvnamer.utils import (getEpisodeName, EpisodeInfo, DatedEpisodeInfo,
-NoSeasonEpisodeInfo)
+from tvnamer.utils import (EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo)
 from test_files import files
 
 from tvdb_api import Tvdb
@@ -35,13 +34,13 @@ def verify_name_gen(curtest, tvdb_instance):
             seriesname = curtest['parsedseriesname'],
             episodenumbers = curtest['episodenumbers'])
 
-    correctedSeriesName, epName = getEpisodeName(tvdb_instance, ep)
+    ep.populateFromTvdb(tvdb_instance)
 
-    assert correctedSeriesName is not None, "Corrected series name was none"
-    assert epName is not None, "Episode name was None"
+    assert ep.seriesname is not None, "Corrected series name was none"
+    assert ep.episodename is not None, "Episode name was None"
 
-    assertEquals(epName, curtest['episodenames'])
-    assertEquals(correctedSeriesName, curtest['correctedseriesname'])
+    assertEquals(ep.seriesname, curtest['correctedseriesname'])
+    assertEquals(ep.episodename, curtest['episodenames'])
 
 
 def test_name_generation_on_testfiles():
