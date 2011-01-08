@@ -223,3 +223,17 @@ def test_filename_already_exists():
     expected_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs.s01e01.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_no_seasonnumber():
+    """Test episode with no series number
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.e01.avi'],
+        with_flags = ['--batch'])
+
+    expected_files = ['Scrubs - [01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
