@@ -86,7 +86,7 @@ def doMoveFile(cnamer, destDir, getPathPreview = False):
     try:
         return cnamer.newPath(destDir, getPathPreview = getPathPreview)
     except OSError, e:
-        warn(unicode(e))
+        warn(e)
 
 
 def confirm(question, options, default = "y"):
