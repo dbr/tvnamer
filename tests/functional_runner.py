@@ -190,7 +190,7 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
         'returncode': proc.returncode}
 
 
-def verify_out_data(out_data, expected_files):
+def verify_out_data(out_data, expected_files, expected_returncode = 0):
     """Verifies the out_data from run_tvnamer contains the expected files.
 
     Prints the stdout/stderr/files, then asserts all files exist.
@@ -222,5 +222,5 @@ def verify_out_data(out_data, expected_files):
             raise AssertionError("File named %r not created" % (cur))
 
     # Check exit code is zero
-    if out_data['returncode'] != 0:
-        raise AssertionError("Exit code was %d, not 0 (zero)" % out_data['returncode'])
+    if out_data['returncode'] != expected_returncode:
+        raise AssertionError("Exit code was %d, not %d" % (out_data['returncode'], expected_returncode))
