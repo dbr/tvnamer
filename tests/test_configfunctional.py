@@ -122,6 +122,11 @@ def test_abs_epnmber():
     filenames in config
     """
 
+
+    import nose
+    raise nose.SkipTest("TODO")
+
+
     conf = """
     {"filename_with_episode": "%(seriesname)s - %(absoluteepisode)s%(ext)s",
     "always_rename": true,
