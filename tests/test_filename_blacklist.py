@@ -69,4 +69,4 @@ def test_full_blacklist():
 
     expected_files = ['scrubs.s01e01.avi', 'scrubs.s02e01.avi', 'scrubs.s02e02.avi']
 
-    verify_out_data(out_data, expected_files)
+    verify_out_data(out_data, expected_files, expected_returncode = 2)
