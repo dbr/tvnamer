@@ -219,6 +219,7 @@ def findFiles(paths):
         cur = FileFinder(
             cfile,
             with_extension = Config['valid_extensions'],
+            filename_blacklist = Config["filename_blacklist"],
             recursive = Config['recursive'])
 
         try:

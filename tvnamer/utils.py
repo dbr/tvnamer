@@ -103,21 +103,30 @@ class FileFinder(object):
     The with_extension argument is a list of valid extensions, without leading
     spaces. If an empty list (or None) is supplied, no extension checking is
     performed.
+
+    The filename_blacklist argument is a list of regexp strings to match against
+    the filename (minus the extension). If a match is found, the file is skipped
+    (e.g. for filtering out "sample" files). If [] or None is supplied, no
+    filtering is done
     """
 
-    def __init__(self, path, with_extension = None, recursive = False):
+    def __init__(self, path, with_extension = None, filename_blacklist = None, recursive = False):
         self.path = path
         if with_extension is None:
             self.with_extension = []
         else:
             self.with_extension = with_extension
+        if filename_blacklist is None:
+            self.with_blacklist = []
+        else:
+            self.with_blacklist = filename_blacklist
         self.recursive = recursive
 
     def findFiles(self):
         """Returns list of files found at path
         """
         if os.path.isfile(self.path):
-            if self._checkExtension(self.path):
+            if self._checkExtension(self.path) and not self._blacklistedFilename(self.path):
                 return [os.path.abspath(self.path)]
             else:
                 return []
@@ -127,6 +136,8 @@ class FileFinder(object):
             raise InvalidPath("%s is not a valid file/directory" % self.path)
 
     def _checkExtension(self, fname):
+        """Checks if the file extension is blacklisted in valid_extensions
+        """
         if len(self.with_extension) == 0:
             return True
 
@@ -134,6 +145,19 @@ class FileFinder(object):
         for cext in self.with_extension:
             cext = ".%s" % cext
             if extension == cext:
+                return True
+        else:
+            return False
+
+    def _blacklistedFilename(self, fname):
+        """Checks if the filename (excl. ext) matches filename_blacklist
+        """
+        if len(self.with_blacklist) == 0:
+            return False
+
+        fname, _ = os.path.splitext(fname)
+        for fblacklist in self.with_blacklist:
+            if re.match(fblacklist, fname):
                 return True
         else:
             return False
@@ -148,6 +172,8 @@ class FileFinder(object):
 
         for subf in os.listdir(unicode(startpath)):
             if not self._checkExtension(subf):
+                continue
+            if self._blacklistedFilename(subf):
                 continue
             newpath = os.path.join(startpath, subf)
             newpath = os.path.abspath(newpath)

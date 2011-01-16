@@ -34,6 +34,10 @@ defaults = {
     # No leading dot, for example: ['avi', 'mkv', 'mp4']
     'valid_extensions': [],
 
+    # When non-empty, filter out filenames that match these regexps
+    # e.g. [".*sample.*"]
+    'filename_blacklist': [],
+
     # Force Windows safe filenames (always True on Windows)
     'windows_safe_filenames': False,
 
