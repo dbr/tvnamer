@@ -34,8 +34,9 @@ defaults = {
     # No leading dot, for example: ['avi', 'mkv', 'mp4']
     'valid_extensions': [],
 
-    # When non-empty, filter out filenames that match these regexps
-    # e.g. [".*sample.*"]
+    # When non-empty, filter out filenames that match these expressions. Either simple
+    # matches or regexs can be used. The following are near enough equivalent:
+    # [{"is_regex": true, "match": ".*sample.*"}, {"is_regex": false, "match": "sample"}]
     'filename_blacklist': [],
 
     # Force Windows safe filenames (always True on Windows)
