@@ -31,14 +31,18 @@ def test_no_blacklist():
     verify_out_data(out_data, expected_files)
 
 @attr("functional")
-def test_partial_blacklist():
-    """Tests single match of filename blacklist
+def test_partial_blacklist_using_simple_match():
+    """Tests single match of filename blacklist using a simple match
     """
 
     conf = """
     {"always_rename": true,
     "select_first": true,
-    "filename_blacklist": [".*s02e01.*"]}
+    "filename_blacklist": [
+        {"is_regex": false,
+         "match": "s02e01"}
+        ]
+    }
     """
 
     out_data = run_tvnamer(
@@ -53,14 +57,72 @@ def test_partial_blacklist():
     verify_out_data(out_data, expected_files)
 
 @attr("functional")
-def test_full_blacklist():
-    """Tests complete blacklist of all filenames
+def test_partial_blacklist_using_regex():
+    """Tests single match of filename blacklist using a regex match
     """
 
     conf = """
     {"always_rename": true,
     "select_first": true,
-    "filename_blacklist": [".*"]}
+    "filename_blacklist": [
+        {"is_regex": true,
+         "match": ".*s02e01.*"}
+        ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'scrubs.s02e01.avi', 'scrubs.s02e02.avi'],
+        with_config = conf)
+
+    expected_files = [
+        'Scrubs - [01x01] - My First Day.avi',
+        'scrubs.s02e01.avi',
+        'Scrubs - [02x02] - My Nightingale.avi']
+
+    verify_out_data(out_data, expected_files)
+
+@attr("functional")
+def test_partial_blacklist_using_mix():
+    """Tests single match of filename blacklist using a mix of regex and simple match
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true,
+    "filename_blacklist": [
+        {"is_regex": true,
+         "match": ".*s02e01.*"},
+        {"is_regex": false,
+         "match": "s02e02"}
+        ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'scrubs.s02e01.avi', 'scrubs.s02e02.avi'],
+        with_config = conf)
+
+    expected_files = [
+        'Scrubs - [01x01] - My First Day.avi',
+        'scrubs.s02e01.avi',
+        'scrubs.s02e02.avi']
+
+    verify_out_data(out_data, expected_files)
+
+@attr("functional")
+def test_full_blacklist():
+    """Tests complete blacklist of all filenames with a regex
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true,
+    "filename_blacklist": [
+        {"is_regex": true,
+         "match": ".*"}
+        ]
+    }
     """
 
     out_data = run_tvnamer(
