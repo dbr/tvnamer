@@ -157,8 +157,12 @@ class FileFinder(object):
 
         fname, _ = os.path.splitext(fname)
         for fblacklist in self.with_blacklist:
-            if re.match(fblacklist, fname):
-                return True
+            if "is_regex" in fblacklist and fblacklist["is_regex"]:
+                if re.match(fblacklist["match"], fname):
+                    return True
+            else:
+                if fname.find(fblacklist["match"]) != -1:
+                    return True
         else:
             return False
 
