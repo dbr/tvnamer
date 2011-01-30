@@ -205,3 +205,26 @@ def test_fullpath_replacements():
     expected_files = ['A Test/A Test - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_restoring_dot():
+    """Test replace the parsed "Tosh 0" with "Tosh.0"
+    """
+    out_data = run_tvnamer(
+        with_files = ['tosh.0.s03.e02.avi'],
+        with_config = """
+{
+    "input_filename_replacements": [
+        {"is_regex": false,
+        "match": "tosh.0",
+        "replacement": "tosh0"}
+    ],
+    "always_rename": true,
+    "select_first": true
+}
+""")
+
+    expected_files = ['Tosh.0 - [03x02] - Web Redemption - Brian Atene.avi']
+
+    verify_out_data(out_data, expected_files)
