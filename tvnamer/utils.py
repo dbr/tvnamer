@@ -446,9 +446,9 @@ class EpisodeInfo(object):
     """
 
     def __init__(self,
-        seriesname = None,
-        seasonnumber = None,
-        episodenumbers= None,
+        seriesname,
+        seasonnumber,
+        episodenumbers,
         episodename = None,
         filename = None):
 
@@ -618,8 +618,8 @@ class EpisodeInfo(object):
 
 class DatedEpisodeInfo(EpisodeInfo):
     def __init__(self,
-        seriesname = None,
-        episodenumbers= None,
+        seriesname,
+        episodenumbers,
         episodename = None,
         filename = None):
 
@@ -680,8 +680,8 @@ class DatedEpisodeInfo(EpisodeInfo):
 
 class NoSeasonEpisodeInfo(EpisodeInfo):
     def __init__(self,
-        seriesname = None,
-        episodenumbers= None,
+        seriesname,
+        episodenumbers,
         episodename = None,
         filename = None):
 
