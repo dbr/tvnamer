@@ -611,7 +611,7 @@ class EpisodeInfo(object):
             replace_with = Config['replace_invalid_characters_with'])
 
     def __repr__(self):
-        return "<%s: %s>" % (
+        return u"<%s: %r>" % (
             self.__class__.__name__,
             self.generateFilename())
 
