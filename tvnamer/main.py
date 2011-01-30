@@ -157,12 +157,9 @@ def processFile(tvdb_instance, episode):
         p("#" * 20)
         p("Old filename: %s" % episode.fullfilename)
 
-        if len(Config['output_filename_replacements']):
-            p("Before custom output replacements: %s" % (newName))
-            # Only apply to filename, not extension
-            newName, newExt = os.path.splitext(newName)
-            newName = applyCustomOutputReplacements(newName)
-            newName = newName + newExt
+        if len(Config['output_filename_replacements']) > 0:
+            # Show filename without replacements
+            p("Before custom output replacements: %s" % (episode.generateFilename(with_replacements = False)))
 
         p("New filename: %s" % newName)
 
