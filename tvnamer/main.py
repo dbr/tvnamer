@@ -253,8 +253,8 @@ def tvnamer(paths):
         parser = FileParser(cfile)
         try:
             episode = parser.parse()
-        except InvalidFilename:
-            warn("Invalid filename %s" % cfile)
+        except InvalidFilename, e:
+            warn("Invalid filename: %s" % e)
         else:
             if episode.seriesname is None:
                 warn("Parsed filename did not contain series name, skipping: %s" % cfile)

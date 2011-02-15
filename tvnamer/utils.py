@@ -297,7 +297,10 @@ class FileParser(object):
 
                 return episode
         else:
-            raise InvalidFilename(self.path)
+            emsg = "Cannot parse %r" % self.path
+            if len(Config['input_filename_replacements']) > 0:
+                emsg += " with replacements: %r" % filename
+            raise InvalidFilename(emsg)
 
 
 def formatEpisodeName(names, join_with):
