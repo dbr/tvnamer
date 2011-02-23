@@ -175,14 +175,15 @@ class FileFinder(object):
             return allfiles
 
         for subf in os.listdir(unicode(startpath)):
-            if not self._checkExtension(subf):
-                continue
-            if self._blacklistedFilename(subf):
-                continue
             newpath = os.path.join(startpath, subf)
             newpath = os.path.abspath(newpath)
             if os.path.isfile(newpath):
-                allfiles.append(newpath)
+                if not self._checkExtension(subf):
+                    continue
+                elif self._blacklistedFilename(subf):
+                    continue
+                else:
+                    allfiles.append(newpath)
             else:
                 if self.recursive:
                     allfiles.extend(self._findFilesInPath(newpath))
