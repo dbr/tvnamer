@@ -52,7 +52,11 @@ def _applyReplacements(cfile, replacements):
         if 'is_regex' in rep and rep['is_regex']:
             cfile = re.sub(rep['match'], rep['replacement'], cfile)
         else:
-            cfile = cfile.replace(rep['match'], rep['replacement'])
+            try:
+                cfile = cfile.replace(rep['match'], rep['replacement'])
+            except Exception,ex:
+                print "Filename decode error:",cfile
+                raise
 
     return cfile
 
