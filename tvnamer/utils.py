@@ -550,16 +550,16 @@ class EpisodeInfo(object):
                     self.seriesname))
 
             except tvdb_episodenotfound:
-                hasfound = False
+                isfound = False
                 if isinstance(self, NoSeasonEpisodeInfo):
                     res = show.search(cepno,"absolute_number")
                     for r in res:
                         if int(r['absolute_number']) == int(cepno):
                             epnames.append(r['episodename'])
-                            hasfound = True
+                            isfound = True
                             epnew = EpisodeInfo(self.seriesname,int(r['seasonnumber']),(int(r['episodenumber']),),r['episodename'],self.fullpath)
 
-                if not hasfound:
+                if not isfound:
                     raise EpisodeNotFound(
                         "Episode %s of show %s, season %s could not be found" % (
                             cepno,
