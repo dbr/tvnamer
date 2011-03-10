@@ -537,11 +537,11 @@ class EpisodeInfo(object):
         else:
             seasonnumber = self.seasonnumber
 
+        epnew = self
         epnames = []
         for cepno in self.episodenumbers:
             try:
                 episodeinfo = show[seasonnumber][cepno]
-
             except tvdb_seasonnotfound:
                 raise SeasonNotFound(
                     "Season %s of show %s could not be found" % (
@@ -549,11 +549,22 @@ class EpisodeInfo(object):
                     self.seriesname))
 
             except tvdb_episodenotfound:
-                raise EpisodeNotFound(
-                    "Episode %s of show %s, season %s could not be found" % (
-                        cepno,
-                        self.seriesname,
-                        seasonnumber))
+                hasfound = False
+                if isinstance(self, NoSeasonEpisodeInfo):
+                    res = show.search(cepno,"absolute_number")
+                    for r in res:
+                        #print r,r['absolute_number'],cepno
+                        if int(r['absolute_number']) == int(cepno):
+                            epnames.append(r['episodename'])
+                            hasfound = True
+                            epnew = EpisodeInfo(self.seriesname,int(r['seasonnumber']),(int(r['episodenumber']),),r['episodename'],self.fullpath)
+
+                if not hasfound:
+                    raise EpisodeNotFound(
+                        "Episode %s of show %s, season %s could not be found" % (
+                            cepno,
+                            self.seriesname,
+                            seasonnumber))
 
             except tvdb_attributenotfound:
                 raise EpisodeNameNotFound(
@@ -562,6 +573,7 @@ class EpisodeInfo(object):
                 epnames.append(episodeinfo['episodename'])
 
         self.episodename = epnames
+        return epnew
 
 
     def generateFilename(self, lowercase = False, with_replacements = True):
