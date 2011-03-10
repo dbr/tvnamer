@@ -542,6 +542,7 @@ class EpisodeInfo(object):
         for cepno in self.episodenumbers:
             try:
                 episodeinfo = show[seasonnumber][cepno]
+                
             except tvdb_seasonnotfound:
                 raise SeasonNotFound(
                     "Season %s of show %s could not be found" % (
@@ -553,7 +554,6 @@ class EpisodeInfo(object):
                 if isinstance(self, NoSeasonEpisodeInfo):
                     res = show.search(cepno,"absolute_number")
                     for r in res:
-                        #print r,r['absolute_number'],cepno
                         if int(r['absolute_number']) == int(cepno):
                             epnames.append(r['episodename'])
                             hasfound = True
