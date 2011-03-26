@@ -549,11 +549,20 @@ class EpisodeInfo(object):
                     self.seriesname))
 
             except tvdb_episodenotfound:
-                raise EpisodeNotFound(
-                    "Episode %s of show %s, season %s could not be found" % (
-                        cepno,
-                        self.seriesname,
-                        seasonnumber))
+                # Try to search by absolute_number
+                sr = show.search(cepno, "absolute_number")
+                if len(sr) > 1:
+                    raise EpisodeNotFound(
+                        "Ambigious absolute episode number %d, found %d matches" % (
+                        cepno, len(sr)))
+                elif len(sr) == 1:
+                    epnames.append(sr[0]['episodename'])
+                else:
+                    raise EpisodeNotFound(
+                        "Episode %s of show %s, season %s could not be found (also tried searching by absolute episode number)" % (
+                            cepno,
+                            self.seriesname,
+                            seasonnumber))
 
             except tvdb_attributenotfound:
                 raise EpisodeNameNotFound(
