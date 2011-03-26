@@ -234,24 +234,19 @@ def test_restoring_dot():
     """Ensure output replacements happen before the valid filename function is run
     """
     out_data = run_tvnamer(
-        with_files = ['tosh.0.s03.e02.avi'],
+        with_files = ['24.s03.e02.avi'],
         with_config = """
 {
-    "input_filename_replacements": [
-        {"is_regex": false,
-        "match": "tosh.0",
-        "replacement": "tosh0"}
-    ],
     "output_filename_replacements": [
         {"is_regex": false,
-        "match": ": ",
-        "replacement": " - "}
+        "match": ":",
+        "replacement": "-"}
     ],
     "always_rename": true,
     "select_first": true
 }
 """)
 
-    expected_files = ['Tosh.0 - [03x02] - Web Redemption - Brian Atene.avi']
+    expected_files = ['24 - [03x02] - Day 3- 2-00 P.M.-3-00 P.M..avi']
 
     verify_out_data(out_data, expected_files)
