@@ -142,3 +142,21 @@ def test_abs_epnmber():
 
     verify_out_data(out_data, expected_files)
 
+
+@attr("functional")
+def test_abs_epnmber():
+    """Test resolving by absolute episode number
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['[Bleachverse]_BLEACH_310.avi'],
+        with_config = conf)
+
+    expected_files = ['Scrubs - 01.avi']
+
+    verify_out_data(out_data, expected_files)
