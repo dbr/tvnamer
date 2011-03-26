@@ -267,43 +267,43 @@ files['unicode'] = [
 ]
 
 files['anime'] = [
-    {'input': '[Eclipse] Fullmetal Alchemist Brotherhood - 02 (1280x720 h264) [8452C4BF]',
+    {'input': '[Eclipse] Fullmetal Alchemist Brotherhood - 02 (1280x720 h264) [8452C4BF].mkv',
     'parsedseriesname': 'Fullmetal Alchemist Brotherhood',
     'correctedseriesname': 'Fullmetal Alchemist: Brotherhood',
     'seasonnumber': None, 'episodenumbers': [2],
     'episodenames': ['The First Day']},
 
-    {'input': '[Shinsen-Subs] Armored Trooper Votoms - Pailsen Files - 01 [9E3F1D1C]',
+    {'input': '[Shinsen-Subs] Armored Trooper Votoms - Pailsen Files - 01 [9E3F1D1C].mkv',
     'parsedseriesname': 'armored trooper votoms - pailsen files',
     'correctedseriesname': 'Armored Trooper Votoms: Pailsen Files',
     'seasonnumber': None, 'episodenumbers': [1],
     'episodenames': ['River Crossing Strategy']},
 
-    {'input': '[Shinsen-Subs] Beet - 19 [24DAB497]',
+    {'input': '[Shinsen-Subs] Beet - 19 [24DAB497].mkv',
     'parsedseriesname': 'beet',
     'correctedseriesname': 'Beet the Vandel Buster Excellion',
     'seasonnumber': None, 'episodenumbers': [19],
     'episodenames': ['Windfang Flash! The Soul of a Wind Mage!']},
 
-    {'input': '[AG-SHS]Victory_Gundam-03_DVD[FC6E3A6F]',
+    {'input': '[AG-SHS]Victory_Gundam-03_DVD[FC6E3A6F].mkv',
     'parsedseriesname': 'victory gundam',
     'correctedseriesname': 'Mobile Suit Victory Gundam',
     'seasonnumber': None, 'episodenumbers': [3],
     'episodenames': ['Uso\'s Fight']},
 
-    {'input': '[YuS-SHS]Gintama-24(H264)_[52CA4F8B]',
+    {'input': '[YuS-SHS]Gintama-24(H264)_[52CA4F8B].mkv',
     'parsedseriesname': 'gintama',
     'correctedseriesname': 'Gintama',
     'seasonnumber': None, 'episodenumbers': [24],
     'episodenames': ['A Cute Face is Always Hiding Something']},
 
-    {'input': '[Shinsen-Subs] True Mazinger - 07 [848x480 H.264 Vorbis][787D0074]',
+    {'input': '[Shinsen-Subs] True Mazinger - 07 [848x480 H.264 Vorbis][787D0074].mkv',
     'parsedseriesname': 'True Mazinger',
     'correctedseriesname': 'True Mazinger: Shocking! Z Chapter',
     'seasonnumber': None, 'episodenumbers': [7],
     'episodenames': ['Legend! The Mechanical Beasts of Bardos!']},
 
-    {'input': '[BSS]_Tokyo_Magnitude_8.0_-_02_[0E5C4A40]',
+    {'input': '[BSS]_Tokyo_Magnitude_8.0_-_02_[0E5C4A40].mkv',
     'parsedseriesname': 'tokyo magnitude 8.0',
     'correctedseriesname': 'Tokyo Magnitude 8.0',
     'seasonnumber': None, 'episodenumbers': [2],
