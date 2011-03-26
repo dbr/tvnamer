@@ -225,7 +225,7 @@ def test_restoring_dot():
 }
 """)
 
-    expected_files = ['Tosh.0 - [03x02] - Web Redemption_ Brian Atene.avi']
+    expected_files = ['Tosh.0 - [03x02] - Brian Atene.avi']
 
     verify_out_data(out_data, expected_files)
 
