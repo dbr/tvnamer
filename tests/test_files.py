@@ -308,6 +308,12 @@ files['anime'] = [
     'correctedseriesname': 'Tokyo Magnitude 8.0',
     'seasonnumber': None, 'episodenumbers': [2],
     'episodenames': ['Broken World']},
+
+    {'input': 'Bleach - [310] - Ichigo\'s Resolution.avi',
+    'parsedseriesname': 'Bleach',
+    'correctedseriesname': 'Bleach',
+    'seasonnumber': None, 'episodenumbers': [310],
+    'episodenames': ['Ichigo\'s Resolution']},
 ]
 
 files['date_based'] = [

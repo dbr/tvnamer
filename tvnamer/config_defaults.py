@@ -200,6 +200,12 @@ defaults = {
         \]                                       # \]
         [^\\/]*$''',
 
+        # foo - [012]
+        '''^((?P<seriesname>.+?)[ \._\-])?       # show name and padding
+        \[                                       # [ not optional (or too ambigious)
+        (?P<episodenumber>[0-9]+)                # episode
+        \]                                       # ]
+        [^\\/]*$''',
         # foo.s0101, foo.0201
         '''^(?P<seriesname>.+?)[ \._\-]
         [Ss](?P<seasonnumber>[0-9]{2})
