@@ -573,7 +573,7 @@ class EpisodeInfo(object):
         self.episodename = epnames
 
 
-    def generateFilename(self, lowercase = False, with_replacements = True):
+    def generateFilename(self, lowercase = False, preview_filename = True):
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found
@@ -610,7 +610,11 @@ class EpisodeInfo(object):
         if lowercase or Config['lowercase_filename']:
             fname = fname.lower()
 
-        if with_replacements and len(Config['output_filename_replacements']) > 0:
+        if preview_orig_filename:
+            # Return filename without custom replacements of filesystem-validness
+            return fname
+
+        if len(Config['output_filename_replacements']) > 0:
             # Only apply replacements to filename, not extension
             splitname, splitext = os.path.splitext(fname)
             newname = applyCustomOutputReplacements(splitname)
