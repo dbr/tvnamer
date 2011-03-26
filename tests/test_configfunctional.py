@@ -144,7 +144,7 @@ def test_abs_epnmber():
 
 
 @attr("functional")
-def test_abs_epnmber():
+def test_resolve_absoloute_episode():
     """Test resolving by absolute episode number
     """
 

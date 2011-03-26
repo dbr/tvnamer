@@ -573,7 +573,7 @@ class EpisodeInfo(object):
         self.episodename = epnames
 
 
-    def generateFilename(self, lowercase = False, preview_filename = True):
+    def generateFilename(self, lowercase = False, preview_orig_filename = False):
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found

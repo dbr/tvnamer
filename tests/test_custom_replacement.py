@@ -229,8 +229,9 @@ def test_restoring_dot():
 
     verify_out_data(out_data, expected_files)
 
+
 @attr("functional")
-def test_restoring_dot():
+def test_replacement_order():
     """Ensure output replacements happen before the valid filename function is run
     """
     out_data = run_tvnamer(

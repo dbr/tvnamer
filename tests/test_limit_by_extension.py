@@ -56,6 +56,7 @@ def test_single_extensions():
 
     verify_out_data(out_data, expected_files)
 
+
 @attr("functional")
 def test_single_extension_with_subdirs():
     """Tests one valid extension recursing into sub-dirs

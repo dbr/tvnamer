@@ -25,8 +25,7 @@ from config_defaults import defaults
 
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
-applyCustomInputReplacements, applyCustomOutputReplacements,
-formatEpisodeNumbers, makeValidFilename)
+applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,

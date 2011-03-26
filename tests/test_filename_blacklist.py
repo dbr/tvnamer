@@ -9,6 +9,7 @@
 from functional_runner import run_tvnamer, verify_out_data
 from nose.plugins.attrib import attr
 
+
 @attr("functional")
 def test_no_blacklist():
     """Tests empty list of filename regexps is parsed as expected
@@ -29,6 +30,7 @@ def test_no_blacklist():
         'Scrubs - [01x02] - My Mentor.avi']
 
     verify_out_data(out_data, expected_files)
+
 
 @attr("functional")
 def test_partial_blacklist_using_simple_match():
@@ -56,6 +58,7 @@ def test_partial_blacklist_using_simple_match():
 
     verify_out_data(out_data, expected_files)
 
+
 @attr("functional")
 def test_partial_blacklist_using_regex():
     """Tests single match of filename blacklist using a regex match
@@ -81,6 +84,7 @@ def test_partial_blacklist_using_regex():
         'Scrubs - [02x02] - My Nightingale.avi']
 
     verify_out_data(out_data, expected_files)
+
 
 @attr("functional")
 def test_partial_blacklist_using_mix():
@@ -109,6 +113,7 @@ def test_partial_blacklist_using_mix():
         'scrubs.s02e02.avi']
 
     verify_out_data(out_data, expected_files)
+
 
 @attr("functional")
 def test_full_blacklist():
