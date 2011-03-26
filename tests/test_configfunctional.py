@@ -155,8 +155,19 @@ def test_abs_epnmber():
 
     out_data = run_tvnamer(
         with_files = ['[Bleachverse]_BLEACH_310.avi'],
-        with_config = conf)
+        with_config = conf,
+        with_input = "")
 
-    expected_files = ['Scrubs - 01.avi']
+    expected_files = ['Bleach - [310] - Ichigo\'s Resolution.avi']
+
+    verify_out_data(out_data, expected_files)
+
+    print "Checking output files are re-parsable"
+    out_data = run_tvnamer(
+        with_files = expected_files,
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['Bleach - [310] - Ichigo\'s Resolution.avi']
 
     verify_out_data(out_data, expected_files)
