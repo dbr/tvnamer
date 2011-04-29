@@ -492,7 +492,7 @@ class EpisodeInfo(object):
             self.seasonnumber,
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def populateFromTvdb(self, tvdb_instance):
+    def populateFromTvdb(self, tvdb_instance, force_name=None):
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
         series name.
         If series cannot be found, it will warn the user. If the episode is not
@@ -501,7 +501,7 @@ class EpisodeInfo(object):
         it will catch tvdb_api's user abort error and raise tvnamer's
         """
         try:
-            show = tvdb_instance[self.seriesname]
+            show = tvdb_instance[force_name or self.seriesname]
         except tvdb_error, errormsg:
             raise DataRetrievalError("Error contacting www.thetvdb.com: %s" % errormsg)
         except tvdb_shownotfound:
