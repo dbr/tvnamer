@@ -10,7 +10,7 @@
 """
 
 from __future__ import with_statement
-from optparse import OptionParser, OptionGroup
+import optparse
 
 
 class Group(object):
@@ -20,7 +20,7 @@ class Group(object):
     def __init__(self, parser, name):
         self.parser = parser
         self.name = name
-        self.group = OptionGroup(self.parser, name)
+        self.group = optparse.OptionGroup(self.parser, name)
 
     def __enter__(self):
         return self.group
@@ -30,7 +30,7 @@ class Group(object):
 
 
 def getCommandlineParser(defaults):
-    parser = OptionParser(usage = "%prog [options] <files>", add_help_option = False)
+    parser = optparse.OptionParser(usage = "%prog [options] <files>", add_help_option = False)
 
     parser.set_defaults(**defaults)
 
@@ -66,7 +66,7 @@ def getCommandlineParser(defaults):
         g.add_option("-m", "--move", action="store_true", dest="move_files_enable", help = "Move files to destination specified in config or with --movedestination argument")
         g.add_option("--not-move", action="store_false", dest="move_files_enable", help = "Files will remain in current directory")
 
-        g.add_option("-n", "--name", action="store", dest = "force_name", help = "Use this name to search TVdb")
+        g.add_option("-n", "--name", action="store", dest = "force_name", help = "Use this name to search TVdb (temporary solution)")
 
         g.add_option("-d", "--movedestination", action="store", dest = "move_files_destination", help = "Destination to move files to. Variables: %(seriesname)s %(seasonnumber)d %(episodenumbers)s")
 
