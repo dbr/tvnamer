@@ -6,7 +6,7 @@
 #license:Creative Commons GNU GPL v2
 # http://creativecommons.org/licenses/GPL/2.0/
 
-"""Tests various configs load correctly
+"""Test ability to override the series name
 """
 
 from functional_runner import run_tvnamer, verify_out_data
