@@ -17,7 +17,11 @@ try:
 except ImportError:
     pass
 
-import simplejson as json
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 from tvdb_api import Tvdb
 
 import cliarg_parser
