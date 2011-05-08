@@ -1,6 +1,16 @@
 """Setup tools for tvnamer,
 """
 
+needed_pkgs = []
+
+try:
+    import json
+except ImportError:
+    needed_pkgs.append('simplejson')
+
+needed_pkgs.append("tvdb_api>=1.5")
+
+
 from setuptools import setup
 setup(
 name = 'tvnamer',
@@ -28,7 +38,7 @@ entry_points = {
     ],
 },
 
-install_requires = ['tvdb_api>=1.5', 'simplejson'],
+install_requires = needed_pkgs,
 
 classifiers=[
     "Environment :: Console",
