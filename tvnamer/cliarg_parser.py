@@ -10,6 +10,7 @@
 """
 
 from __future__ import with_statement
+import sys
 import optparse
 
 
@@ -31,6 +32,14 @@ class Group(object):
 
 def getCommandlineParser(defaults):
     parser = optparse.OptionParser(usage = "%prog [options] <files>", add_help_option = False)
+
+    if sys.version_info < (2, 6, 5):
+        # Hacky workaround to avoid bug in Python 2.6.1 triggered by use of builtin json module in 2.6
+        # http://bugs.python.org/issue4978
+        # http://bugs.python.org/issue2646
+
+        #TODO: Remove this at some point
+        defaults = dict([(str(k), v) for k, v in defaults.items()])
 
     parser.set_defaults(**defaults)
 
