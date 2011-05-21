@@ -10,6 +10,7 @@
 """
 
 import os
+import sys
 import logging
 
 try:
@@ -297,8 +298,6 @@ def main():
 
     opts, args = opter.parse_args()
 
-    args = [x.decode("utf-8") for x in args]
-
     if opts.verbose:
         logging.basicConfig(
             level = logging.DEBUG,
@@ -332,6 +331,10 @@ def main():
             defaults.update(loadedConfig)
             opter = cliarg_parser.getCommandlineParser(defaults)
             opts, args = opter.parse_args()
+
+    # Decode args using filesystem encoding (done after config loading
+    # as the args are reparsed when the config is loaded)
+    args = [x.decode(sys.getfilesystemencoding()) for x in args]
 
     # Save config argument
     if opts.saveconfig is not None:
