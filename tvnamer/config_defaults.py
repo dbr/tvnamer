@@ -289,6 +289,14 @@ defaults = {
         [\._ -][^\\/]*$                          # More padding, then anything
         ''',
 
+        # foo - [01.09]
+        '''^((?P<seriesname>.+?)[ \._\-])?       # show name and padding
+        \[?                                      # [ optional
+        (?P<seasonnumber>[0-9]+)                 # season
+        [.]                                    # x
+        (?P<episodenumber>[0-9]+)                # episode
+        \]?                                      # ] optional
+        [^\\/]*$''',
     ],
 
     # Formats for renamed files. Variations for with/without episode,
