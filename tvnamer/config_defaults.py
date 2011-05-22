@@ -240,6 +240,17 @@ defaults = {
         (?P<day>\d{2})                           # day
         [^\/]*$''',
 
+        # foo - [01.09]
+        '''^((?P<seriesname>.+?))                # show name
+        [ \._\-]?                                # padding
+        \[                                       # [
+        (?P<seasonnumber>[0-9]+?)                # season
+        [.]                                      # .
+        (?P<episodenumber>[0-9]+?)               # episode
+        \]                                       # ]
+        [ \._\-]?                                # padding
+        [^\\/]*$''',
+
         # Foo - S2 E 02 - etc
         '''^(?P<seriesname>.+?)[ ]?[ \._\-][ ]?
         [Ss](?P<seasonnumber>[0-9]+)[\.\- ]?
@@ -288,15 +299,6 @@ defaults = {
         [Ee](?P<episodenumber>[0-9]+)            # E123
         [\._ -][^\\/]*$                          # More padding, then anything
         ''',
-
-        # foo - [01.09]
-        '''^((?P<seriesname>.+?)[ \._\-])?       # show name and padding
-        \[?                                      # [ optional
-        (?P<seasonnumber>[0-9]+)                 # season
-        [.]                                    # x
-        (?P<episodenumber>[0-9]+)                # episode
-        \]?                                      # ] optional
-        [^\\/]*$''',
     ],
 
     # Formats for renamed files. Variations for with/without episode,

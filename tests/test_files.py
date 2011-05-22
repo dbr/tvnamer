@@ -118,6 +118,12 @@ files['s01e01_format'] = [
     'correctedseriesname': 'Scrubs',
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': ['My First Day']},
+
+    {'input': '30 Rock [2.10] Episode 210.avi',
+    'parsedseriesname': '30 Rock',
+    'correctedseriesname': '30 Rock',
+    'seasonnumber': 2, 'episodenumbers': [10],
+    'episodenames': ['Episode 210']},
 ]
 
 files['misc'] = [
