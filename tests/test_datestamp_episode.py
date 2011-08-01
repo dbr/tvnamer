@@ -57,3 +57,15 @@ def test_date_in_s01e01_out():
     expected_files = ['Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
+
+def test_issue_31_twochar_year():
+    """Fix for parsing rather ambigious dd.mm.yy being parsed as "0011"
+    """
+
+    from tvnamer.utils import handleYear
+
+    assert tvnamer.utils.handleYear("99") == 1999
+    assert tvnamer.utils.handleYear("79") == 1979
+
+    assert tvnamer.utils.handleYear("00") == 2000
+    assert tvnamer.utils.handleYear("20") == 2020

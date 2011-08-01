@@ -95,6 +95,26 @@ def cleanRegexedSeriesName(seriesname):
     return seriesname.strip()
 
 
+def handleYear(year):
+    """Handle two-digit years with heuristic-ish guessing
+
+    Assumes 50-99 becomes 1950-1999, and 0-49 becomes 2000-2049
+
+    ..might need to rewrite this function in 2050, but that seems like
+    a reasonable limitation
+    """
+
+    year = int(year)
+
+    # No need to guess with 4-digit years
+    if year > 999:
+        return year
+
+    if year < 50:
+        return 2000 + year
+    else:
+        return 1900 + year
+
 class FileFinder(object):
     """Given a file, it will verify it exists. Given a folder it will descend
     one level into it and return a list of files, unless the recursive argument
@@ -256,7 +276,9 @@ class FileParser(object):
                             "Date-based regex must contain groups 'year', 'month' and 'day'")
                     match.group('year')
 
-                    episodenumbers = [datetime.date(int(match.group('year')),
+                    year = handleYear(match.group('year'))
+
+                    episodenumbers = [datetime.date(year,
                                                     int(match.group('month')),
                                                     int(match.group('day')))]
 
