@@ -293,9 +293,9 @@ files['anime'] = [
 
     {'input': '[Shinsen-Subs] Beet - 19 [24DAB497].mkv',
     'parsedseriesname': 'beet',
-    'correctedseriesname': 'Beet the Vandel Buster Excellion',
+    'correctedseriesname': 'Beet the Vandel Buster',
     'seasonnumber': None, 'episodenumbers': [19],
-    'episodenames': ['Windfang Flash! The Soul of a Wind Mage!']},
+    'episodenames': ['Threat of the Planet Earth']},
 
     {'input': '[AG-SHS]Victory_Gundam-03_DVD[FC6E3A6F].mkv',
     'parsedseriesname': 'victory gundam',

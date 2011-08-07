@@ -151,7 +151,7 @@ def test_replacing_ands():
 }
 """)
 
-    expected_files = ['Law and Order - [01x01] - Prescription For Death.avi']
+    expected_files = ['Law and Order - [01x01] - Prescription for Death.avi']
 
     verify_out_data(out_data, expected_files)
 

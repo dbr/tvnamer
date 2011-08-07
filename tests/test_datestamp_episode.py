@@ -64,8 +64,8 @@ def test_issue_31_twochar_year():
 
     from tvnamer.utils import handleYear
 
-    assert tvnamer.utils.handleYear("99") == 1999
-    assert tvnamer.utils.handleYear("79") == 1979
+    assert handleYear("99") == 1999
+    assert handleYear("79") == 1979
 
-    assert tvnamer.utils.handleYear("00") == 2000
-    assert tvnamer.utils.handleYear("20") == 2020
+    assert handleYear("00") == 2000
+    assert handleYear("20") == 2020
