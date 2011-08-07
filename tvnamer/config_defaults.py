@@ -180,11 +180,11 @@ defaults = {
         (?P<seasonnumber>[0-9]+)                 # 1
         [xX](?P<episodenumberstart>[0-9]+)       # first x23
         (                                        # -24 etc
-             [\-][0-9]+
+             [\-+][0-9]+
         )*
-             [\-]                                # separator
+             [\-+]                               # separator
              (?P<episodenumberend>[0-9]+)        # final episode num
-        ([\.\- ].*                               # must have a separator (prevents 1x01-720p from being 720 episodes)
+        ([\.\-+ ].*                              # must have a separator (prevents 1x01-720p from being 720 episodes)
         |
         $)''',
 
@@ -194,8 +194,8 @@ defaults = {
             ?(?P<seasonnumber>[0-9]+)            # season
         [xX]                                     # x
             (?P<episodenumberstart>[0-9]+)       # episode
-            (- [0-9]+)*
-        -                                        # -
+            ([\-+] [0-9]+)*
+        [\-+]                                    # -
             (?P<episodenumberend>[0-9]+)         # episode
         \]                                       # \]
         [^\\/]*$''',

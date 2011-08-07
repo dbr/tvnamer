@@ -202,6 +202,18 @@ files['multiple_episodes'] = [
     'seasonnumber': 2, 'episodenumbers': [1, 2, 3],
     'episodenames': ['My Overkill', 'My Nightingale', 'My Case Study']},
 
+    {'input': 'Scrubs - [02x01+02]',
+    'parsedseriesname': 'scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 2, 'episodenumbers': [1, 2],
+    'episodenames': ['My Overkill', 'My Nightingale']},
+
+    {'input': 'Scrubs 2x01+02',
+    'parsedseriesname': 'scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 2, 'episodenumbers': [1, 2],
+    'episodenames': ['My Overkill', 'My Nightingale']},
+
     {'input': 'Flight.of.the.Conchords.S01E01-02.An.Ep.name.avi',
     'parsedseriesname': 'Flight of the Conchords',
     'correctedseriesname': 'Flight of the Conchords',
