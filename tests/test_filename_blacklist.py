@@ -148,7 +148,7 @@ def test_dotfiles():
     "select_first": true,
     "filename_blacklist": [
         {"is_regex": true,
-         "match": "^\..*"}
+         "match": "^\\\\..*"}
         ]
     }
     """
