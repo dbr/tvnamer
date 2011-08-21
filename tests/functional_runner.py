@@ -1,10 +1,5 @@
 #!/usr/bin/env python
-#encoding:utf-8
-#author:dbr/Ben
-#project:tvnamer
-#repository:http://github.com/dbr/tvnamer
-#license:Creative Commons GNU GPL v2
-# http://creativecommons.org/licenses/GPL/2.0/
+
 
 """Functional-test runner for use in other tests
 

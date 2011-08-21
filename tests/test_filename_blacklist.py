@@ -137,3 +137,26 @@ def test_full_blacklist():
     expected_files = ['scrubs.s01e01.avi', 'scrubs.s02e01.avi', 'scrubs.s02e02.avi']
 
     verify_out_data(out_data, expected_files, expected_returncode = 2)
+
+@attr("functional")
+def test_dotfiles():
+    """Tests complete blacklist of all filenames with a regex
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true,
+    "filename_blacklist": [
+        {"is_regex": true,
+         "match": "^\..*"}
+        ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['.scrubs.s01e01.avi', 'scrubs.s02e02.avi'],
+        with_config = conf)
+
+    expected_files = ['.scrubs.s01e01.avi', 'Scrubs - [02x02] - Blah.avi']
+
+    verify_out_data(out_data, expected_files, expected_returncode = 2)
