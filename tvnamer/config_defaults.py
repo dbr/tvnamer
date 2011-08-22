@@ -76,6 +76,13 @@ defaults = {
     # If False, will move files when renaming.
     'move_files_confirmation': True,
 
+    # If true, convert the variable/dynamic parts of the destination
+    # to lower case. Does not affect the static parts; for example,
+    # if move_files_destination is set to
+    # '/Foo/Bar/%(seriesname)s/Season %(seasonnumber)d'
+    # then only the series name will be converted to lower case.
+    'move_files_lowercase_destination': False,
+
     # Destination to move files to. Trailing slash is not necessary.
     # Use forward slashes, even on Windows. Realtive paths are realtive to
     # the existing file's path (not current working dir). A value of '.' will

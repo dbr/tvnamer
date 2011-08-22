@@ -176,3 +176,25 @@ def test_with_invalid_seriesname_test2():
     expected_files = ['CSI/CSI - [01x01] - Golden Parachute.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_move_files_lowercase_destination():
+    """Test move_files_lowercase_destination configuration option.
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination": "Test/This/%(seriesname)s/S%(seasonnumber)02d",
+    "move_files_lowercase_destination": true,
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.This.Is.a.Test.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['Test/This/scrubs/S01/Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
