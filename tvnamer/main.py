@@ -46,6 +46,8 @@ def getDestinationFolder(episode):
         """Wrap the makeValidFilename function as it's called twice
         and this is slightly long..
         """
+        if Config['move_files_lowercase_destination']:
+            fname = fname.lower()
         return makeValidFilename(
             fname,
             normalize_unicode = Config['normalize_unicode_filenames'],
