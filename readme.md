@@ -127,6 +127,8 @@ The most useful are most likely `--batch`, `--selectfirst` and `--always`:
 
 `--batch` will not prompt you for anything. It automatically selects the first series search result, and automatically rename all files (identical to using both `--selectfirst` and `--always`). Use carefully!
 
+`--series-id` will allow you to use a specific ID from theTVdb. This can help with name detection issues.
+
 ## Configs
 
 One of the largest improvements in tvnamer v2 is the ability to have custom configuration. This allows you to customise behaviour without modifying the code (as was necessary with tvnamer v1).
