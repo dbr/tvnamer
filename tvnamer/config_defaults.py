@@ -328,4 +328,10 @@ defaults = {
 
     # String to join multiple number
     'episode_separator': '-',
+    
+    # Series ID to use instead of searching if the value is set
+    #'series_id': None,
+    
+    # Forced Name to use
+    #'forced_name': None,
 }
