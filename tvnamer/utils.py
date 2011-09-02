@@ -573,9 +573,16 @@ class EpisodeInfo(object):
                 # Try to search by absolute_number
                 sr = show.search(cepno, "absolute_number")
                 if len(sr) > 1:
-                    raise EpisodeNotFound(
-                        "Ambigious absolute episode number %d, found %d matches" % (
-                        cepno, len(sr)))
+                    # For multiple results try and make sure there is a direct match
+                    unsure = True
+                    for e in sr:
+                        if int(e['absolute_number']) == cepno:
+                            epnames.append(e['episodename'])
+                            unsure = False
+                    # If unsure error out            
+                    if unsure:
+                        raise EpisodeNotFound(
+                            "No episode actually matches %s, found %s results instead" % (cepno, len(sr)))
                 elif len(sr) == 1:
                     epnames.append(sr[0]['episodename'])
                 else:
