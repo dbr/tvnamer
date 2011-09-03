@@ -71,6 +71,8 @@ def getCommandlineParser(defaults):
 
         g.add_option("-n", "--name", action="store", dest = "force_name", help = "Use this name to search TVdb (temporary solution)")
 
+        g.add_option("--series-id", action="store", dest = "series_id", help = "Use this to explicitly set the show id for TVdb to use")
+        
         g.add_option("-d", "--movedestination", action="store", dest = "move_files_destination", help = "Destination to move files to. Variables: %(seriesname)s %(seasonnumber)d %(episodenumbers)s")
 
         g.add_option("-h", "--help", action="help", help = "show this help message and exit")

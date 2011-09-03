@@ -131,7 +131,7 @@ def processFile(tvdb_instance, episode):
     p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
 
     try:
-        episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'])
+        episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
     except (DataRetrievalError, ShowNotFound), errormsg:
         if Config['always_rename'] and Config['skip_file_on_error'] is True:
             warn("Skipping file due to error: %s" % errormsg)

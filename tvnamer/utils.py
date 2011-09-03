@@ -508,7 +508,7 @@ class EpisodeInfo(object):
             self.seasonnumber,
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def populateFromTvdb(self, tvdb_instance, force_name=None):
+    def populateFromTvdb(self, tvdb_instance, force_name=None, series_id=None):
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
         series name.
         If series cannot be found, it will warn the user. If the episode is not
@@ -517,7 +517,12 @@ class EpisodeInfo(object):
         it will catch tvdb_api's user abort error and raise tvnamer's
         """
         try:
-            show = tvdb_instance[force_name or self.seriesname]
+            if series_id is None:
+                show = tvdb_instance[force_name or self.seriesname]
+            else:
+                series_id = int(series_id)
+                tvdb_instance._getShowData(series_id, Config['language'])
+                show = tvdb_instance[series_id]
         except tvdb_error, errormsg:
             raise DataRetrievalError("Error contacting www.thetvdb.com: %s" % errormsg)
         except tvdb_shownotfound:
@@ -568,9 +573,16 @@ class EpisodeInfo(object):
                 # Try to search by absolute_number
                 sr = show.search(cepno, "absolute_number")
                 if len(sr) > 1:
-                    raise EpisodeNotFound(
-                        "Ambigious absolute episode number %d, found %d matches" % (
-                        cepno, len(sr)))
+                    # For multiple results try and make sure there is a direct match
+                    unsure = True
+                    for e in sr:
+                        if int(e['absolute_number']) == cepno:
+                            epnames.append(e['episodename'])
+                            unsure = False
+                    # If unsure error out            
+                    if unsure:
+                        raise EpisodeNotFound(
+                            "No episode actually matches %s, found %s results instead" % (cepno, len(sr)))
                 elif len(sr) == 1:
                     epnames.append(sr[0]['episodename'])
                 else:
