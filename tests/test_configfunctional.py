@@ -166,3 +166,26 @@ def test_resolve_absoloute_episode():
     expected_files = ['Bleach - [310] - Ichigo\'s Resolution.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_valid_extension_recursive():
+    """When using valid_extensions in a custom config file, recursive search doesn't work. Github issue #36
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true,
+    "valid_extensions": ["avi","mp4","m4v","wmv","mkv","mov","srt"],
+    "recursive": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['nested/dir/scrubs.s01e01.avi'],
+        with_config = conf,
+        with_input = "",
+        run_on_directory = True)
+
+    expected_files = ['nested/dir/Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
