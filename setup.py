@@ -14,7 +14,7 @@ needed_pkgs.append("tvdb_api>=1.5")
 from setuptools import setup
 setup(
 name = 'tvnamer',
-version='2.1',
+version='2.2',
 
 author='dbr/Ben',
 description='Automatic TV episode namer',
