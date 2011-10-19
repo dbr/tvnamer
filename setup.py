@@ -43,7 +43,7 @@ install_requires = needed_pkgs,
 classifiers=[
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
-    "License :: Unlicense",
+    # "License :: Unlicense",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
