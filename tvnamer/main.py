@@ -148,11 +148,10 @@ def processFile(tvdb_instance, episode):
 
     cnamer = Renamer(episode.fullpath)
     newName = episode.generateFilename()
-
+		
     if newName == episode.fullfilename:
         p("#" * 20)
-        p("Skipping: existing filename is correct: %s" % episode.fullfilename)
-        p("#" * 20)
+        p("Rename skipped: existing filename is correct: %s" % episode.fullfilename)
     else:
         p("#" * 20)
         p("Old filename: %s" % episode.fullfilename)
@@ -165,47 +164,46 @@ def processFile(tvdb_instance, episode):
 
         if Config['always_rename']:
             doRenameFile(cnamer, newName)
-            if Config['move_files_enable']:
-                doMoveFile(cnamer = cnamer, destDir = getDestinationFolder(episode))
-            return
-
-        ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
-
-        shouldRename = False
-        if ans == "a":
-            p("Always renaming")
-            Config['always_rename'] = True
-            shouldRename = True
-        elif ans == "q":
-            p("Quitting")
-            raise UserAbort("User exited with q")
-        elif ans == "y":
-            p("Renaming")
-            shouldRename = True
-        elif ans == "n":
-            p("Skipping")
         else:
-            p("Invalid input, skipping")
+            ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
 
-        if shouldRename:
-            doRenameFile(cnamer, newName)
+            shouldRename = False
+            if ans == "a":
+                p("Always renaming")
+                Config['always_rename'] = True
+                shouldRename = True
+            elif ans == "q":
+                p("Quitting")
+                raise UserAbort("User exited with q")
+            elif ans == "y":
+                p("Renaming")
+                shouldRename = True
+            elif ans == "n":
+                p("Skipping")
+            else:
+                p("Invalid input, skipping")
 
-            if Config['move_files_enable']:
-                newPath = getDestinationFolder(episode)
-                doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+            if shouldRename:
+                doRenameFile(cnamer, newName)
 
-                if Config['move_files_confirmation']:
-                    ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
-                else:
-                    ans = 'y'
+                
+    if Config['move_files_enable']:
+        newPath = getDestinationFolder(episode)
+        p("#" * 20)
+        p("About to move file to: %s" % newPath)
+  
+        ans = 'y'
+        if Config['move_files_confirmation'] and not Config['batch']:
+            ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
 
-                if ans == 'y':
-                    p("Moving file")
-                    doMoveFile(cnamer, newPath)
-                elif ans == 'q':
-                    p("Quitting")
-                    raise UserAbort("user exited with q")
+        if ans == 'y':
+            p("Moving file")
+            doMoveFile(cnamer = cnamer, destDir = newPath)            
+        elif ans == 'q':
+            p("Quitting")
+            raise UserAbort("user exited with q")
 
+   
 
 def findFiles(paths):
     """Takes an array of paths, returns all files found
