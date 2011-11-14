@@ -100,7 +100,12 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
         raise ValueError("Config value for move_files_destination cannot be None if move_files_enabled is True")
 
     try:
-        return cnamer.newPath(new_path = destDir, new_fullpath = destFilepath,  getPathPreview = getPathPreview)
+        return cnamer.newPath(
+            new_path = destDir,
+            new_fullpath = destFilepath,
+            always_move = Config['always_move'],
+            getPathPreview = getPathPreview)
+
     except OSError, e:
         warn(e)
 

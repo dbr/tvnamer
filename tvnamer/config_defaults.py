@@ -107,6 +107,14 @@ defaults = {
     # - %(day)s
     'move_files_destination_date': '.',
 
+    # Force the move-files feature to always move the file.
+    #
+    # If False, when a file is moved between partitions (or from a
+    # network volume), the original is left untouched (i.e it is
+    # copied).  If True, this will delete the file from the original
+    # volume, after the copy has complete.
+    'always_move': False,
+
     # Patterns to parse input filenames with
     'filename_patterns': [
         # [group] Show - 01-02 [Etc]
