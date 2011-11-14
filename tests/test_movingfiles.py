@@ -198,3 +198,25 @@ def test_move_files_lowercase_destination():
     expected_files = ['Test/This/scrubs/S01/Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_move_date_based_episode():
+    """Moving a date-base episode (lighthouse ticket #56)
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination_date": "Test/%(seriesname)s/%(year)s/%(month)s/%(day)s",
+    "move_files_lowercase_destination": true,
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['The Colbert Report - 2011-09-28 Ken Burns.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['Test/The Colbert Report/2011/9/28/The Colbert Report - [2011-09-28] - Ken Burns.avi']
+
+    verify_out_data(out_data, expected_files)

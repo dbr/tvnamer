@@ -95,6 +95,14 @@ defaults = {
     #                       variable episode_single and joined with episode_separator)
     'move_files_destination': '.',
 
+    # Same as above, only for date-numbered episodes. The following
+    # variables are available:
+    # - %(seriesname)s
+    # - %(year)s
+    # - %(month)s
+    # - %(day)s
+    'move_files_destination_date': '.',
+
     # Patterns to parse input filenames with
     'filename_patterns': [
         # [group] Show - 01-02 [Etc]

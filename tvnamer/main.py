@@ -24,7 +24,8 @@ from config_defaults import defaults
 
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
-applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename)
+applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename,
+DatedEpisodeInfo)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
@@ -57,11 +58,21 @@ def getDestinationFolder(episode):
 
 
     # Calls makeValidFilename on series name, as it must valid for a filename
-    destdir = Config['move_files_destination'] % {
-        'seriesname': wrap_validfname(episode.seriesname),
-        'seasonnumber': episode.seasonnumber,
-        'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers))
-    }
+    if isinstance(episode, DatedEpisodeInfo):
+        print Config['move_files_destination_date']
+        destdir = Config['move_files_destination_date'] % {
+            'seriesname': makeValidFilename(episode.seriesname),
+            'year': episode.episodenumbers[0].year,
+            'month': episode.episodenumbers[0].month,
+            'day': episode.episodenumbers[0].day
+            }
+    else:
+        destdir = Config['move_files_destination'] % {
+            'seriesname': wrap_validfname(episode.seriesname),
+            'seasonnumber': episode.seasonnumber,
+            'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
+            'originalfilename': episode.originalfilename,
+            }
     return destdir
 
 
