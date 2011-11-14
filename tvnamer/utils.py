@@ -477,6 +477,11 @@ class EpisodeInfo(object):
         self.episodenumbers = episodenumbers
         self.episodename = episodename
         self.fullpath = filename
+        if filename is not None:
+            # Remains untouched, for use when renaming file
+            self.originalfilename = os.path.basename(filename)
+        else:
+            self.originalfilename = None
 
     def fullpath_get(self):
         return self._fullpath
@@ -817,7 +822,7 @@ class Renamer(object):
         os.rename(self.filename, newpath)
         self.filename = newpath
 
-    def newPath(self, new_path, force = False, always_copy = False, always_move = False, create_dirs = True, getPathPreview = False):
+    def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, create_dirs = True, getPathPreview = False):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)
@@ -828,13 +833,26 @@ class Renamer(object):
         if always_copy and always_move:
             raise ValueError("Both always_copy and always_move cannot be specified")
 
-        old_dir, old_filename = os.path.split(self.filename)
+        if (new_path is None and new_fullpath is None) or (new_path is not None and new_fullpath is not None):
+            raise ValueError("Specify only new_dir or new_fullpath")
 
-        # Join new filepath to old one (to handle realtive dirs)
-        new_dir = os.path.abspath(os.path.join(old_dir, new_path))
+        if new_path is not None:
+            old_dir, old_filename = os.path.split(self.filename)
 
-        # Join new filename onto new filepath
-        new_fullpath = os.path.join(new_dir, old_filename)
+            # Join new filepath to old one (to handle realtive dirs)
+            new_dir = os.path.abspath(os.path.join(old_dir, new_path))
+
+            # Join new filename onto new filepath
+            new_fullpath = os.path.join(new_dir, old_filename)
+
+        else:
+            old_dir, old_filename = os.path.split(self.filename)
+
+            # Join new filepath to old one (to handle realtive dirs)
+            new_fullpath = os.path.abspath(os.path.join(old_dir, new_fullpath))
+
+            new_dir = os.path.dirname(new_fullpath)
+
 
         if len(Config['move_files_fullpath_replacements']) > 0:
             p("Before custom full path replacements: %s" % (new_fullpath))
@@ -847,7 +865,7 @@ class Renamer(object):
             return new_fullpath
 
         if create_dirs:
-            p("Creating %s" % new_dir)
+            p("Creating directory %s" % new_dir)
             try:
                 os.makedirs(new_dir)
             except OSError, e:

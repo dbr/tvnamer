@@ -38,7 +38,7 @@ def log():
     return logging.getLogger(__name__)
 
 
-def getDestinationFolder(episode):
+def getMoveDestination(episode):
     """Constructs the location to move/copy the file
     """
 
@@ -86,8 +86,13 @@ def doRenameFile(cnamer, newName):
         warn(e)
 
 
-def doMoveFile(cnamer, destDir, getPathPreview = False):
-    """Moves file to destDir"""
+def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = False):
+    """Moves file to destDir, or to destFilepath
+    """
+
+    if (destDir is None and destFilepath is None) or (destDir is not None and destFilepath is not None):
+        raise ValueError("Specify only destDir or destFilepath")
+
     if not Config['move_files_enable']:
         raise ValueError("move_files feature is disabled but doMoveFile was called")
 
@@ -95,7 +100,7 @@ def doMoveFile(cnamer, destDir, getPathPreview = False):
         raise ValueError("Config value for move_files_destination cannot be None if move_files_enabled is True")
 
     try:
-        return cnamer.newPath(destDir, getPathPreview = getPathPreview)
+        return cnamer.newPath(new_path = destDir, new_fullpath = destFilepath,  getPathPreview = getPathPreview)
     except OSError, e:
         warn(e)
 
@@ -177,7 +182,10 @@ def processFile(tvdb_instance, episode):
         if Config['always_rename']:
             doRenameFile(cnamer, newName)
             if Config['move_files_enable']:
-                doMoveFile(cnamer = cnamer, destDir = getDestinationFolder(episode))
+                if Config['move_files_destination_is_filepath']:
+                    doMoveFile(cnamer = cnamer, destFilepath = getMoveDestination(episode))
+                else:
+                    doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
             return
 
         ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
@@ -202,8 +210,11 @@ def processFile(tvdb_instance, episode):
             doRenameFile(cnamer, newName)
 
             if Config['move_files_enable']:
-                newPath = getDestinationFolder(episode)
-                doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+                newPath = getMoveDestination(episode)
+                if Config['move_files_destination_is_filepath']:
+                    doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
+                else:
+                    doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
 
                 if Config['move_files_confirmation']:
                     ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')

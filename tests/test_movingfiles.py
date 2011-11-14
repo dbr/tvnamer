@@ -220,3 +220,25 @@ def test_move_date_based_episode():
     expected_files = ['Test/The Colbert Report/2011/9/28/The Colbert Report - [2011-09-28] - Ken Burns.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_move_files_full_filepath_simple():
+    """Moving file destination including a filename
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination": "TestDir/%(seriesname)s/season %(seasonnumber)02d/%(episodenumbers)s/OriginalFilename.avi",
+    "move_files_destination_is_filepath": true,
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e02.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['TestDir/Scrubs/season 01/02/OriginalFilename.avi']
+
+    verify_out_data(out_data, expected_files)
