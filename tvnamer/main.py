@@ -25,7 +25,7 @@ from config_defaults import defaults
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser, Renamer, warn,
 applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename,
-DatedEpisodeInfo)
+DatedEpisodeInfo, NoSeasonEpisodeInfo)
 
 from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
@@ -65,6 +65,12 @@ def getMoveDestination(episode):
             'year': episode.episodenumbers[0].year,
             'month': episode.episodenumbers[0].month,
             'day': episode.episodenumbers[0].day
+            }
+    elif isinstance(episode, NoSeasonEpisodeInfo):
+        destdir = Config['move_files_destination'] % {
+            'seriesname': wrap_validfname(episode.seriesname),
+            'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
+            'originalfilename': episode.originalfilename,
             }
     else:
         destdir = Config['move_files_destination'] % {
