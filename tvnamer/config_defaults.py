@@ -325,9 +325,9 @@ defaults = {
     # Formats for renamed files. Variations for with/without episode,
     # and with/without season number.
     'filename_with_episode':
-     '%(seriesname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s%(ext)s',
+     '%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s',
     'filename_without_episode':
-     '%(seriesname)s - [%(seasonno)02dx%(episode)s]%(ext)s',
+     '%(seriesname)s - [%(seasonnumber)02dx%(episode)s]%(ext)s',
     'filename_with_episode_no_season':
       '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
     'filename_without_episode_no_season':

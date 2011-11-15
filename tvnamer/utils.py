@@ -625,7 +625,8 @@ class EpisodeInfo(object):
 
         epdata = {
             'seriesname': self.seriesname,
-            'seasonno': self.seasonnumber,
+            'seasonno': self.seasonnumber, # TODO: deprecated attribute, make this warn somehow
+            'seasonnumber': self.seasonnumber,
             'episode': epno,
             'episodename': self.episodename,
             'ext': prep_extension}

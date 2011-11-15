@@ -41,7 +41,7 @@ def test_date_in_s01e01_out():
     conf = """
     {"always_rename": true,
     "select_first": true,
-    "filename_with_episode": "%(seriesname)s - [%(seasonno)02dx%(episode)s] - %(episodename)s%(ext)s"}
+    "filename_with_episode": "%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s"}
     """
 
     out_data = run_tvnamer(
