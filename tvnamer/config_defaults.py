@@ -84,7 +84,7 @@ defaults = {
     'move_files_lowercase_destination': False,
 
     # If True, the destination path includes the destination filename,
-    # for example: '/example/tv/%(seriesname)s/season $(seasonnumber)d/$(originalfilename)'
+    # for example: '/example/tv/%(seriesname)s/season %(seasonnumber)d/%(originalfilename)'
     'move_files_destination_is_filepath': False,
 
     # Destination to move files to. Trailing slash is not necessary.
