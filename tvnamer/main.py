@@ -178,7 +178,7 @@ def processFile(tvdb_instance, episode):
 
     if newName == episode.fullfilename:
         p("#" * 20)
-        p("Skipping: existing filename is correct: %s" % episode.fullfilename)
+        p("Existing filename is correct: %s" % episode.fullfilename)
         p("#" * 20)
     else:
         p("#" * 20)
@@ -220,24 +220,24 @@ def processFile(tvdb_instance, episode):
         if shouldRename:
             doRenameFile(cnamer, newName)
 
-            if Config['move_files_enable']:
-                newPath = getMoveDestination(episode)
-                if Config['move_files_destination_is_filepath']:
-                    doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
-                else:
-                    doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+    if Config['move_files_enable']:
+        newPath = getMoveDestination(episode)
+        if Config['move_files_destination_is_filepath']:
+            doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
+        else:
+            doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
 
-                if Config['move_files_confirmation']:
-                    ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
-                else:
-                    ans = 'y'
+        if Config['move_files_confirmation']:
+            ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
+        else:
+            ans = 'y'
 
-                if ans == 'y':
-                    p("Moving file")
-                    doMoveFile(cnamer, newPath)
-                elif ans == 'q':
-                    p("Quitting")
-                    raise UserAbort("user exited with q")
+        if ans == 'y':
+            p("Moving file")
+            doMoveFile(cnamer, newPath)
+        elif ans == 'q':
+            p("Quitting")
+            raise UserAbort("user exited with q")
 
 
 def findFiles(paths):
