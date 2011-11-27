@@ -176,10 +176,15 @@ def processFile(tvdb_instance, episode):
     cnamer = Renamer(episode.fullpath)
     newName = episode.generateFilename()
 
+    shouldRename = False
+
     if newName == episode.fullfilename:
         p("#" * 20)
         p("Existing filename is correct: %s" % episode.fullfilename)
         p("#" * 20)
+
+        shouldRename = True
+
     else:
         p("#" * 20)
         p("Old filename: %s" % episode.fullfilename)
@@ -201,7 +206,6 @@ def processFile(tvdb_instance, episode):
 
         ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
 
-        shouldRename = False
         if ans == "a":
             p("Always renaming")
             Config['always_rename'] = True
@@ -220,7 +224,7 @@ def processFile(tvdb_instance, episode):
         if shouldRename:
             doRenameFile(cnamer, newName)
 
-    if Config['move_files_enable']:
+    if shouldRename and Config['move_files_enable']:
         newPath = getMoveDestination(episode)
         if Config['move_files_destination_is_filepath']:
             doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
