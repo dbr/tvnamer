@@ -189,3 +189,62 @@ def test_valid_extension_recursive():
     expected_files = ['nested/dir/Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_replace_ands():
+    """Test replace "and" "&"
+    """
+
+    conf = r"""
+    {"always_rename": true,
+    "select_first": true,
+    "input_filename_replacements": [
+        {"is_regex": true,
+        "match": "(\\Wand\\W| & )",
+        "replacement": " "}
+    ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['Brothers.and.Sisters.S05E16.HDTV.XviD-LOL.avi'],
+        with_config = conf,
+        with_input = "",
+        run_on_directory = True)
+
+    expected_files = ['Brothers & Sisters - [05x16] - Home Is Where The Fort Is.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_replace_ands_in_output_also():
+    """Test replace "and" "&" for search, and replace & in output filename
+    """
+
+    conf = r"""
+    {"always_rename": true,
+    "select_first": true,
+    "input_filename_replacements": [
+        {"is_regex": true,
+        "match": "(\\Wand\\W| & )",
+        "replacement": " "}
+    ],
+    "output_filename_replacements": [
+        {"is_regex": true,
+        "match": " & ",
+        "replacement": " and "}
+    ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['Brothers.and.Sisters.S05E16.HDTV.XviD-LOL.avi'],
+        with_config = conf,
+        with_input = "",
+        run_on_directory = True)
+
+    expected_files = ['Brothers and Sisters - [05x16] - Home Is Where The Fort Is.avi']
+
+    verify_out_data(out_data, expected_files)
