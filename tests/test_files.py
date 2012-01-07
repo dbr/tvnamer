@@ -125,6 +125,12 @@ files['s01e01_format'] = [
     'correctedseriesname': 'Scrubs',
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': ['My First Day']},
+
+    {'input': 'scrubs - s01 - e02 - something.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumbers': [2],
+    'episodenames': ['My Mentor']},
 ]
 
 files['misc'] = [

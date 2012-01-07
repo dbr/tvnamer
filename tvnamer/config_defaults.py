@@ -243,10 +243,10 @@ defaults = {
         \]?                                      # ] optional
         [^\\/]*$''',
 
-        # foo.s01.e01, foo.s01_e01
+        # foo.s01.e01, foo.s01_e01, "foo.s01 - e01"
         '''^((?P<seriesname>.+?)[ \._\-])?
         \[?
-        [Ss](?P<seasonnumber>[0-9]+)[\._\- ]?
+        [Ss](?P<seasonnumber>[0-9]+)[ ]?[\._\- ]?[ ]?
         [Ee]?(?P<episodenumber>[0-9]+)
         \]?
         [^\\/]*$''',
