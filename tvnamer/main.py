@@ -64,7 +64,8 @@ def getMoveDestination(episode):
             'seriesname': makeValidFilename(episode.seriesname),
             'year': episode.episodenumbers[0].year,
             'month': episode.episodenumbers[0].month,
-            'day': episode.episodenumbers[0].day
+            'day': episode.episodenumbers[0].day,
+            'originalfilename': episode.originalfilename,
             }
     elif isinstance(episode, NoSeasonEpisodeInfo):
         destdir = Config['move_files_destination'] % {
