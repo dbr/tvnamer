@@ -114,6 +114,9 @@ defaults = {
     # copied).  If True, this will delete the file from the original
     # volume, after the copy has complete.
     'always_move': False,
+    
+    # Allow user to copy files to specified move location without renaming files.
+    'move_files_only': False,
 
     # Patterns to parse input filenames with
     'filename_patterns': [

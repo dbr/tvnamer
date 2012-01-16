@@ -263,3 +263,24 @@ def test_move_with_correct_name():
     expected_files = ['SubDir/Scrubs - [01x02] - My Mentor.avi']
 
     verify_out_data(out_data, expected_files)
+
+@attr("functional")
+def test_move_files_only():
+    """With parameter move_files_only set to true files should be moved and not renamed
+    """
+
+    conf = """
+    {"move_files_only": true,
+    "move_files_enable": true,
+    "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = conf,
+        with_input = "y\n")
+
+    expected_files = ['tv/Scrubs/season 1/scrubs.s01e01.avi']
+
+    verify_out_data(out_data, expected_files)

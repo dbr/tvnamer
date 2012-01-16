@@ -175,55 +175,62 @@ def processFile(tvdb_instance, episode):
         warn(errormsg)
 
     cnamer = Renamer(episode.fullpath)
-    newName = episode.generateFilename()
+   
 
     shouldRename = False
 
-    if newName == episode.fullfilename:
-        p("#" * 20)
-        p("Existing filename is correct: %s" % episode.fullfilename)
-        p("#" * 20)
-
+    if Config["move_files_only"]:
+        
+        newName = episode.fullfilename
         shouldRename = True
-
+        
     else:
-        p("#" * 20)
-        p("Old filename: %s" % episode.fullfilename)
-
-        if len(Config['output_filename_replacements']) > 0:
-            # Show filename without replacements
-            p("Before custom output replacements: %s" % (episode.generateFilename(preview_orig_filename = False)))
-
-        p("New filename: %s" % newName)
-
-        if Config['always_rename']:
-            doRenameFile(cnamer, newName)
-            if Config['move_files_enable']:
-                if Config['move_files_destination_is_filepath']:
-                    doMoveFile(cnamer = cnamer, destFilepath = getMoveDestination(episode))
-                else:
-                    doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
-            return
-
-        ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
-
-        if ans == "a":
-            p("Always renaming")
-            Config['always_rename'] = True
+        newName = episode.generateFilename()
+        if newName == episode.fullfilename:
+            p("#" * 20)
+            p("Existing filename is correct: %s" % episode.fullfilename)
+            p("#" * 20)
+    
             shouldRename = True
-        elif ans == "q":
-            p("Quitting")
-            raise UserAbort("User exited with q")
-        elif ans == "y":
-            p("Renaming")
-            shouldRename = True
-        elif ans == "n":
-            p("Skipping")
+    
         else:
-            p("Invalid input, skipping")
-
-        if shouldRename:
-            doRenameFile(cnamer, newName)
+            p("#" * 20)
+            p("Old filename: %s" % episode.fullfilename)
+    
+            if len(Config['output_filename_replacements']) > 0:
+                # Show filename without replacements
+                p("Before custom output replacements: %s" % (episode.generateFilename(preview_orig_filename = False)))
+    
+            p("New filename: %s" % newName)
+    
+            if Config['always_rename']:
+                doRenameFile(cnamer, newName)
+                if Config['move_files_enable']:
+                    if Config['move_files_destination_is_filepath']:
+                        doMoveFile(cnamer = cnamer, destFilepath = getMoveDestination(episode))
+                    else:
+                        doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
+                return
+    
+            ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
+    
+            if ans == "a":
+                p("Always renaming")
+                Config['always_rename'] = True
+                shouldRename = True
+            elif ans == "q":
+                p("Quitting")
+                raise UserAbort("User exited with q")
+            elif ans == "y":
+                p("Renaming")
+                shouldRename = True
+            elif ans == "n":
+                p("Skipping")
+            else:
+                p("Invalid input, skipping")
+    
+            if shouldRename:
+                doRenameFile(cnamer, newName)
 
     if shouldRename and Config['move_files_enable']:
         newPath = getMoveDestination(episode)
@@ -398,6 +405,12 @@ def main():
 
     # Update global config object
     Config.update(opts.__dict__)
+
+    if Config["move_files_only"] and not Config["move_files_enable"]:
+        p("#" * 20)
+        p("Parameter move_files_enable cannot be set to false while parameter move_only is set to true.")
+        p("#" * 20)
+        opter.exit(0)
 
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
