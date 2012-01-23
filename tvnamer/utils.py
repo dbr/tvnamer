@@ -89,6 +89,15 @@ def cleanRegexedSeriesName(seriesname):
     return seriesname.strip()
 
 
+def replaceSeriesName(seriesname):
+    """allow specified replacements of series names
+    
+    in cases where default filenames match the wrong series,
+    e.g. missing year gives wrong answer, or vice versa
+    """
+    return Config['series_replacements'].get(seriesname.lower(), seriesname)
+
+
 def handleYear(year):
     """Handle two-digit years with heuristic-ish guessing
 
@@ -291,6 +300,7 @@ class FileParser(object):
 
                 if seriesname != None:
                     seriesname = cleanRegexedSeriesName(seriesname)
+                    seriesname = replaceSeriesName(seriesname)
 
                 if 'seasonnumber' in namedgroups:
                     seasonnumber = int(match.group('seasonnumber'))

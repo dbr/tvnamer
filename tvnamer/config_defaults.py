@@ -354,4 +354,7 @@ defaults = {
     
     # Forced Name to use
     #'forced_name': None,
+    
+    # series names that should be replaced with another:
+    'series_replacements': {},
 }
