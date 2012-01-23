@@ -89,13 +89,28 @@ def cleanRegexedSeriesName(seriesname):
     return seriesname.strip()
 
 
-def replaceSeriesName(seriesname):
+def replaceInputSeriesName(seriesname):
     """allow specified replacements of series names
     
     in cases where default filenames match the wrong series,
     e.g. missing year gives wrong answer, or vice versa
+    
+    This helps the TVDB query get the right match.
     """
-    return Config['series_replacements'].get(seriesname.lower(), seriesname)
+    for pat, replacement in Config['input_series_replacements'].iteritems():
+        if re.match(pat, seriesname, re.IGNORECASE|re.UNICODE):
+            return replacement
+    return seriesname
+
+def replaceOutputSeriesName(seriesname):
+    """transform TVDB series names
+    
+    after matching from TVDB, transform the series name for desired abbreviation, etc.
+    
+    This affects the output filename.
+    """
+    
+    return Config['output_series_replacements'].get(seriesname, seriesname)
 
 
 def handleYear(year):
@@ -300,7 +315,7 @@ class FileParser(object):
 
                 if seriesname != None:
                     seriesname = cleanRegexedSeriesName(seriesname)
-                    seriesname = replaceSeriesName(seriesname)
+                    seriesname = replaceInputSeriesName(seriesname)
 
                 if 'seasonnumber' in namedgroups:
                     seasonnumber = int(match.group('seasonnumber'))
@@ -547,7 +562,7 @@ class EpisodeInfo(object):
             raise UserAbort(unicode(error))
         else:
             # Series was found, use corrected series name
-            self.seriesname = show['seriesname']
+            self.seriesname = replaceOutputSeriesName(show['seriesname'])
 
         if isinstance(self, DatedEpisodeInfo):
             # Date-based episode
