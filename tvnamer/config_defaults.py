@@ -354,4 +354,14 @@ defaults = {
     
     # Forced Name to use
     #'forced_name': None,
+    
+    # replace series names before/after passing to TVDB
+    # input replacements are regular expressions for the series as parsed from
+    # filenames, for instance adding or removing the year, or expanding abbreviations
+    'input_series_replacements': {},
+    
+    # output replacements are for transforms of the TVDB series names
+    # since these are perfectly predictable, they are simple strings
+    # not regular expressions
+    'output_series_replacements': {},
 }
