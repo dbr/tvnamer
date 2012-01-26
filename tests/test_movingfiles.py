@@ -263,3 +263,24 @@ def test_move_with_correct_name():
     expected_files = ['SubDir/Scrubs - [01x02] - My Mentor.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_move_no_season():
+    """Files with no season number should moveable [#94]
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination": "SubDir",
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['Scrubs - [02] - My Mentor.avi'],
+        with_config = conf,
+        with_input = "y\n")
+
+    expected_files = ['SubDir/Scrubs - [02] - My Mentor.avi']
+
+    verify_out_data(out_data, expected_files)

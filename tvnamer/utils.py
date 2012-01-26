@@ -679,6 +679,12 @@ class DatedEpisodeInfo(EpisodeInfo):
         self.episodename = episodename
         self.fullpath = filename
 
+        if filename is not None:
+            # Remains untouched, for use when renaming file
+            self.originalfilename = os.path.basename(filename)
+        else:
+            self.originalfilename = None
+
     def sortable_info(self):
         """Returns a tuple of sortable information
         """
@@ -740,6 +746,12 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
         self.episodenumbers = episodenumbers
         self.episodename = episodename
         self.fullpath = filename
+
+        if filename is not None:
+            # Remains untouched, for use when renaming file
+            self.originalfilename = os.path.basename(filename)
+        else:
+            self.originalfilename = None
 
     def sortable_info(self):
         """Returns a tuple of sortable information
