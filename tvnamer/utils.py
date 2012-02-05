@@ -703,6 +703,12 @@ class DatedEpisodeInfo(EpisodeInfo):
         self.episodenumbers = episodenumbers
         self.episodename = episodename
         self.fullpath = filename
+        
+        if filename is not None:
+            # Remains untouched, for use when renaming file
+            self.originalfilename = os.path.basename(filename)
+        else:
+            self.originalfilename = None
 
         if filename is not None:
             # Remains untouched, for use when renaming file
