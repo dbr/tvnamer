@@ -301,7 +301,7 @@ defaults = {
         .*$                                      # rest of file
         ''',
 
-        # show.name.e123.abc
+        # show name 2 of 6 - blah
         '''^(?P<seriesname>.+?)                  # Show name
         [ \._\-]                                 # Padding
         (?P<episodenumber>[0-9]+)                # 2
