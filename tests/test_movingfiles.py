@@ -299,8 +299,7 @@ def test_move_files_only():
 
     out_data = run_tvnamer(
         with_files = ['scrubs.s01e01.avi'],
-        with_config = conf,
-        with_input = "y\n")
+        with_config = conf)
 
     expected_files = ['tv/Scrubs/season 1/scrubs.s01e01.avi']
 

@@ -239,7 +239,7 @@ def processFile(tvdb_instance, episode):
         else:
             doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
 
-        if Config['move_files_confirmation']:
+        if not Config['batch'] and Config['move_files_confirmation']:
             ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
         else:
             ans = 'y'

@@ -76,8 +76,9 @@ defaults = {
     # Move renamed files to directory?
     'move_files_enable': False,
 
-    # Seperation confirmation of moving or copying renamed file?
-    # If False, will move files when renaming.
+    # Separate confirmation of moving or copying renamed file?  If
+    # False, will move files when renaming. In batch mode, will never
+    # prompt.
     'move_files_confirmation': True,
 
     # If true, convert the variable/dynamic parts of the destination
