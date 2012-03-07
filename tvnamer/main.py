@@ -88,7 +88,7 @@ def doRenameFile(cnamer, newName):
     newName should be string containing new filename.
     """
     try:
-        cnamer.newName(newName, force = Config['forcefully_rename'])
+        cnamer.newName(newName, force = Config['overwrite_destination_on_rename'])
     except OSError, e:
         warn(e)
 
@@ -112,7 +112,7 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
             new_fullpath = destFilepath,
             always_move = Config['always_move'],
             getPathPreview = getPathPreview,
-            force = Config['forcefully_rename'])
+            force = Config['overwrite_destination_on_move'])
 
     except OSError, e:
         warn(e)

@@ -258,7 +258,7 @@ def test_force_overwrite_enabled():
     conf = r"""
     {"always_rename": true,
     "select_first": true,
-    "forcefully_rename": true
+    "overwrite_destination_on_rename": true
     }
     """
 
@@ -281,7 +281,7 @@ def test_force_overwrite_disabled():
     conf = r"""
     {"always_rename": true,
     "select_first": true,
-    "forcefully_rename": false
+    "overwrite_destination_on_rename": false
     }
     """
 

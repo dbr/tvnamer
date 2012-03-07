@@ -315,7 +315,7 @@ def test_forcefully_moving_enabled():
     {"move_files_enable": true,
     "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
     "batch": true,
-    "forcefully_rename": true}
+    "overwrite_destination_on_move": true}
     """
 
     out_data = run_tvnamer(
@@ -336,7 +336,7 @@ def test_forcefully_moving_disabled():
     {"move_files_enable": true,
     "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
     "batch": true,
-    "forcefully_rename": false}
+    "overwrite_destination_on_move": false}
     """
 
     out_data = run_tvnamer(
