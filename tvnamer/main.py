@@ -111,7 +111,8 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
             new_path = destDir,
             new_fullpath = destFilepath,
             always_move = Config['always_move'],
-            getPathPreview = getPathPreview)
+            getPathPreview = getPathPreview,
+            force = Config['forcefully_rename'])
 
     except OSError, e:
         warn(e)
