@@ -88,7 +88,7 @@ def doRenameFile(cnamer, newName):
     newName should be string containing new filename.
     """
     try:
-        cnamer.newName(newName)
+        cnamer.newName(newName, force = Config['forcefully_rename'])
     except OSError, e:
         warn(e)
 

@@ -248,3 +248,71 @@ def test_replace_ands_in_output_also():
     expected_files = ['Brothers and Sisters - [05x16] - Home Is Where The Fort Is.avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_force_overwrite_enabled():
+    """Tests forcefully overwritting existing filenames
+    """
+
+    conf = r"""
+    {"always_rename": true,
+    "select_first": true,
+    "forcefully_rename": true
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'Scrubs - [01x01] - My First Day.avi'],
+        with_config = conf,
+        with_input = "",
+        run_on_directory = True)
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_force_overwrite_disabled():
+    """Explicitly disabling forceful-overwrite
+    """
+
+    conf = r"""
+    {"always_rename": true,
+    "select_first": true,
+    "forcefully_rename": false
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs - [01x01].avi'],
+        with_config = conf,
+        with_input = "",
+        run_on_directory = True)
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs - [01x01].avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_force_overwrite_default():
+    """Forceful-overwrite should be disabled by default
+    """
+
+    conf = r"""
+    {"always_rename": true,
+    "select_first": true
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs - [01x01].avi'],
+        with_config = conf,
+        with_input = "",
+        run_on_directory = True)
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs - [01x01].avi']
+
+    verify_out_data(out_data, expected_files)

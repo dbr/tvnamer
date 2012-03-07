@@ -17,6 +17,10 @@ defaults = {
     # Only functions when always_rename is True
     'skip_file_on_error': True,
 
+    # Forcefully overwrite existing files when renaming. This
+    # potentially destroys the old file. Default is False
+    'forcefully_rename': False,
+
     # Verbose mode (debugging info)
     'verbose': False,
 
