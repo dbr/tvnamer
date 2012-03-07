@@ -224,12 +224,12 @@ def test_move_date_based_episode():
 
 @attr("functional")
 def test_move_files_full_filepath_simple():
-    """Moving file destination including a filename
+    """Moving file destination including a fixed filename
     """
 
     conf = """
     {"move_files_enable": true,
-    "move_files_destination": "TestDir/%(seriesname)s/season %(seasonnumber)02d/%(episodenumbers)s/OriginalFilename.avi",
+    "move_files_destination": "TestDir/%(seriesname)s/season %(seasonnumber)02d/%(episodenumbers)s/SpecificName.avi",
     "move_files_destination_is_filepath": true,
     "batch": true}
     """
@@ -239,7 +239,31 @@ def test_move_files_full_filepath_simple():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['TestDir/Scrubs/season 01/02/OriginalFilename.avi']
+    expected_files = ['TestDir/Scrubs/season 01/02/SpecificName.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_move_files_full_filepath_with_origfilename():
+    """Moving file destination including a filename
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination": "TestDir/%(seriesname)s/season %(seasonnumber)02d/%(episodenumbers)s/%(originalfilename)s",
+    "move_files_destination_is_filepath": true,
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'scrubs.s01e02.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = [
+        'TestDir/Scrubs/season 01/01/scrubs.s01e01.avi',
+        'TestDir/Scrubs/season 01/02/scrubs.s01e02.avi']
 
     verify_out_data(out_data, expected_files)
 
