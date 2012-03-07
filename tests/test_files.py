@@ -158,6 +158,11 @@ files['misc'] = [
     'seasonnumber': 6, 'episodenumbers': [3],
     'episodenames': ['Episode 1350']},
 
+    {'input': 'Scrubs Season 01 Episode 01 - The Series Title.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumbers': [1],
+    'episodenames': ['My First Day']},
 ]
 
 files['multiple_episodes'] = [

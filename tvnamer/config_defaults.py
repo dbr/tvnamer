@@ -311,6 +311,12 @@ defaults = {
         ([\._ -]|$|[^\\/]*$)                     # More padding, then anything
         ''',
 
+        # show name Season 01 Episode 20
+        '''^(?P<seriesname>.+?)[ ]?               # Show name
+        [Ss]eason[ ]?(?P<seasonnumber>[0-9]+)[ ]? # Season 1
+        [Ee]pisode[ ]?(?P<episodenumber>[0-9]+)   # Episode 20
+        [^\\/]*$''',                              # Anything
+
         # foo.103*
         '''^(?P<seriesname>.+)[ \._\-]
         (?P<seasonnumber>[0-9]{1})
