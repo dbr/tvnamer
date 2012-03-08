@@ -371,6 +371,36 @@ files['x_of_x'] = [
     'correctedseriesname': 'Scrubs',
     'seasonnumber': None, 'episodenumbers': [1],
     'episodenames': ['My First Day']},
+
+    {'input': 'Scrubs part 1.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': None, 'episodenumbers': [1],
+    'episodenames': ['My First Day']},
+
+    {'input': 'Scrubs part 1 of 10.avi', # only one episode, as it's not "1 to 10"
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': None, 'episodenumbers': [1],
+    'episodenames': ['My First Day']},
+
+    {'input': 'Scrubs part 1 and part 2.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': None, 'episodenumbers': [1, 2],
+    'episodenames': ['My First Day']},
+
+    {'input': 'Scrubs part 1 to part 3.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': None, 'episodenumbers': [1, 2, 3],
+    'episodenames': ['My First Day']},
+
+    {'input': 'Scrubs part 1 to 4.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': None, 'episodenumbers': [1, 2, 3, 4],
+    'episodenames': ['My First Day']},
 ]
 
 

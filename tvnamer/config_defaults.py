@@ -311,6 +311,29 @@ defaults = {
         ([\._ -]|$|[^\\/]*$)                     # More padding, then anything
         ''',
 
+        # Show.Name.Part.1.and.Part.2
+        '''^(?i)
+        (?P<seriesname>.+?)                        # Show name
+        [ \._\-]                                   # Padding
+        (?:part|pt)?[\._ -]
+        (?P<episodenumberstart>[0-9]+|[ivx]+)      # Part 1
+        (?:
+          [ \._-](?:and|&|to)                        # and
+          [ \._-](?:part|pt)?                        # Part 2
+          [ \._-](?:[0-9]+|[ivx]+))*                 # (middle group, optional, repeating)
+        [ \._-](?:and|&|to)                        # and
+        [ \._-]?(?:part|pt)?                       # Part 3
+        [ \._-](?P<episodenumberend>[0-9]+|[ivx]+) # last episode number, save it
+        [\._ -][^\\/]*$                            # More padding, then anything
+        ''',
+
+        # Show.Name.Part1
+        '''^(?P<seriesname>.+?)                  # Show name\n
+        [ \\._\\-]                               # Padding\n
+        [Pp]art[ ](?P<episodenumber>[0-9]+)      # Part 1\n
+        [\\._ -][^\\/]*$                         # More padding, then anything\n
+        ''',
+
         # show name Season 01 Episode 20
         '''^(?P<seriesname>.+?)[ ]?               # Show name
         [Ss]eason[ ]?(?P<seasonnumber>[0-9]+)[ ]? # Season 1
