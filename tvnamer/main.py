@@ -282,13 +282,6 @@ def findFiles(paths):
 def tvnamer(paths):
     """Main tvnamer function, takes an array of paths, does stuff.
     """
-    # Warn about move_files function
-    if Config['move_files_enable']:
-        import warnings
-        warnings.warn("The move_files feature is still under development. "
-            "Be very careful with it.\n"
-            "It has not been heavily tested, and is not recommended for "
-            "general use yet.")
 
     p("#" * 20)
     p("# Starting tvnamer")
