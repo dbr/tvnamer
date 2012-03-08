@@ -290,11 +290,6 @@ def tvnamer(paths):
             "It has not been heavily tested, and is not recommended for "
             "general use yet.")
 
-    if Config['force_name'] is not None:
-        import warnings
-        warnings.warn("The --name argument is a temporary solution, and will"
-            "be removed at some point in the future. Do no depend on it")
-
     p("#" * 20)
     p("# Starting tvnamer")
 

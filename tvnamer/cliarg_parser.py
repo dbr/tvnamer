@@ -69,7 +69,7 @@ def getCommandlineParser(defaults):
         g.add_option("-m", "--move", action="store_true", dest="move_files_enable", help = "Move files to destination specified in config or with --movedestination argument")
         g.add_option("--not-move", action="store_false", dest="move_files_enable", help = "Files will remain in current directory")
 
-        g.add_option("-n", "--name", action="store", dest = "force_name", help = "Use this name to search TVdb (temporary solution)")
+        g.add_option("-n", "--name", action="store", dest = "force_name", help = "Use this name to search thetvdb")
 
         g.add_option("--series-id", action="store", dest = "series_id", help = "Use this to explicitly set the show id for TVdb to use")
         
