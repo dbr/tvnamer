@@ -61,6 +61,11 @@ def getCommandlineParser(defaults):
         g.add_option("-s", "--save", action = "store", dest = "saveconfig", help = "Save configuration to this file and exit")
         g.add_option("-p", "--preview-config", action = "store_true", dest = "showconfig", help = "Show current config values and exit")
 
+    # Override values
+    with Group(parser, "Override values") as g:
+        g.add_option("-n", "--name", action="store", dest = "force_name", help = "override the parsed series name with this (applies to all files)")
+        g.add_option("--series-id", action="store", dest = "series_id", help = "explicitly set the show id for TVdb to use (applies to all files)")
+
     # Misc
     with Group(parser, "Misc") as g:
         g.add_option("-r", "--recursive", action="store_true", dest = "recursive", help = "Descend more than one level directories supplied as arguments")
@@ -69,10 +74,6 @@ def getCommandlineParser(defaults):
         g.add_option("-m", "--move", action="store_true", dest="move_files_enable", help = "Move files to destination specified in config or with --movedestination argument")
         g.add_option("--not-move", action="store_false", dest="move_files_enable", help = "Files will remain in current directory")
 
-        g.add_option("-n", "--name", action="store", dest = "force_name", help = "Use this name to search thetvdb")
-
-        g.add_option("--series-id", action="store", dest = "series_id", help = "Use this to explicitly set the show id for TVdb to use")
-        
         g.add_option("-d", "--movedestination", action="store", dest = "move_files_destination", help = "Destination to move files to. Variables: %(seriesname)s %(seasonnumber)d %(episodenumbers)s")
 
         g.add_option("-h", "--help", action="help", help = "show this help message and exit")
