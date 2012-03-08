@@ -501,6 +501,10 @@ class EpisodeInfo(object):
     logic to generate new name
     """
 
+    CFG_KEY_WITH_EP = "filename_with_episode"
+    CFG_KEY_WITHOUT_EP = "filename_without_episode"
+
+
     def __init__(self,
         seriesname,
         seasonnumber,
@@ -647,7 +651,7 @@ class EpisodeInfo(object):
         self.episodename = epnames
 
 
-    def generateFilename(self, lowercase = False, preview_orig_filename = False):
+    def getepdata(self):
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found
@@ -672,15 +676,25 @@ class EpisodeInfo(object):
             'episodename': self.episodename,
             'ext': prep_extension}
 
+        return epdata
+
+    def generateFilename(self, lowercase = False, preview_orig_filename = False):
+        epdata = self.getepdata()
+
+        # Add in extra dict keys, without clobbering existing values in epdata
+        extra = self.extra.copy()
+        extra.update(epdata)
+        epdata = extra
+
         if self.episodename is None:
-            fname = Config['filename_without_episode'] % epdata
+            fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
         else:
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
                     join_with = Config['multiep_join_name_with']
                 )
-            fname = Config['filename_with_episode'] % epdata
+            fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         if lowercase or Config['lowercase_filename']:
             fname = fname.lower()
@@ -709,6 +723,9 @@ class EpisodeInfo(object):
 
 
 class DatedEpisodeInfo(EpisodeInfo):
+    CFG_KEY_WITH_EP = "filename_with_date_and_episode"
+    CFG_KEY_WITHOUT_EP = "filename_with_date_without_episode"
+
     def __init__(self,
         seriesname,
         episodenumbers,
@@ -733,6 +750,10 @@ class DatedEpisodeInfo(EpisodeInfo):
         else:
             self.originalfilename = None
 
+        if extra is None:
+            extra = {}
+        self.extra = extra
+
     def sortable_info(self):
         """Returns a tuple of sortable information
         """
@@ -744,7 +765,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         return "episode: %s" % (
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def generateFilename(self, lowercase = False):
+    def getepdata(self):
         # Format episode number into string, or a list
         dates = str(self.episodenumbers[0])
         if isinstance(self.episodename, list):
@@ -767,20 +788,7 @@ class DatedEpisodeInfo(EpisodeInfo):
             'episodename': prep_episodename,
             'ext': prep_extension}
 
-        if self.episodename is None:
-            fname = Config['filename_with_date_without_episode'] % epdata
-        else:
-            fname = Config['filename_with_date_and_episode'] % epdata
-
-        if lowercase or Config['lowercase_filename']:
-            fname = fname.lower()
-
-        return makeValidFilename(
-            fname,
-            normalize_unicode = Config['normalize_unicode_filenames'],
-            windows_safe = Config['windows_safe_filenames'],
-            custom_blacklist = Config['custom_filename_character_blacklist'],
-            replace_with = Config['replace_invalid_characters_with'])
+        return epdata
 
 
 class NoSeasonEpisodeInfo(EpisodeInfo):
@@ -820,7 +828,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
         return "episode: %s" % (
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def generateFilename(self, lowercase = False):
+    def getepdata(self):
         epno = formatEpisodeNumbers(self.episodenumbers)
 
         # Data made available to config'd output file format
@@ -835,24 +843,61 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
             'episodename': self.episodename,
             'ext': prep_extension}
 
-        # Add in extra dict keys (without clobbering extisting values in epdata))
+        return epdata
+
+
+class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
+    CFG_KEY_WITH_EP = "filename_anime_with_episode"
+    CFG_KEY_WITHOUT_EP = "filename_anime_without_episode"
+
+    CFG_KEY_WITH_EP_NO_CRC = "filename_anime_with_episode_without_crc"
+    CFG_KEY_WITHOUT_EP_NO_CRC = "filename_anime_without_episode_without_crc"
+
+
+    def generateFilename(self, lowercase = False, preview_orig_filename = False):
+        epdata = self.getepdata()
+
+        # Add in extra dict keys, without clobbering existing values in epdata
         extra = self.extra.copy()
         extra.update(epdata)
         epdata = extra
 
+        # Get appropriate config key, depending on if episode name was
+        # found, and if crc value was found
         if self.episodename is None:
-            fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
+            if self.extra.get('crc') is None:
+                cfgkey = self.CFG_KEY_WITHOUT_EP_NO_CRC
+            else:
+                # Have crc, but no ep name
+                cfgkey = self.CFG_KEY_WITHOUT_EP
         else:
+            if self.extra.get('crc') is None:
+                cfgkey = self.CFG_KEY_WITH_EP_NO_CRC
+            else:
+                cfgkey = self.CFG_KEY_WITH_EP
+
+        if self.episodename is not None:
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
                     join_with = Config['multiep_join_name_with']
                 )
 
-            fname = Config[self.CFG_KEY_WITH_EP] % epdata
+        fname = Config[cfgkey] % epdata
+
 
         if lowercase or Config['lowercase_filename']:
             fname = fname.lower()
+
+        if preview_orig_filename:
+            # Return filename without custom replacements or filesystem-validness
+            return fname
+
+        if len(Config['output_filename_replacements']) > 0:
+            # Only apply replacements to filename, not extension
+            splitname, splitext = os.path.splitext(fname)
+            newname = applyCustomOutputReplacements(splitname)
+            fname = newname + splitext
 
         return makeValidFilename(
             fname,
@@ -860,11 +905,6 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
             windows_safe = Config['windows_safe_filenames'],
             custom_blacklist = Config['custom_filename_character_blacklist'],
             replace_with = Config['replace_invalid_characters_with'])
-
-
-class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
-    CFG_KEY_WITH_EP = "filename_anime_with_episode"
-    CFG_KEY_WITHOUT_EP = "filename_anime_without_episode"
 
 
 def same_partition(f1, f2):

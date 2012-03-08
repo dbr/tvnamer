@@ -24,6 +24,6 @@ def test_ambiguity_fix():
         with_flags = [],
         with_input = "")
 
-    expected_files = ['Naruto - [43] - Killer Kunoichi and a Shaky Shikamaru.avi']
+    expected_files = ['[ANBU-AonE] Naruto - 43 - Killer Kunoichi and a Shaky Shikamaru [3811CBB5].avi']
 
     verify_out_data(out_data, expected_files)

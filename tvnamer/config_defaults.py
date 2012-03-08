@@ -132,8 +132,10 @@ defaults = {
         (?P<episodenumberstart>\d+)              # first episode number
         ([-_]\d+)*                               # optional repeating episodes
         [-_](?P<episodenumberend>\d+)            # last episode number
-        [ ]?                                     # padding
-        \[(?P<crc>.+?)\]                         # CRC value
+        (?=                                      # Optional group for crc value (non-capturing)
+          .*                                     # padding
+          \[(?P<crc>.+?)\]                       # CRC value
+        )?                                       # End optional crc group
         [^\/]*$''',
 
         # [group] Show - 01 [crc]
@@ -141,8 +143,10 @@ defaults = {
         (?P<seriesname>.*)                       # show name
         [ ]?[-_][ ]?                             # padding and seperator
         (?P<episodenumber>\d+)                   # episode number
-        [ ]?                                     # padding
-        \[(?P<crc>.+?)\]                         # CRC value
+        (?=                                      # Optional group for crc value (non-capturing)
+          .*                                     # padding
+          \[(?P<crc>.+?)\]                       # CRC value
+        )?                                       # End optional crc group
         [^\/]*$''',
 
         # foo s01e23 s01e24 s01e25 *
@@ -394,7 +398,14 @@ defaults = {
     'filename_anime_without_episode':
      '[%(group)s] %(seriesname)s - %(episode)s [%(crc)s]%(ext)s',
 
-    #TODO: Would _no_crc variants of above be useful?
+    # Same, without CRC value
+    'filename_anime_with_episode_without_crc':
+     '[%(group)s] %(seriesname)s - %(episode)s - %(episodename)s%(ext)s',
+
+    'filename_anime_without_episode_without_crc':
+     '[%(group)s] %(seriesname)s - %(episode)s%(ext)s',
+
+
 
     # Used to join multiple episode names together
     'multiep_join_name_with': ', ',

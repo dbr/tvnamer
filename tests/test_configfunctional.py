@@ -153,7 +153,7 @@ def test_resolve_absoloute_episode():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['Bleach - [310] - Ichigo\'s Resolution.avi']
+    expected_files = ['[Bleachverse] Bleach - 310 - Ichigo\'s Resolution.avi']
 
     verify_out_data(out_data, expected_files)
 
@@ -163,7 +163,7 @@ def test_resolve_absoloute_episode():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['Bleach - [310] - Ichigo\'s Resolution.avi']
+    expected_files = ['[Bleachverse] Bleach - 310 - Ichigo\'s Resolution.avi']
 
     verify_out_data(out_data, expected_files)
 
