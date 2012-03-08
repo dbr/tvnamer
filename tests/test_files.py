@@ -404,6 +404,21 @@ files['x_of_x'] = [
 ]
 
 
+files['no_series_name'] = [
+    {'input': 's01e01.avi',
+    'parsedseriesname': None,
+    'correctedseriesname': None,
+    'seasonnumber': 1, 'episodenumbers': [1],
+    'episodenames': ['My First Day']},
+
+    {'input': '[01x01].avi',
+    'parsedseriesname': None,
+    'correctedseriesname': None,
+    'seasonnumber': 1, 'episodenumbers': [1],
+    'episodenames': ['My First Day']},
+]
+
+
 def test_verify_test_data_sanity():
     """Checks all test data is consistent.
 
