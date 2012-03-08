@@ -29,7 +29,7 @@ def verify_name_gen(curtest, tvdb_instance):
             seriesname = curtest['parsedseriesname'],
             episodenumbers = curtest['episodenumbers'])
 
-    ep.populateFromTvdb(tvdb_instance)
+    ep.populateFromTvdb(tvdb_instance, force_name = curtest.get("force_name"))
 
     assert ep.seriesname is not None, "Corrected series name was none"
     assert ep.episodename is not None, "Episode name was None"

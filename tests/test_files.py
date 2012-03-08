@@ -388,19 +388,20 @@ files['x_of_x'] = [
     'parsedseriesname': 'Scrubs',
     'correctedseriesname': 'Scrubs',
     'seasonnumber': None, 'episodenumbers': [1, 2],
-    'episodenames': ['My First Day']},
+    'episodenames': ['My First Day', 'My Mentor']},
 
     {'input': 'Scrubs part 1 to part 3.avi',
     'parsedseriesname': 'Scrubs',
     'correctedseriesname': 'Scrubs',
     'seasonnumber': None, 'episodenumbers': [1, 2, 3],
-    'episodenames': ['My First Day']},
+    'episodenames': ['My First Day', 'My Mentor', 'My Best Friend\'s Mistake']},
 
     {'input': 'Scrubs part 1 to 4.avi',
     'parsedseriesname': 'Scrubs',
     'correctedseriesname': 'Scrubs',
     'seasonnumber': None, 'episodenumbers': [1, 2, 3, 4],
-    'episodenames': ['My First Day']},
+    'episodenames': ['My First Day', 'My Mentor', 'My Best Friend\'s Mistake', 'My Old Lady']},
+
 ]
 
 
