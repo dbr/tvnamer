@@ -248,8 +248,8 @@ class FileParser(object):
             try:
                 cregex = re.compile(cpattern, re.VERBOSE)
             except re.error, errormsg:
-                warn("WARNING: Invalid episode_pattern, %s. %s" % (
-                    errormsg, cregex.pattern))
+                warn("WARNING: Invalid episode_pattern (error: %s)\nPattern:\n%s" % (
+                    errormsg, cpattern))
             else:
                 self.compiled_regexs.append(cregex)
 
@@ -317,6 +317,8 @@ class FileParser(object):
                     seriesname = cleanRegexedSeriesName(seriesname)
                     seriesname = replaceInputSeriesName(seriesname)
 
+                extra_values = match.groupdict()
+
                 if 'seasonnumber' in namedgroups:
                     seasonnumber = int(match.group('seasonnumber'))
 
@@ -324,18 +326,27 @@ class FileParser(object):
                         seriesname = seriesname,
                         seasonnumber = seasonnumber,
                         episodenumbers = episodenumbers,
-                        filename = self.path)
+                        filename = self.path,
+                        extra = extra_values)
                 elif 'year' in namedgroups and 'month' in namedgroups and 'day' in namedgroups:
                     episode = DatedEpisodeInfo(
                         seriesname = seriesname,
                         episodenumbers = episodenumbers,
-                        filename = self.path)
+                        filename = self.path,
+                        extra = extra_values)
+                elif 'group' in namedgroups:
+                    episode = AnimeEpisodeInfo(
+                        seriesname = seriesname,
+                        episodenumbers = episodenumbers,
+                        filename = self.path,
+                        extra = extra_values)
                 else:
                     # No season number specified, usually for Anime
                     episode = NoSeasonEpisodeInfo(
                         seriesname = seriesname,
                         episodenumbers = episodenumbers,
-                        filename = self.path)
+                        filename = self.path,
+                        extra = extra_values)
 
                 return episode
         else:
@@ -495,7 +506,8 @@ class EpisodeInfo(object):
         seasonnumber,
         episodenumbers,
         episodename = None,
-        filename = None):
+        filename = None,
+        extra = None):
 
         self.seriesname = seriesname
         self.seasonnumber = seasonnumber
@@ -507,6 +519,10 @@ class EpisodeInfo(object):
             self.originalfilename = os.path.basename(filename)
         else:
             self.originalfilename = None
+
+        if extra is None:
+            extra = {}
+        self.extra = extra
 
     def fullpath_get(self):
         return self._fullpath
@@ -670,7 +686,7 @@ class EpisodeInfo(object):
             fname = fname.lower()
 
         if preview_orig_filename:
-            # Return filename without custom replacements of filesystem-validness
+            # Return filename without custom replacements or filesystem-validness
             return fname
 
         if len(Config['output_filename_replacements']) > 0:
@@ -697,7 +713,8 @@ class DatedEpisodeInfo(EpisodeInfo):
         seriesname,
         episodenumbers,
         episodename = None,
-        filename = None):
+        filename = None,
+        extra = None):
 
         self.seriesname = seriesname
         self.episodenumbers = episodenumbers
@@ -767,11 +784,15 @@ class DatedEpisodeInfo(EpisodeInfo):
 
 
 class NoSeasonEpisodeInfo(EpisodeInfo):
+    CFG_KEY_WITH_EP = "filename_with_episode_no_season"
+    CFG_KEY_WITHOUT_EP = "filename_without_episode_no_season"
+
     def __init__(self,
         seriesname,
         episodenumbers,
         episodename = None,
-        filename = None):
+        filename = None,
+        extra = None):
 
         self.seriesname = seriesname
         self.episodenumbers = episodenumbers
@@ -783,6 +804,10 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
             self.originalfilename = os.path.basename(filename)
         else:
             self.originalfilename = None
+
+        if extra is None:
+            extra = {}
+        self.extra = extra
 
     def sortable_info(self):
         """Returns a tuple of sortable information
@@ -810,8 +835,13 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
             'episodename': self.episodename,
             'ext': prep_extension}
 
+        # Add in extra dict keys (without clobbering extisting values in epdata))
+        extra = self.extra.copy()
+        extra.update(epdata)
+        epdata = extra
+
         if self.episodename is None:
-            fname = Config['filename_without_episode_no_season'] % epdata
+            fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
         else:
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
@@ -819,7 +849,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
                     join_with = Config['multiep_join_name_with']
                 )
 
-            fname = Config['filename_with_episode_no_season'] % epdata
+            fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         if lowercase or Config['lowercase_filename']:
             fname = fname.lower()
@@ -830,6 +860,11 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
             windows_safe = Config['windows_safe_filenames'],
             custom_blacklist = Config['custom_filename_character_blacklist'],
             replace_with = Config['replace_invalid_characters_with'])
+
+
+class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
+    CFG_KEY_WITH_EP = "filename_anime_with_episode"
+    CFG_KEY_WITHOUT_EP = "filename_anime_without_episode"
 
 
 def same_partition(f1, f2):

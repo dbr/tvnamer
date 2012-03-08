@@ -126,18 +126,23 @@ defaults = {
 
     # Patterns to parse input filenames with
     'filename_patterns': [
-        # [group] Show - 01-02 [Etc]
-        '''^\[.+?\][ ]? # group name
+        # [group] Show - 01-02 [crc]
+        '''^\[(?P<group>.+?)\][ ]?               # group name, captured for [#100]
         (?P<seriesname>.*?)[ ]?[-_][ ]?          # show name, padding, spaces?
         (?P<episodenumberstart>\d+)              # first episode number
         ([-_]\d+)*                               # optional repeating episodes
         [-_](?P<episodenumberend>\d+)            # last episode number
+        [ ]?                                     # padding
+        \[(?P<crc>.+?)\]                         # CRC value
         [^\/]*$''',
 
-        # [group] Show - 01 [Etc]
-        '''^\[.+?\][ ]? # group name
-        (?P<seriesname>.*) # show name
-        [ ]?[-_][ ]?(?P<episodenumber>\d+)
+        # [group] Show - 01 [crc]
+        '''^\[(?P<group>.+?)\][ ]?               # group name, captured for [#100]
+        (?P<seriesname>.*)                       # show name
+        [ ]?[-_][ ]?                             # padding and seperator
+        (?P<episodenumber>\d+)                   # episode number
+        [ ]?                                     # padding
+        \[(?P<crc>.+?)\]                         # CRC value
         [^\/]*$''',
 
         # foo s01e23 s01e24 s01e25 *
@@ -366,16 +371,30 @@ defaults = {
      '%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s',
     'filename_without_episode':
      '%(seriesname)s - [%(seasonnumber)02dx%(episode)s]%(ext)s',
+
+    # Seasonless filenames.
     'filename_with_episode_no_season':
       '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
     'filename_without_episode_no_season':
      '%(seriesname)s - [%(episode)s]%(ext)s',
 
+    # Date based filenames.
+    # Series - [2012-01-24] - Ep name.ext
     'filename_with_date_and_episode':
      '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
-
     'filename_with_date_without_episode':
      '%(seriesname)s - [%(episode)s]%(ext)s',
+
+    # Anime filenames.
+    # [AGroup] Series - 02 - Some Ep Name [CRC1234].ext
+    # [AGroup] Series - 02 [CRC1234].ext
+    'filename_anime_with_episode':
+     '[%(group)s] %(seriesname)s - %(episode)s - %(episodename)s [%(crc)s]%(ext)s',
+
+    'filename_anime_without_episode':
+     '[%(group)s] %(seriesname)s - %(episode)s [%(crc)s]%(ext)s',
+
+    #TODO: Would _no_crc variants of above be useful?
 
     # Used to join multiple episode names together
     'multiep_join_name_with': ', ',
