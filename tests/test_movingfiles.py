@@ -141,7 +141,8 @@ def test_with_invalid_seriesname():
     conf = """
     {"move_files_enable": true,
     "move_files_destination": "%(seriesname)s",
-    "batch": true}
+    "batch": true,
+    "windows_safe_filenames": true}
     """
 
     out_data = run_tvnamer(
@@ -166,7 +167,7 @@ def test_with_invalid_seriesname_test2():
          {"is_regex": true,
           "match": "CSI_ Miami",
           "replacement": "CSI"}]
-    }
+    "windows_safe_filenames": true}
     """
 
     out_data = run_tvnamer(
