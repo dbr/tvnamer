@@ -8,6 +8,7 @@
 
 from functional_runner import run_tvnamer, verify_out_data
 from nose.plugins.attrib import attr
+from helpers import expected_failure
 
 
 @attr("functional")
@@ -139,12 +140,10 @@ def test_full_blacklist():
     verify_out_data(out_data, expected_files, expected_returncode = 2)
 
 @attr("functional")
+@expected_failure
 def test_dotfiles():
     """Tests complete blacklist of all filenames with a regex
     """
-
-    from nose.plugins.skip import SkipTest
-    raise SkipTest("Not working yet")
 
     conf = """
     {"always_rename": true,
