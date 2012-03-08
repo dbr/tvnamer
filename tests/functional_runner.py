@@ -195,7 +195,7 @@ def verify_out_data(out_data, expected_files, expected_returncode = 0):
     p("Return code: %d" % out_data['returncode'])
 
     p("Expected files:", expected_files)
-    p("Got files:", out_data['files'])
+    p("Got files:     ", [x for x in out_data['files']])
 
     p("\n" + "*" * 20 + "\n")
     p("stdout:\n")
