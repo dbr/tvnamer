@@ -407,14 +407,16 @@ files['x_of_x'] = [
 
 files['no_series_name'] = [
     {'input': 's01e01.avi',
+    'force_name': 'Scrubs',
     'parsedseriesname': None,
-    'correctedseriesname': None,
+    'correctedseriesname': 'Scrubs',
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': ['My First Day']},
 
     {'input': '[01x01].avi',
+    'force_name': 'Scrubs',
     'parsedseriesname': None,
-    'correctedseriesname': None,
+    'correctedseriesname': 'Scrubs',
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': ['My First Day']},
 ]

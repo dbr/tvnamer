@@ -157,6 +157,11 @@ def processFile(tvdb_instance, episode):
         replaced = applyCustomInputReplacements(episode.fullfilename)
         p("# With custom replacements: %s" % (replaced))
 
+    # Use force_name option. Done after input_filename_replacements so
+    # it can be used to skip the replacements easily
+    if Config['force_name'] is not None:
+        episode.seriesname = Config['force_name']
+
     p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
 
     try:
@@ -295,8 +300,8 @@ def tvnamer(paths):
         except InvalidFilename, e:
             warn("Invalid filename: %s" % e)
         else:
-            if episode.seriesname is None:
-                warn("Parsed filename did not contain series name, skipping: %s" % cfile)
+            if episode.seriesname is None and Config['force_name'] is None:
+                warn("Parsed filename did not contain series name (and --name not specified), skipping: %s" % cfile)
             else:
                 episodes_found.append(episode)
 
