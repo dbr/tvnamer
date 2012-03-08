@@ -166,7 +166,7 @@ def test_with_invalid_seriesname_test2():
     "move_files_fullpath_replacements": [
          {"is_regex": true,
           "match": "CSI_ Miami",
-          "replacement": "CSI"}]
+          "replacement": "CSI"}],
     "windows_safe_filenames": true}
     """
 
