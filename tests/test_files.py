@@ -309,11 +309,11 @@ files['anime'] = [
     'seasonnumber': None, 'episodenumbers': [2],
     'episodenames': ['The First Day']},
 
-    {'input': '[Shinsen-Subs] Armored Trooper Votoms - Pailsen Files - 01 [9E3F1D1C].mkv',
-    'parsedseriesname': 'armored trooper votoms - pailsen files',
-    'correctedseriesname': 'Armored Trooper Votoms: Pailsen Files',
+    {'input': '[Shinsen-Subs] Armored Trooper Votoms - 01 [9E3F1D1C].mkv',
+    'parsedseriesname': 'armored trooper votoms',
+    'correctedseriesname': 'Armored Trooper VOTOMS',
     'seasonnumber': None, 'episodenumbers': [1],
-    'episodenames': ['River Crossing Strategy']},
+    'episodenames': ['War\'s End']},
 
     {'input': '[Shinsen-Subs] Beet - 19 [24DAB497].mkv',
     'parsedseriesname': 'beet',
