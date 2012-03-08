@@ -325,14 +325,14 @@ defaults = {
         (?P<seriesname>.+?)                        # Show name
         [ \._\-]                                   # Padding
         (?:part|pt)?[\._ -]
-        (?P<episodenumberstart>[0-9]+|[ivx]+)      # Part 1
+        (?P<episodenumberstart>[0-9]+)             # Part 1
         (?:
           [ \._-](?:and|&|to)                        # and
           [ \._-](?:part|pt)?                        # Part 2
-          [ \._-](?:[0-9]+|[ivx]+))*                 # (middle group, optional, repeating)
+          [ \._-](?:[0-9]+))*                        # (middle group, optional, repeating)
         [ \._-](?:and|&|to)                        # and
         [ \._-]?(?:part|pt)?                       # Part 3
-        [ \._-](?P<episodenumberend>[0-9]+|[ivx]+) # last episode number, save it
+        [ \._-](?P<episodenumberend>[0-9]+)        # last episode number, save it
         [\._ -][^\\/]*$                            # More padding, then anything
         ''',
 
