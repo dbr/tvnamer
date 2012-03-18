@@ -8,7 +8,6 @@
 
 from functional_runner import run_tvnamer, verify_out_data
 from nose.plugins.attrib import attr
-from helpers import expected_failure
 
 
 @attr("functional")
@@ -139,10 +138,10 @@ def test_full_blacklist():
 
     verify_out_data(out_data, expected_files, expected_returncode = 2)
 
+
 @attr("functional")
-@expected_failure
 def test_dotfiles():
-    """Tests complete blacklist of all filenames with a regex
+    """Tests blacklisting filename beginning with "."
     """
 
     conf = """
@@ -159,6 +158,57 @@ def test_dotfiles():
         with_files = ['.scrubs.s01e01.avi', 'scrubs.s02e02.avi'],
         with_config = conf)
 
-    expected_files = ['.scrubs.s01e01.avi', 'Scrubs - [02x02] - Blah.avi']
+    expected_files = ['.scrubs.s01e01.avi', 'Scrubs - [02x02] - My Nightingale.avi']
+
+    verify_out_data(out_data, expected_files, expected_returncode = 0)
+
+
+@attr("functional")
+def test_blacklist_fullpath():
+    """Blacklist against full path
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true,
+    "filename_blacklist": [
+        {"is_regex": true,
+         "full_path": true,
+         "match": ".*/subdir/.*"}
+        ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['subdir/scrubs.s01e01.avi'],
+        with_config = conf)
+
+    expected_files = ['subdir/scrubs.s01e01.avi']
+
+    verify_out_data(out_data, expected_files, expected_returncode = 2)
+
+
+@attr("functional")
+def test_blacklist_exclude_extension():
+    """Blacklist against full path
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true,
+    "filename_blacklist": [
+        {"is_regex": true,
+         "full_path": true,
+         "exclude_extension": true,
+         "match": "\\\\.avi"}
+        ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = conf)
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files, expected_returncode = 2)

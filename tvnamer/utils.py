@@ -188,19 +188,49 @@ class FileFinder(object):
         else:
             return False
 
-    def _blacklistedFilename(self, fname):
-        """Checks if the filename (excl. ext) matches filename_blacklist
+    def _blacklistedFilename(self, filepath):
+        """Checks if the filename (optionally excluding extension)
+        matches filename_blacklist
+
+        self.with_blacklist should be a list of dicts, where each dict
+        contains:
+
+        Key 'match' - (if the filename matches the pattern, the filename
+        is blacklisted)
+
+        Key 'is_regex' - if True, the pattern is treated as a
+        regex. If False, simple substring check is used (if
+        cur['match'] in filename). Default is False
+
+        Key 'full_path' - if True, full path is checked. If False, only
+        filename is checked. Default is False.
+
+        Key 'exclude_extension' - if True, the extension is removed
+        from the file before checking. Default is False.
         """
+
         if len(self.with_blacklist) == 0:
             return False
 
-        fname, _ = os.path.splitext(fname)
+        fdir, fullname = os.path.split(filepath)
+        fname, fext = os.path.splitext(fullname)
+
         for fblacklist in self.with_blacklist:
-            if "is_regex" in fblacklist and fblacklist["is_regex"]:
-                if re.match(fblacklist["match"], fname):
+            if "full_path" in fblacklist and fblacklist["full_path"]:
+                to_check = filepath
+            else:
+                if fblacklist.get("exclude_extension", False):
+                    to_check = fname
+                else:
+                    to_check = fullname
+
+            if fblacklist.get("is_regex", False):
+                m = re.match(fblacklist["match"], to_check)
+                if m is not None:
                     return True
             else:
-                if fname.find(fblacklist["match"]) != -1:
+                m =  fblacklist["match"] in to_check
+                if m:
                     return True
         else:
             return False
