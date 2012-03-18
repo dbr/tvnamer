@@ -164,8 +164,9 @@ class FileFinder(object):
         """Returns list of files found at path
         """
         if os.path.isfile(self.path):
-            if self._checkExtension(self.path) and not self._blacklistedFilename(self.path):
-                return [os.path.abspath(self.path)]
+            path = os.path.abspath(self.path)
+            if self._checkExtension(path) and not self._blacklistedFilename(path):
+                return [path]
             else:
                 return []
         elif os.path.isdir(self.path):
