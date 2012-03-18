@@ -211,4 +211,4 @@ def test_blacklist_exclude_extension():
 
     expected_files = ['Scrubs - [01x01] - My First Day.avi']
 
-    verify_out_data(out_data, expected_files, expected_returncode = 2)
+    verify_out_data(out_data, expected_files, expected_returncode = 0)
