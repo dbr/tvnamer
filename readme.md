@@ -153,14 +153,31 @@ For an always up-to-date description of all config options, see the comments in 
 
 # Custom output filenames
 
-If you wish to change the output filename format, there are several options you must change:
+If you wish to change the output filename format, there are a bunch of options you can change.
+
+The most common is an episode with both a season and episode number. There are two patterns, one for when an episode name is found, and one without the episode name:
 
 - One for a file with an episode name (`filename_with_episode`). Example input: `Scrubs.s01e01.my.ep.name.avi`
 - One for a file *without* an episode name (`filename_without_episode`). Example input: `AnUnknownShow.s01e01.avi`
+
+Next, for episodes without a season number:
+
 - One for a filename with no season number, and an episode name (`filename_with_episode_no_season`). Example input: `Sid.The.Science.Kid.E11.avi`
 - One for a filename with no season number, and no episode name (`filename_without_episode_no_season`). Example input: `AnUnknownShow.E24.avi`
 
-This may seem like a lot, but they are mostly the same thing. One for a regular show without and without episode names, and one for a show without the concept of seasons
+Date-based episodes (which used aired-date instead of episode numbers):
+
+- One for date-based episodes (`filename_with_date_and_episode`). Example input: `AnUnknownShow.2000-01-23`
+- Date-based episode without epiosde nam (`filename_with_date_without_episode`)
+
+Finally, anime episodes have the usual with/without episode names, and again with/without the CRC value:
+
+- `filename_anime_with_episode` - for example, `[SubGrp] SeriesName - 02 - Episode Name [CRC1234].ext`
+- `filename_anime_without_episode` - for example, `[SubGrp] SeriesName - 02 [CRC1234].ext`
+- `filename_anime_with_episode_without_crc` - for example, `[SubGrp] SeriesName - 02 - Episode Name.ext`
+- `filename_anime_without_episode_without_crc` - for example, `[SubGrp] SeriesName - 02.ext`
+
+This may seem like a lot, but they are mostly the same thing. They all have sensible default values, so you can only change the values you use commonly (say, you could ignore the date-based and anime episodes if you rarely rename such files)
 
 Say you want the format `Show Name 01x24 Episode Name.avi`, your `filename_with_episode` option would be:
 
@@ -214,6 +231,12 @@ You can also remove spaces in characters by adding a space to the option `custom
 `normalize_unicode_filenames` attempts to replace Unicode characters with their unaccented ASCII equivalent (`å` becomes `a` etc). Any untranslatable characters are removed.
 
 `selectfirst` and `always_rename` mirror the command line arguments `--selectfirst` and `--always` - one automatically selects the first series search result, the other always renames files. Setting both to True is equivalent to `--batch`. `recursive` also mirrors the command line argument
+
+`lowercase_filename` converts the entire filename to lower case.
+
+
+This document does not describe all config options - for a complete list, see the comments in [`config_defaults.py`](http://github.com/dbr/tvnamer/blob/master/tvnamer/config_defaults.py)
+
 
 # Custom filename parsing pattern
 
