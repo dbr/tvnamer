@@ -1,7 +1,5 @@
-#project:tvnamer
-#repository:http://github.com/dbr/tvnamer
-#license:Creative Commons GNU GPL v2
-# http://creativecommons.org/licenses/GPL/2.0/
+#!/usr/bin/env python
+
 
 """Tests ignoreing files by regexp (e.g. all files with "sample" in the name)
 """

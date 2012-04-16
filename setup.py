@@ -19,7 +19,7 @@ version='2.2',
 author='dbr/Ben',
 description='Automatic TV episode namer',
 url='http://github.com/dbr/tvnamer',
-license='GPLv2',
+license='unlicense',
 
 long_description="""\
 Automatically names downloaded/recorded TV-episodes, by parsing filenames and
