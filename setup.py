@@ -1,6 +1,14 @@
 """Setup tools for tvnamer,
 """
 
+import os
+import sys
+
+# Ensure dir containing script is on PYTHONPATH
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from tvnamer import __version__
+
 needed_pkgs = []
 
 try:
@@ -14,7 +22,7 @@ needed_pkgs.append("tvdb_api>=1.5")
 from setuptools import setup
 setup(
 name = 'tvnamer',
-version='2.2',
+version=__version__,
 
 author='dbr/Ben',
 description='Automatic TV episode namer',

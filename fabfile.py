@@ -6,7 +6,7 @@ pylint_disable = ",".join(["R0903", "C0103", "R0903", "F0401", "C0301"])
 pep8_disable = ",".join(["E501"])
 
 
-@task(default=True)
+@task
 def pyflakes():
     local("pyflakes .")
 
@@ -32,8 +32,9 @@ def topypi():
     sys.path.insert(0, ".")
     import tvnamer
     version = tvnamer.__version__
+    tvnamer_version = ".".join(str(x) for x in version)
 
-    msg = "Upload tvnamer {0} to PyPi?".format(".".join(str(x) for x in version))
+    msg = "Upload tvnamer {0} to PyPi?".format(tvnamer_version)
     if not confirm(msg, default = False):
         print "Cancelled"
         return
