@@ -357,7 +357,7 @@ def main():
     if configToLoad is not None:
         p("Loading config: %s" % (configToLoad))
         try:
-            loadedConfig = json.load(open(configToLoad))
+            loadedConfig = json.load(open(os.path.expanduser(configToLoad)))
         except ValueError, e:
             p("Error loading config: %s" % e)
             opter.exit(1)
@@ -380,7 +380,7 @@ def main():
         del configToSave['showconfig']
         json.dump(
             configToSave,
-            open(opts.saveconfig, "w+"),
+            open(os.path.expanduser(opts.saveconfig), "w+"),
             sort_keys=True,
             indent=4)
 
