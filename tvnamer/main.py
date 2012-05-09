@@ -389,8 +389,7 @@ def main():
 
     # Show config argument
     if opts.showconfig:
-        for k, v in opts.__dict__.items():
-            p(k, "=", str(v))
+        print json.dumps(opts.__dict__, sort_keys=True, indent=2)
         return
 
     # Process values
