@@ -314,3 +314,27 @@ def test_force_overwrite_default():
     expected_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs - [01x01].avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_titlecase():
+    """Tests Title Case Option To Make Episodes Like This
+    """
+
+    conf = r"""
+    {"always_rename": true,
+    "select_first": true,
+    "skip_file_on_error": false,
+    "titlecase_filename": true
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['this.is.a.fake.episode.s01e01.avi'],
+        with_config = conf,
+        with_input = "",
+        run_on_directory = True)
+
+    expected_files = ['This Is a Fake Episode - [01x01].avi']
+
+    verify_out_data(out_data, expected_files)

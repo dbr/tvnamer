@@ -6,6 +6,7 @@
 import os
 import sys
 import logging
+import warnings
 
 try:
     import readline
@@ -405,6 +406,9 @@ def main():
         p("Parameter move_files_enable cannot be set to false while parameter move_only is set to true.")
         p("#" * 20)
         opter.exit(0)
+
+    if Config['titlecase_filename'] and Config['lowercase_filename']:
+        warnings.warn("Setting 'lowercase_filename' clobbers 'titlecase_filename' option")
 
     if len(args) == 0:
         opter.error("No filenames or directories supplied")

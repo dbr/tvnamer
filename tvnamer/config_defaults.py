@@ -48,6 +48,9 @@ defaults = {
     # Convert output filenames to lower case (applied after replacements)
     'lowercase_filename': False,
 
+    # Convert output filenames to 'Title Case' (applied after replacements)
+    'titlecase_filename': False,
+
     # Extra characters to consider invalid in output filenames (which are
     # replaced by the character in replace_invalid_characters_with)
     'custom_filename_character_blacklist': '',
