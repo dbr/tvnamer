@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests the valid_extensions config option
 """
 

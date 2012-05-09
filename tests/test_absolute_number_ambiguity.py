@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Test ability to set the series name by series id
 """
 

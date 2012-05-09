@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests moving renamed files
 """
 
@@ -309,6 +308,7 @@ def test_move_no_season():
     expected_files = ['SubDir/Scrubs - [02] - My Mentor.avi']
 
     verify_out_data(out_data, expected_files)
+
 
 @attr("functional")
 def test_move_files_only():

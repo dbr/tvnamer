@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Functional-test runner for use in other tests
 
 Useful functions are run_tvnamer and verify_out_data.

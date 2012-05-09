@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests various configs load correctly
 """
 

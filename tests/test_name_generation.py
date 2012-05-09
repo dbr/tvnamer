@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Test tvnamer's EpisodeInfo file name generation
 """
 

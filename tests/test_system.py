@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests the current system for things that might cause problems
 """
 

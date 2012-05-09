@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Test the function to create safe filenames
 """
 

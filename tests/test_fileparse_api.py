@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests the FileParser API
 """
 

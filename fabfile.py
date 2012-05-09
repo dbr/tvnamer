@@ -18,7 +18,7 @@ def pep8():
 
 @task
 def pylint():
-  local("pylint --reports=n --disable-msg={pylint_disable} *.py tvnamer/*.py tests/*.py".format(pylint_disable = pylint_disable))
+    local("pylint --reports=n --disable-msg={pylint_disable} *.py tvnamer/*.py tests/*.py".format(pylint_disable = pylint_disable))
 
 
 @task(default=True)

@@ -123,7 +123,7 @@ defaults = {
     # copied).  If True, this will delete the file from the original
     # volume, after the copy has complete.
     'always_move': False,
-    
+
     # Allow user to copy files to specified move location without renaming files.
     'move_files_only': False,
 
@@ -419,18 +419,18 @@ defaults = {
 
     # String to join multiple number
     'episode_separator': '-',
-    
+
     # Series ID to use instead of searching if the value is set
     #'series_id': None,
-    
+
     # Forced Name to use
     #'forced_name': None,
-    
+
     # replace series names before/after passing to TVDB
     # input replacements are regular expressions for the series as parsed from
     # filenames, for instance adding or removing the year, or expanding abbreviations
     'input_series_replacements': {},
-    
+
     # output replacements are for transforms of the TVDB series names
     # since these are perfectly predictable, they are simple strings
     # not regular expressions

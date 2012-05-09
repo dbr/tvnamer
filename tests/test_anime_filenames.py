@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests anime filename output
 """
 

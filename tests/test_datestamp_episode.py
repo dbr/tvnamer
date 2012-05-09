@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests episodes based on dates, not season/episode numbers
 """
 
@@ -52,6 +51,7 @@ def test_date_in_s01e01_out():
     expected_files = ['Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
+
 
 def test_issue_31_twochar_year():
     """Fix for parsing rather ambigious dd.mm.yy being parsed as "0011"

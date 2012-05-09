@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Ensure that invalid files (non-episodes) are not renamed
 """
 

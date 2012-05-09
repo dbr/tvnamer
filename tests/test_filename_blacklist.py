@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests ignoreing files by regexp (e.g. all files with "sample" in the name)
 """
 

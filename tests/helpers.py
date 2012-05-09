@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Helper functions for use in tests
 """
 
@@ -37,4 +36,5 @@ def expected_failure(test):
             raise SkipTest("Expected failure failed, as expected")
         else:
             raise AssertionError('Failure expected')
+
     return inner

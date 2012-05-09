@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Functional tests for tvnamer tests
 """
 

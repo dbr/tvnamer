@@ -182,34 +182,34 @@ def processFile(tvdb_instance, episode):
         warn(errormsg)
 
     cnamer = Renamer(episode.fullpath)
-   
+
 
     shouldRename = False
 
     if Config["move_files_only"]:
-        
+
         newName = episode.fullfilename
         shouldRename = True
-        
+
     else:
         newName = episode.generateFilename()
         if newName == episode.fullfilename:
             p("#" * 20)
             p("Existing filename is correct: %s" % episode.fullfilename)
             p("#" * 20)
-    
+
             shouldRename = True
-    
+
         else:
             p("#" * 20)
             p("Old filename: %s" % episode.fullfilename)
-    
+
             if len(Config['output_filename_replacements']) > 0:
                 # Show filename without replacements
                 p("Before custom output replacements: %s" % (episode.generateFilename(preview_orig_filename = False)))
-    
+
             p("New filename: %s" % newName)
-    
+
             if Config['always_rename']:
                 doRenameFile(cnamer, newName)
                 if Config['move_files_enable']:
@@ -218,9 +218,9 @@ def processFile(tvdb_instance, episode):
                     else:
                         doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
                 return
-    
+
             ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
-    
+
             if ans == "a":
                 p("Always renaming")
                 Config['always_rename'] = True
@@ -235,7 +235,7 @@ def processFile(tvdb_instance, episode):
                 p("Skipping")
             else:
                 p("Invalid input, skipping")
-    
+
             if shouldRename:
                 doRenameFile(cnamer, newName)
 

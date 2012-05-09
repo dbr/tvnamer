@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Test ability to override the series name
 """
 

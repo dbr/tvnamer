@@ -91,10 +91,10 @@ def cleanRegexedSeriesName(seriesname):
 
 def replaceInputSeriesName(seriesname):
     """allow specified replacements of series names
-    
+
     in cases where default filenames match the wrong series,
     e.g. missing year gives wrong answer, or vice versa
-    
+
     This helps the TVDB query get the right match.
     """
     for pat, replacement in Config['input_series_replacements'].iteritems():
@@ -102,14 +102,15 @@ def replaceInputSeriesName(seriesname):
             return replacement
     return seriesname
 
+
 def replaceOutputSeriesName(seriesname):
     """transform TVDB series names
-    
+
     after matching from TVDB, transform the series name for desired abbreviation, etc.
-    
+
     This affects the output filename.
     """
-    
+
     return Config['output_series_replacements'].get(seriesname, seriesname)
 
 
@@ -132,6 +133,7 @@ def handleYear(year):
         return 2000 + year
     else:
         return 1900 + year
+
 
 class FileFinder(object):
     """Given a file, it will verify it exists. Given a folder it will descend
@@ -229,7 +231,7 @@ class FileFinder(object):
                 if m is not None:
                     return True
             else:
-                m =  fblacklist["match"] in to_check
+                m = fblacklist["match"] in to_check
                 if m:
                     return True
         else:
@@ -535,7 +537,6 @@ class EpisodeInfo(object):
     CFG_KEY_WITH_EP = "filename_with_episode"
     CFG_KEY_WITHOUT_EP = "filename_without_episode"
 
-
     def __init__(self,
         seriesname,
         seasonnumber,
@@ -660,7 +661,7 @@ class EpisodeInfo(object):
                         if int(e['absolute_number']) == cepno:
                             epnames.append(e['episodename'])
                             unsure = False
-                    # If unsure error out            
+                    # If unsure error out
                     if unsure:
                         raise EpisodeNotFound(
                             "No episode actually matches %s, found %s results instead" % (cepno, len(sr)))
@@ -680,7 +681,6 @@ class EpisodeInfo(object):
                 epnames.append(episodeinfo['episodename'])
 
         self.episodename = epnames
-
 
     def getepdata(self):
         """
@@ -723,8 +723,7 @@ class EpisodeInfo(object):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    join_with = Config['multiep_join_name_with']
-                )
+                    join_with = Config['multiep_join_name_with'])
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         if Config['titlecase_filename']:
@@ -772,7 +771,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         self.episodenumbers = episodenumbers
         self.episodename = episodename
         self.fullpath = filename
-        
+
         if filename is not None:
             # Remains untouched, for use when renaming file
             self.originalfilename = os.path.basename(filename)
@@ -806,8 +805,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         if isinstance(self.episodename, list):
             prep_episodename = formatEpisodeName(
                 self.episodename,
-                join_with = Config['multiep_join_name_with']
-            )
+                join_with = Config['multiep_join_name_with'])
         else:
             prep_episodename = self.episodename
 
@@ -888,7 +886,6 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
     CFG_KEY_WITH_EP_NO_CRC = "filename_anime_with_episode_without_crc"
     CFG_KEY_WITHOUT_EP_NO_CRC = "filename_anime_without_episode_without_crc"
 
-
     def generateFilename(self, lowercase = False, preview_orig_filename = False):
         epdata = self.getepdata()
 
@@ -915,8 +912,7 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    join_with = Config['multiep_join_name_with']
-                )
+                    join_with = Config['multiep_join_name_with'])
 
         fname = Config[cfgkey] % epdata
 

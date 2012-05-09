@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Tests custom replacements on input/output files
 """
 

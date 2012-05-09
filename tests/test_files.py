@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """Test file names for tvnamer
 """
 
@@ -358,6 +357,7 @@ files['date_based'] = [
     'correctedseriesname': 'Scrubs',
     'episodenumbers': [datetime.date(2001, 10, 2)],
     'episodenames': ['My First Day']},
+
     {'input': 'yes.we.canberra.2010.08.18.pdtv.xvid',
     'parsedseriesname': 'yes we canberra',
     'correctedseriesname': 'Yes We Canberra',
