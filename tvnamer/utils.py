@@ -945,8 +945,23 @@ def same_partition(f1, f2):
 
 
 def delete_file(fpath):
-    raise NotImplementedError("delete_file not yet implimented")
+    """On OS X: Trashes a path using the Finder, via OS X's Scripting Bridge.
 
+    On other platforms: unlinks file.
+    """
+
+    try:
+        from AppKit import NSURL
+        from ScriptingBridge import SBApplication
+    except ImportError:
+        log().debug("Deleting %r" % fpath)
+        os.unlink(fpath)
+    else:
+        log().debug("Trashing %r" % fpath)
+        targetfile = NSURL.fileURLWithPath_(fpath)
+        finder = SBApplication.applicationWithBundleIdentifier_("com.apple.Finder")
+        items = finder.items().objectAtLocation_(targetfile)
+        items.delete()
 
 class Renamer(object):
     """Deals with renaming of files
