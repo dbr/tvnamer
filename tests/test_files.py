@@ -358,6 +358,18 @@ files['date_based'] = [
     'episodenumbers': [datetime.date(2001, 10, 2)],
     'episodenames': ['My First Day']},
 
+    {'input': 'Scrubs - 2001-10-02 - Old Episode Title.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'episodenumbers': [datetime.date(2001, 10, 2)],
+    'episodenames': ['My First Day']},
+
+    {'input': 'Scrubs - 2001.10.02 - Old Episode Title.avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'episodenumbers': [datetime.date(2001, 10, 2)],
+    'episodenames': ['My First Day']},
+
     {'input': 'yes.we.canberra.2010.08.18.pdtv.xvid',
     'parsedseriesname': 'yes we canberra',
     'correctedseriesname': 'Yes We Canberra',
