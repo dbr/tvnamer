@@ -196,7 +196,7 @@ class FileFinder(object):
 
         self.with_blacklist should be a list of strings and/or dicts:
 
-        a string, specifying a specific file name to ignore
+        a string, specifying an exact filename to ignore
         "filename_blacklist": [".DS_Store", "Thumbs.db"], 
 
         a dictionary, where each dict contains:
