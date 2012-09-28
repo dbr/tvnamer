@@ -194,8 +194,12 @@ class FileFinder(object):
         """Checks if the filename (optionally excluding extension)
         matches filename_blacklist
 
-        self.with_blacklist should be a list of dicts, where each dict
-        contains:
+        self.with_blacklist should be a list of strings and/or dicts:
+
+        a string, specifying a specific file name to ignore
+        "filename_blacklist": [".DS_Store", "Thumbs.db"], 
+
+        a dictionary, where each dict contains:
 
         Key 'match' - (if the filename matches the pattern, the filename
         is blacklisted)
@@ -218,6 +222,11 @@ class FileFinder(object):
         fname, fext = os.path.splitext(fullname)
 
         for fblacklist in self.with_blacklist:
+            if isinstance(fblacklist, basestring):
+                if fullname == fblacklist:
+                    return True
+                else: continue
+            
             if "full_path" in fblacklist and fblacklist["full_path"]:
                 to_check = filepath
             else:
