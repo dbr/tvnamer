@@ -970,7 +970,7 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
 
-    def newName(self, newName, force = False):
+    def newName(self, newName, force = False, leave_symlink = False):
         """Renames a file, keeping the path the same.
         """
         filepath, filename = os.path.split(self.filename)
@@ -985,14 +985,23 @@ class Renamer(object):
                     newpath, self.filename))
 
         os.rename(self.filename, newpath)
+
+        # Leave a symlink behind if configured to do so
+        if leave_symlink:
+            p("symlink %s to %s" % (self.filename, newpath))
+            os.symlink(newpath, self.filename)
+
         self.filename = newpath
 
-    def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, create_dirs = True, getPathPreview = False):
+    def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, leave_symlink = False, create_dirs = True, getPathPreview = False):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)
-        If it is on a different partition, it will be copied.
+        If it is on a different partition, it will be copied, and the original
+        only deleted if always_move is True.
         If the target file already exists, it will raise OSError unless force is True.
+        If it was moved, a symlink will be left behind with the original name 
+        pointing to the file's new destination if leave_symlink is True.
         """
 
         if always_copy and always_move:
@@ -1052,6 +1061,11 @@ class Renamer(object):
                 # Same partition, just rename the file to move it
                 p("move %s to %s" % (self.filename, new_fullpath))
                 os.rename(self.filename, new_fullpath)
+
+                # Leave a symlink behind if configured to do so
+                if leave_symlink:
+                    p("symlink %s to %s" % (self.filename, new_fullpath))
+                    os.symlink(new_fullpath, self.filename)
         else:
             # File is on different partition (different disc), copy it
             p("copy %s to %s" % (self.filename, new_fullpath))
@@ -1060,5 +1074,10 @@ class Renamer(object):
                 # Forced to move file, we just trash old file
                 p("Deleting %s" % (self.filename))
                 delete_file(self.filename)
+
+                # Leave a symlink behind if configured to do so
+                if leave_symlink:
+                    p("symlink %s to %s" % (self.filename, new_fullpath))
+                    os.symlink(new_fullpath, self.filename)
 
         self.filename = new_fullpath
