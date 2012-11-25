@@ -330,7 +330,7 @@ files['anime'] = [
     'parsedseriesname': 'gintama',
     'correctedseriesname': 'Gintama',
     'seasonnumber': None, 'episodenumbers': [24],
-    'episodenames': ['A Cute Face is Always Hiding Something']},
+    'episodenames': ['Cute Faces Are Always Hiding Something']},
 
     {'input': '[Shinsen-Subs] True Mazinger - 07 [848x480 H.264 Vorbis][787D0074].mkv',
     'parsedseriesname': 'True Mazinger',
