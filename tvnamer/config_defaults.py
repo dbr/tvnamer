@@ -124,6 +124,10 @@ defaults = {
     # volume, after the copy has complete.
     'always_move': False,
 
+    # Whenever a file is moved leave a symlink to the new file behind, named
+    # after the original file.
+    'leave_symlink': False,
+
     # Allow user to copy files to specified move location without renaming files.
     'move_files_only': False,
 
