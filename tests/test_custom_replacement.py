@@ -245,3 +245,50 @@ def test_replacement_order():
     expected_files = ['24 - [03x02] - Day 3- 2-00 P.M.-3-00 P.M..avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_replacement_preserve_extension():
+    """Ensure with_extension replacement option defaults to preserving extension
+    """
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = """
+{
+    "output_filename_replacements": [
+        {"is_regex": false,
+        "match": "avi",
+        "replacement": "ohnobroken"}
+    ],
+    "always_rename": true,
+    "select_first": true
+}
+""")
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_replacement_including_extension():
+    """Option to allow replacement search/replace to include file extension
+    """
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = """
+{
+    "output_filename_replacements": [
+        {"is_regex": false,
+        "with_extension": true,
+        "match": "Day.avi",
+        "replacement": "Day.nl.avi"}
+    ],
+    "always_rename": true,
+    "select_first": true
+}
+""")
+
+    expected_files = ['Scrubs - [01x01] - My First Day.nl.avi']
+
+    verify_out_data(out_data, expected_files)

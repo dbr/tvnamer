@@ -43,10 +43,20 @@ def _applyReplacements(cfile, replacements):
     "replacement", and (optional) "is_regex"
     """
     for rep in replacements:
+        if not rep.get('with_extension', False):
+            # By default, preserve extension
+            cfile, cext = os.path.splitext(cfile)
+        else:
+            cfile = cfile
+            cext = ""
+
         if 'is_regex' in rep and rep['is_regex']:
             cfile = re.sub(rep['match'], rep['replacement'], cfile)
         else:
             cfile = cfile.replace(rep['match'], rep['replacement'])
+
+        # Rejoin extension (cext might be empty-string)
+        cfile = cfile + cext
 
     return cfile
 
@@ -738,10 +748,7 @@ class EpisodeInfo(object):
             return fname
 
         if len(Config['output_filename_replacements']) > 0:
-            # Only apply replacements to filename, not extension
-            splitname, splitext = os.path.splitext(fname)
-            newname = applyCustomOutputReplacements(splitname)
-            fname = newname + splitext
+            fname = applyCustomOutputReplacements(fname)
 
         return makeValidFilename(
             fname,
@@ -925,10 +932,7 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
             return fname
 
         if len(Config['output_filename_replacements']) > 0:
-            # Only apply replacements to filename, not extension
-            splitname, splitext = os.path.splitext(fname)
-            newname = applyCustomOutputReplacements(splitname)
-            fname = newname + splitext
+            fname = applyCustomOutputReplacements(fname)
 
         return makeValidFilename(
             fname,
