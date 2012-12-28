@@ -737,7 +737,7 @@ class EpisodeInfo(object):
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         if Config['titlecase_filename']:
-            from tvnamer._titlecase import titlecase
+            from _titlecase import titlecase
             fname = titlecase(fname)
 
         if lowercase or Config['lowercase_filename']:
