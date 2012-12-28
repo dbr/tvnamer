@@ -28,6 +28,27 @@ def test_replace_input():
 
 
 @attr("functional")
+def test_replace_input_with_id():
+    """Map from a series name to a numberic TVDB ID
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['seriesnamegoeshere.s01e01.avi'],
+        with_config = """
+{
+    "input_series_replacements": {
+        "seriesnamegoeshere": 76156},
+    "always_rename": true,
+    "select_first": true
+}
+""")
+
+    expected_files = ['Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
 def test_replace_output():
     """Tests replacing strings in input files
     """
