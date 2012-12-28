@@ -25,7 +25,7 @@ import os
 import sys
 import shutil
 import tempfile
-from subprocess import Popen, PIPE
+import subprocess
 
 from tvnamer.unicode_helper import p, unicodify
 
@@ -153,15 +153,16 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     p("Running command:")
     p(" ".join(cmd))
 
-    proc = Popen(
+
+    proc = subprocess.Popen(
         cmd,
-        stdout = PIPE,
-        stderr = PIPE,
-        stdin = PIPE)
+        stdout = subprocess.PIPE,
+        stderr = subprocess.STDOUT, # All stderr to stdout
+        stdin = subprocess.PIPE)
 
     proc.stdin.write(with_input)
-    stdout, stderr = proc.communicate()
-    stdout, stderr = [unicodify(x) for x in (stdout, stderr)]
+    output, _ = proc.communicate()
+    output = unicodify(output)
 
     created_files = []
     for walkroot, walkdirs, walkfiles in os.walk(unicode(episodes_location)):
@@ -178,8 +179,7 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
         os.unlink(configfname)
 
     return {
-        'stdout': stdout,
-        'stderr': stderr,
+        'output': output,
         'files': created_files,
         'returncode': proc.returncode}
 
@@ -197,12 +197,8 @@ def verify_out_data(out_data, expected_files, expected_returncode = 0):
     p("Got files:     ", [x for x in out_data['files']])
 
     p("\n" + "*" * 20 + "\n")
-    p("stdout:\n")
-    p(out_data['stdout'])
-
-    p("\n" + "*" * 20 + "\n")
-    p("stderr:\n")
-    p(out_data['stderr'])
+    p("output:\n")
+    p(out_data['output'])
 
     # Check number of files
     if len(expected_files) != len(out_data['files']):
