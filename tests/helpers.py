@@ -3,6 +3,7 @@
 """Helper functions for use in tests
 """
 
+import os
 import functools
 
 
@@ -36,5 +37,27 @@ def expected_failure(test):
             raise SkipTest("Expected failure failed, as expected")
         else:
             raise AssertionError('Failure expected')
+
+    return inner
+
+
+def expected_failure_travisci(test):
+    """Like expected_failure, but only expects a failure when the
+    env-var TRAVIS is "true"
+    """
+
+    @functools.wraps(test)
+    def inner(*args, **kwargs):
+        if os.getenv("TRAVIS", "false") == "true":
+            try:
+                test(*args, **kwargs)
+            except AssertionError:
+                from nose.plugins.skip import SkipTest
+                raise SkipTest("Expected failure failed, as expected on Travis-CI")
+            else:
+                raise AssertionError('Failure expected on Travis-CI')
+
+        else:
+            return test(*args, **kwargs)
 
     return inner
