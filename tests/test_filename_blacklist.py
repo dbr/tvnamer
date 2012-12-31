@@ -209,3 +209,58 @@ def test_blacklist_exclude_extension():
     expected_files = ['Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files, expected_returncode = 0)
+
+
+@attr("functional")
+def test_simple_blacklist():
+    """Blacklist with simple strings
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true,
+    "filename_blacklist": [
+            "scrubs.s02e01.avi"
+        ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'scrubs.s02e01.avi', 'scrubs.s02e02.avi'],
+        with_config = conf)
+
+    expected_files = [
+        'Scrubs - [01x01] - My First Day.avi',
+        'scrubs.s02e01.avi',
+        'Scrubs - [02x02] - My Nightingale.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_simple_blacklist_mixed():
+    """Blacklist with simple strings, mixed with the more complex dict
+    option (which allows regexs and matching against extension)
+    """
+
+    conf = """
+    {"always_rename": true,
+    "select_first": true,
+    "filename_blacklist": [
+            "scrubs.s02e01.avi",
+            {"is_regex": true,
+             "match": ".*s\\\\d+e02.*"}
+        ]
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'scrubs.s02e01.avi', 'scrubs.s02e02.avi'],
+        with_config = conf)
+
+    expected_files = [
+        'Scrubs - [01x01] - My First Day.avi',
+        'scrubs.s02e01.avi',
+        'scrubs.s02e02.avi']
+
+    verify_out_data(out_data, expected_files)
