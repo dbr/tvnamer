@@ -258,3 +258,22 @@ If you wish to match multiple episodes in one file, there two options:
 
 - `episodenumber1` `episodenumber2` etc - match any number of episode numbers (can be non-consecutive), or..
 - Two groups, `episodenumberstart` and `episodenumberend` - you match the first and last numbers in the filename. If the start number is 2, and the end number is 5, the file contains episodes [2, 3, 4, 5].
+
+# Regex flags in config files
+
+Regular expressions are used in several places in the config. It can
+be useful to specify flags the "ignore case" flag. This can be done
+with the `(?...)` syntax, e.g to replace `and`, `And`, `AND` etc with
+`&`:
+
+    {
+        "input_filename_replacements": [
+            {"is_regex": true,
+            "match": "(?i)and",
+            "replacement": "&"}
+        ]
+    }
+
+See the other flags
+[in the Python `re` docs](http://docs.python.org/2/library/re.html#regular-expression-syntax)
+(search for `(?iLmsux)` on the page)
