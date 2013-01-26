@@ -439,4 +439,19 @@ defaults = {
     # since these are perfectly predictable, they are simple strings
     # not regular expressions
     'output_series_replacements': {},
+
+
+    # Whether to rename subtitles mathing video file name.
+    # Keeps language codes intact - for example 'original-name.eng.srt' is renamed to 'new-name.eng.srt'
+    'track_subtitles': False,
+
+    # List of language codes to match as part of extension.
+    # For example:  ["en", "eng", "cs", "cze"]
+    'language_codes': [],
+
+    # Characters separating base file name and extension
+    'language_separators': [".", "-"],
+
+    # List of subtitle extensions.
+    'subtitle_extensions': ["srt", "sub"],
 }

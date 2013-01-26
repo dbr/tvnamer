@@ -10,6 +10,7 @@ import sys
 import shutil
 import logging
 import platform
+import itertools
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
@@ -976,6 +977,42 @@ def delete_file(fpath):
         items = finder.items().objectAtLocation_(targetfile)
         items.delete()
 
+def rename_file(old, new):
+    p("rename %s to %s" % (old, new))
+    stat = os.stat(old)
+    os.rename(old, new)
+    os.utime(new, (stat.st_atime, stat.st_mtime))
+
+def copy_file(old, new):
+    p("copy %s to %s" % (old, new))
+    shutil.copyfile(old, new)
+    shutil.copystat(old, new)
+
+def symlink_file(target, name):
+    p("symlink %s to %s" % (name, target))
+    os.symlink(target, name)
+
+def file_action(old, new, action="rename"):
+    if action == "rename":
+        func = rename_file
+    elif action == "copy":
+        func = copy_file
+    elif action == "delete":
+        func = delete_file
+    elif action == "symlink":
+        func = symlink_file
+    else:
+        raise ValueError("Unknown action: " + action)
+
+    func(old, new)
+    if Config['track_subtitles']:
+        base_old = os.path.splitext(old)[0]
+        base_new = os.path.splitext(new)[0]
+        for ext in itertools.product(Config['language_separators'], Config['language_codes'], ["."], Config['subtitle_extensions']):
+            ext = "".join(ext)
+            if os.path.isfile(base_old + ext):
+                func(base_old + ext, base_new + ext)
+
 class Renamer(object):
     """Deals with renaming of files
     """
@@ -997,12 +1034,11 @@ class Renamer(object):
                 raise OSError("File %s already exists, not forcefully renaming %s" % (
                     newpath, self.filename))
 
-        os.rename(self.filename, newpath)
+        file_action(self.filename, newpath, action="rename")
 
         # Leave a symlink behind if configured to do so
         if leave_symlink:
-            p("symlink %s to %s" % (self.filename, newpath))
-            os.symlink(newpath, self.filename)
+            file_action(newpath, self.filename)
 
         self.filename = newpath
 
@@ -1068,21 +1104,17 @@ class Renamer(object):
         if same_partition(self.filename, new_dir):
             if always_copy:
                 # Same partition, but forced to copy
-                p("copy %s to %s" % (self.filename, new_fullpath))
-                shutil.copyfile(self.filename, new_fullpath)
+                file_action(self.filename, new_fullpath, action="copy")
             else:
                 # Same partition, just rename the file to move it
-                p("move %s to %s" % (self.filename, new_fullpath))
-                os.rename(self.filename, new_fullpath)
+                file_action(self.filename, new_fullpath, action="rename")
 
                 # Leave a symlink behind if configured to do so
                 if leave_symlink:
-                    p("symlink %s to %s" % (self.filename, new_fullpath))
-                    os.symlink(new_fullpath, self.filename)
+                    file_action(new_fullpath, self.filename, action="symlink")
         else:
             # File is on different partition (different disc), copy it
-            p("copy %s to %s" % (self.filename, new_fullpath))
-            shutil.copyfile(self.filename, new_fullpath)
+            file_action(self.filename, new_fullpath, action="move")
             if always_move:
                 # Forced to move file, we just trash old file
                 p("Deleting %s" % (self.filename))
@@ -1090,7 +1122,6 @@ class Renamer(object):
 
                 # Leave a symlink behind if configured to do so
                 if leave_symlink:
-                    p("symlink %s to %s" % (self.filename, new_fullpath))
-                    os.symlink(new_fullpath, self.filename)
+                    file_action(new_fullpath, self.filename, action="symlink")
 
         self.filename = new_fullpath
