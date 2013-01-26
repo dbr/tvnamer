@@ -33,6 +33,14 @@ defaults = {
     # No leading dot, for example: ['avi', 'mkv', 'mp4']
     'valid_extensions': [],
 
+    # Pattern for splitting filenames into basename and extension.
+    # Useful for matching subtitles with language codes, for example
+    # "extension_pattern": "(\.(eng|cze))?(\.[a-zA-Z0-9]+)$" will split "foo.eng.srt"
+    # into "foo" and ".eng.srt".
+    # Note that extensions still pass 'valid_extensions' filter, '.eng.srt' passes
+    # when 'srt' is specified in 'valid_extensions'.
+    'extension_pattern': '(\.[a-zA-Z0-9]+)$',
+
     # When non-empty, filter out filenames that match these expressions. Either simple
     # matches or regexs can be used. The following are near enough equivalent:
     # [{"is_regex": true, "match": ".*sample.*"}, {"is_regex": false, "match": "sample"}]
@@ -414,14 +422,17 @@ defaults = {
 
 
 
-    # Used to join multiple episode names together
+    # Used to join multiple episode names together (only when episode names are different)
     'multiep_join_name_with': ', ',
 
-    # Format for numbers (python string format), %02d does 2-digit
-    # padding, %d will cause no padding
+    # Format for multi-episode names (only when episode names are the same)
+    # Formats mapping key 'episodename' (used in variables 'filename_with_episode' etc.)
+    'multiep_format': '%(epname)s (%(episodemin)s-%(episodemax)s)',
+
+    # Format for numbers (python string format), %02d does 2-digit padding, %d will cause no padding
     'episode_single': '%02d',
 
-    # String to join multiple number
+    # String to join multiple numbers in mapping key 'episode' (used in variables 'filename_with_episode' etc.)
     'episode_separator': '-',
 
     # Series ID to use instead of searching if the value is set
