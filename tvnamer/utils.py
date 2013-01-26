@@ -423,11 +423,11 @@ def formatEpisodeName(names, join_with):
     if len(names) == 1:
         return names[0]
 
-    found_names = []
+    found_name = ""
     numbers = []
     for cname in names:
         match = re.match("(.*) \(([0-9]+)\)$", cname)
-        if not match and len(found_names) > 0:
+        if found_name != "" and (not match or epname != found_name):
             # An episode didn't match
             return join_with.join(names)
 
@@ -436,15 +436,12 @@ def formatEpisodeName(names, join_with):
         else: # assume that this is the first episode, without number
             epname = cname
             epno = 1
-        if len(found_names) > 0 and epname not in found_names:
-            return join_with.join(names)
-        found_names.append(epname)
+        found_name = epname
         numbers.append(int(epno))
 
-    names = []
-    start, end = min(numbers), max(numbers)
-    names.append("%s (%d-%d)" % (found_names[0], start, end))
-    return join_with.join(names)
+#    return "%s Parts %s" % (found_name, join_with.join(str(no) for no in sorted(numbers)))
+#    return "%s (Parts %s-%s)" % (found_name, min(numbers), max(numbers))
+    return "%s (%s-%s)" % (found_name, min(numbers), max(numbers))
 
 
 def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None, replace_with = "_"):
