@@ -416,6 +416,9 @@ def formatEpisodeName(names, join_with):
 
     If two different episode names are found, such as "The first", and
     "Something else" it will return "The first, Something else"
+
+    Change: make the number optional, so passing  "Pilot" and "Pilot (2)"
+    will also result in returning "Pilot (1-2)".
     """
     if len(names) == 1:
         return names[0]
@@ -423,16 +426,20 @@ def formatEpisodeName(names, join_with):
     found_names = []
     numbers = []
     for cname in names:
-        number = re.match("(.*) \(([0-9]+)\)$", cname)
-        if number:
-            epname, epno = number.group(1), number.group(2)
-            if len(found_names) > 0 and epname not in found_names:
-                return join_with.join(names)
-            found_names.append(epname)
-            numbers.append(int(epno))
-        else:
+        match = re.match("(.*) \(([0-9]+)\)$", cname)
+        if not match and len(found_names) > 0:
             # An episode didn't match
             return join_with.join(names)
+
+        if match:
+            epname, epno = match.group(1), match.group(2)
+        else: # assume that this is the first episode, without number
+            epname = cname
+            epno = 1
+        if len(found_names) > 0 and epname not in found_names:
+            return join_with.join(names)
+        found_names.append(epname)
+        numbers.append(int(epno))
 
     names = []
     start, end = min(numbers), max(numbers)
