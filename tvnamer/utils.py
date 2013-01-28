@@ -736,6 +736,9 @@ class EpisodeInfo(object):
         extra.update(epdata)
         epdata = extra
 
+         if Config['use_alternate_seriesname_seperator']:
+            epdata['seriesname'] = epdata['seriesname'].replace(" ", Config['alternate_seriesname_seperator'])
+
         if self.episodename is None:
             fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
         else:
@@ -909,6 +912,9 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
         extra = self.extra.copy()
         extra.update(epdata)
         epdata = extra
+
+        if Config['use_alternate_seriesname_seperator']:
+            epdata['seriesname'] = epdata['seriesname'].replace(" ", Config['alternate_seriesname_seperator'])
 
         # Get appropriate config key, depending on if episode name was
         # found, and if crc value was found
