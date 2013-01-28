@@ -736,7 +736,7 @@ class EpisodeInfo(object):
         extra.update(epdata)
         epdata = extra
 
-         if Config['use_alternate_seriesname_seperator']:
+        if Config['use_alternate_seriesname_seperator']:
             epdata['seriesname'] = epdata['seriesname'].replace(" ", Config['alternate_seriesname_seperator'])
 
         if self.episodename is None:
