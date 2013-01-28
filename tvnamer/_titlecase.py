@@ -27,6 +27,7 @@ ALL_CAPS = re.compile(r'^[A-Z\s%s]+$' % PUNCT)
 UC_INITIALS = re.compile(r"^(?:[A-Z]{1}\.{1}|[A-Z]{1}\.{1}[A-Z]{1})+$")
 MAC_MC = re.compile(r"^([Mm]a?c)(\w+)")
 
+
 def titlecase(text):
 
     """
@@ -39,7 +40,7 @@ def titlecase(text):
     the New York Times Manual of Style, plus 'vs' and 'v'.
 
     """
-    
+
     lines = re.split('[\r\n]+', text)
     processed = []
     for line in lines:
@@ -53,7 +54,7 @@ def titlecase(text):
                     continue
                 else:
                     word = word.lower()
-            
+
             if APOS_SECOND.match(word):
                 word = word.replace(word[0], word[0].upper())
                 word = word.replace(word[2], word[2].upper())
@@ -97,8 +98,7 @@ def titlecase(text):
             m.group(1),
             m.group(2).capitalize()
         ), result)
-        
+
         processed.append(result)
 
     return "\n".join(processed)
-

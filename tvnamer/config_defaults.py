@@ -66,6 +66,12 @@ defaults = {
     'output_filename_replacements': [
     ],
 
+    # Replace default spaces in series name or not
+    'use_alternate_seriesname_seperator': False,
+
+    # Character(s) used to replace spaces in series name if 'use_alternate_seriesname_seperator' is True
+    'alternate_seriesname_seperator': '.',
+
     # Replacements are performed on the full path used by move_files feature,
     # including the filename
     'move_files_fullpath_replacements': [

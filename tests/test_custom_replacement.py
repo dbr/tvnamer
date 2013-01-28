@@ -123,6 +123,27 @@ def test_replacing_spaces():
 
 
 @attr("functional")
+def test_alternate_seperator_in_seriesname():
+    """Tests removing spaces in seriesname only
+    """
+    out_data = run_tvnamer(
+        with_files = ['Law & Order s01e01.avi'],
+        with_config = """
+{
+    "use_alternate_seriesname_seperator": true,
+    "alternate_seriesname_seperator": ".",
+
+    "always_rename": true,
+    "select_first": true
+}
+""")
+
+    expected_files = ['Law.&.Order - [01x01] - Prescription for Death.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
 def test_replacing_ands():
     """Tests removind "and" and "&" from input files
     """

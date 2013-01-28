@@ -207,7 +207,7 @@ class FileFinder(object):
         self.with_blacklist should be a list of strings and/or dicts:
 
         a string, specifying an exact filename to ignore
-        "filename_blacklist": [".DS_Store", "Thumbs.db"], 
+        "filename_blacklist": [".DS_Store", "Thumbs.db"],
 
         a dictionary, where each dict contains:
 
@@ -235,8 +235,9 @@ class FileFinder(object):
             if isinstance(fblacklist, basestring):
                 if fullname == fblacklist:
                     return True
-                else: continue
-            
+                else:
+                    continue
+
             if "full_path" in fblacklist and fblacklist["full_path"]:
                 to_check = filepath
             else:
@@ -736,6 +737,9 @@ class EpisodeInfo(object):
         extra.update(epdata)
         epdata = extra
 
+        if Config['use_alternate_seriesname_seperator']:
+            epdata['seriesname'] = epdata['seriesname'].replace(" ", Config['alternate_seriesname_seperator'])
+
         if self.episodename is None:
             fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
         else:
@@ -910,6 +914,9 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
         extra.update(epdata)
         epdata = extra
 
+        if Config['use_alternate_seriesname_seperator']:
+            epdata['seriesname'] = epdata['seriesname'].replace(" ", Config['alternate_seriesname_seperator'])
+
         # Get appropriate config key, depending on if episode name was
         # found, and if crc value was found
         if self.episodename is None:
@@ -976,6 +983,7 @@ def delete_file(fpath):
         items = finder.items().objectAtLocation_(targetfile)
         items.delete()
 
+
 class Renamer(object):
     """Deals with renaming of files
     """
@@ -1013,7 +1021,7 @@ class Renamer(object):
         If it is on a different partition, it will be copied, and the original
         only deleted if always_move is True.
         If the target file already exists, it will raise OSError unless force is True.
-        If it was moved, a symlink will be left behind with the original name 
+        If it was moved, a symlink will be left behind with the original name
         pointing to the file's new destination if leave_symlink is True.
         """
 
