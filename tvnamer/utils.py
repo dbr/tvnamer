@@ -409,16 +409,17 @@ class FileParser(object):
             raise InvalidFilename(emsg)
 
 
-def formatEpisodeName(names, join_with):
-    """Takes a list of episode names, formats them into a string.
+def formatEpisodeName(names, join_with, multiep_format):
+    """
+    Takes a list of episode names, formats them into a string.
+
     If two names are supplied, such as "Pilot (1)" and "Pilot (2)", the
-    returned string will be "Pilot (1-2)"
+    returned string will be "Pilot (1-2)". Note that the first number
+    is not required, for example passing "Pilot" and "Pilot (2)" will
+    also result in returning "Pilot (1-2)".
 
     If two different episode names are found, such as "The first", and
     "Something else" it will return "The first, Something else"
-
-    Change: make the number optional, so passing  "Pilot" and "Pilot (2)"
-    will also result in returning "Pilot (1-2)".
     """
     if len(names) == 1:
         return names[0]
@@ -439,9 +440,7 @@ def formatEpisodeName(names, join_with):
         found_name = epname
         numbers.append(int(epno))
 
-#    return "%s Parts %s" % (found_name, join_with.join(str(no) for no in sorted(numbers)))
-#    return "%s (Parts %s-%s)" % (found_name, min(numbers), max(numbers))
-    return "%s (%s-%s)" % (found_name, min(numbers), max(numbers))
+    return multiep_format % {'epname': found_name, 'episodemin': min(numbers), 'episodemax': max(numbers)}
 
 
 def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None, replace_with = "_"):
@@ -747,7 +746,8 @@ class EpisodeInfo(object):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    join_with = Config['multiep_join_name_with'])
+                    join_with = Config['multiep_join_name_with'],
+                    multiep_format = Config['multiep_format'])
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         if Config['titlecase_filename']:
@@ -826,7 +826,8 @@ class DatedEpisodeInfo(EpisodeInfo):
         if isinstance(self.episodename, list):
             prep_episodename = formatEpisodeName(
                 self.episodename,
-                join_with = Config['multiep_join_name_with'])
+                join_with = Config['multiep_join_name_with'],
+                multiep_format = Config['multiep_format'])
         else:
             prep_episodename = self.episodename
 
@@ -933,7 +934,8 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    join_with = Config['multiep_join_name_with'])
+                    join_with = Config['multiep_join_name_with'],
+                    multiep_format = Config['multiep_format'])
 
         fname = Config[cfgkey] % epdata
 

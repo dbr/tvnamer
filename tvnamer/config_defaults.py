@@ -414,14 +414,17 @@ defaults = {
 
 
 
-    # Used to join multiple episode names together
+    # Used to join multiple episode names together (only when episode names are different)
     'multiep_join_name_with': ', ',
 
-    # Format for numbers (python string format), %02d does 2-digit
-    # padding, %d will cause no padding
+    # Format for multi-episode names (only when episode names are the same)
+    # Formats mapping key 'episodename' (used in variables 'filename_with_episode' etc.)
+    'multiep_format': '%(epname)s (%(episodemin)s-%(episodemax)s)',
+
+    # Format for numbers (python string format), %02d does 2-digit padding, %d will cause no padding
     'episode_single': '%02d',
 
-    # String to join multiple number
+    # String to join multiple numbers in mapping key 'episode' (used in variables 'filename_with_episode' etc.)
     'episode_separator': '-',
 
     # Series ID to use instead of searching if the value is set
