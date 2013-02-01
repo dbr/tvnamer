@@ -10,7 +10,6 @@ import sys
 import shutil
 import logging
 import platform
-import itertools
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
@@ -35,6 +34,12 @@ def warn(text):
     p(text, file = sys.stderr)
 
 
+def split_extension(filename):
+    base = re.sub(Config["extension_pattern"], "", filename)
+    ext = filename.replace(base, "")
+    return base, ext
+
+
 def _applyReplacements(cfile, replacements):
     """Applies custom replacements.
 
@@ -46,7 +51,7 @@ def _applyReplacements(cfile, replacements):
     for rep in replacements:
         if not rep.get('with_extension', False):
             # By default, preserve extension
-            cfile, cext = os.path.splitext(cfile)
+            cfile, cext = split_extension(cfile)
         else:
             cfile = cfile
             cext = ""
@@ -193,6 +198,7 @@ class FileFinder(object):
         if len(self.with_extension) == 0:
             return True
 
+        # don't use split_extension here (otherwise valid_extensions is useless)!
         _, extension = os.path.splitext(fname)
         for cext in self.with_extension:
             cext = ".%s" % cext
@@ -230,7 +236,7 @@ class FileFinder(object):
             return False
 
         fdir, fullname = os.path.split(filepath)
-        fname, fext = os.path.splitext(fullname)
+        fname, fext = split_extension(fullname)
 
         for fblacklist in self.with_blacklist:
             if isinstance(fblacklist, basestring):
@@ -478,7 +484,7 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
         value = "_" + value
 
     # Treat extension seperatly
-    value, extension = os.path.splitext(value)
+    value, extension = split_extension(value)
 
     # Remove any null bytes
     value = value.replace("\0", "")
@@ -593,14 +599,13 @@ class EpisodeInfo(object):
             self.filename, self.extension = None, None
         else:
             self.filepath, self.filename = os.path.split(value)
-            self.filename, self.extension = os.path.splitext(self.filename)
-            self.extension = self.extension.replace(".", "")
+            self.filename, self.extension = split_extension(self.filename)
 
     fullpath = property(fullpath_get, fullpath_set)
 
     @property
     def fullfilename(self):
-        return u"%s.%s" % (self.filename, self.extension)
+        return u"%s%s" % (self.filename, self.extension)
 
     def sortable_info(self):
         """Returns a tuple of sortable information
@@ -721,7 +726,7 @@ class EpisodeInfo(object):
         if self.extension is None:
             prep_extension = ''
         else:
-            prep_extension = '.%s' % self.extension
+            prep_extension = self.extension
 
         epdata = {
             'seriesname': self.seriesname,
@@ -836,7 +841,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         if self.extension is None:
             prep_extension = ''
         else:
-            prep_extension = '.%s' % self.extension
+            prep_extension = self.extension
 
         epdata = {
             'seriesname': self.seriesname,
@@ -891,7 +896,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
         if self.extension is None:
             prep_extension = ''
         else:
-            prep_extension = '.%s' % self.extension
+            prep_extension = self.extension
 
         epdata = {
             'seriesname': self.seriesname,
@@ -1003,28 +1008,6 @@ def symlink_file(target, name):
     os.symlink(target, name)
 
 
-def file_action(old, new, action="rename"):
-    if action == "rename":
-        func = rename_file
-    elif action == "copy":
-        func = copy_file
-    elif action == "delete":
-        func = delete_file
-    elif action == "symlink":
-        func = symlink_file
-    else:
-        raise ValueError("Unknown action: " + action)
-
-    func(old, new)
-    if Config['track_subtitles']:
-        base_old = os.path.splitext(old)[0]
-        base_new = os.path.splitext(new)[0]
-        for ext in itertools.product(Config['language_separators'], Config['language_codes'], ["."], Config['subtitle_extensions']):
-            ext = "".join(ext)
-            if os.path.isfile(base_old + ext):
-                func(base_old + ext, base_new + ext)
-
-
 class Renamer(object):
     """Deals with renaming of files
     """
@@ -1036,7 +1019,7 @@ class Renamer(object):
         """Renames a file, keeping the path the same.
         """
         filepath, filename = os.path.split(self.filename)
-        filename, _ = os.path.splitext(filename)
+        filename, _ = split_extension(filename)
 
         newpath = os.path.join(filepath, newName)
 
@@ -1046,11 +1029,11 @@ class Renamer(object):
                 raise OSError("File %s already exists, not forcefully renaming %s" % (
                     newpath, self.filename))
 
-        file_action(self.filename, newpath, action="rename")
+        rename_file(self.filename, newpath)
 
         # Leave a symlink behind if configured to do so
         if leave_symlink:
-            file_action(newpath, self.filename)
+            symlink_file(newpath, self.filename)
 
         self.filename = newpath
 
@@ -1116,17 +1099,17 @@ class Renamer(object):
         if same_partition(self.filename, new_dir):
             if always_copy:
                 # Same partition, but forced to copy
-                file_action(self.filename, new_fullpath, action="copy")
+                copy_file(self.filename, new_fullpath)
             else:
                 # Same partition, just rename the file to move it
-                file_action(self.filename, new_fullpath, action="rename")
+                rename_file(self.filename, new_fullpath)
 
                 # Leave a symlink behind if configured to do so
                 if leave_symlink:
-                    file_action(new_fullpath, self.filename, action="symlink")
+                    symlink_file(new_fullpath, self.filename)
         else:
             # File is on different partition (different disc), copy it
-            file_action(self.filename, new_fullpath, action="move")
+            copy_file(self.filename, new_fullpath)
             if always_move:
                 # Forced to move file, we just trash old file
                 p("Deleting %s" % (self.filename))
@@ -1134,6 +1117,6 @@ class Renamer(object):
 
                 # Leave a symlink behind if configured to do so
                 if leave_symlink:
-                    file_action(new_fullpath, self.filename, action="symlink")
+                    symlink_file(new_fullpath, self.filename)
 
         self.filename = new_fullpath

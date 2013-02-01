@@ -33,6 +33,14 @@ defaults = {
     # No leading dot, for example: ['avi', 'mkv', 'mp4']
     'valid_extensions': [],
 
+    # Pattern for splitting filenames into basename and extension.
+    # Useful for matching subtitles with language codes, for example
+    # "extension_pattern": "(\.(eng|cze))?(\.[a-zA-Z0-9]+)$" will split "foo.eng.srt"
+    # into "foo" and ".eng.srt".
+    # Note that extensions still pass 'valid_extensions' filter, '.eng.srt' passes
+    # when 'srt' is specified in 'valid_extensions'.
+    'extension_pattern': '(\.[a-zA-Z0-9]+)$',
+
     # When non-empty, filter out filenames that match these expressions. Either simple
     # matches or regexs can be used. The following are near enough equivalent:
     # [{"is_regex": true, "match": ".*sample.*"}, {"is_regex": false, "match": "sample"}]
@@ -442,19 +450,4 @@ defaults = {
     # since these are perfectly predictable, they are simple strings
     # not regular expressions
     'output_series_replacements': {},
-
-
-    # Whether to rename subtitles mathing video file name.
-    # Keeps language codes intact - for example 'original-name.eng.srt' is renamed to 'new-name.eng.srt'
-    'track_subtitles': False,
-
-    # List of language codes to match as part of extension.
-    # For example:  ["en", "eng", "cs", "cze"]
-    'language_codes': [],
-
-    # Characters separating base file name and extension
-    'language_separators': [".", "-"],
-
-    # List of subtitle extensions.
-    'subtitle_extensions': ["srt", "sub"],
 }
