@@ -1015,28 +1015,6 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
 
-    def newName(self, newName, force = False, leave_symlink = False):
-        """Renames a file, keeping the path the same.
-        """
-        filepath, filename = os.path.split(self.filename)
-        filename, _ = split_extension(filename)
-
-        newpath = os.path.join(filepath, newName)
-
-        if os.path.isfile(newpath):
-            # If the destination exists, raise exception unless force is True
-            if not force:
-                raise OSError("File %s already exists, not forcefully renaming %s" % (
-                    newpath, self.filename))
-
-        rename_file(self.filename, newpath)
-
-        # Leave a symlink behind if configured to do so
-        if leave_symlink:
-            symlink_file(newpath, self.filename)
-
-        self.filename = newpath
-
     def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, leave_symlink = False, create_dirs = True, getPathPreview = False):
         """Moves the file to a new path.
 
@@ -1054,9 +1032,8 @@ class Renamer(object):
         if (new_path is None and new_fullpath is None) or (new_path is not None and new_fullpath is not None):
             raise ValueError("Specify only new_dir or new_fullpath")
 
+        old_dir, old_filename = os.path.split(self.filename)
         if new_path is not None:
-            old_dir, old_filename = os.path.split(self.filename)
-
             # Join new filepath to old one (to handle realtive dirs)
             new_dir = os.path.abspath(os.path.join(old_dir, new_path))
 
@@ -1064,8 +1041,6 @@ class Renamer(object):
             new_fullpath = os.path.join(new_dir, old_filename)
 
         else:
-            old_dir, old_filename = os.path.split(self.filename)
-
             # Join new filepath to old one (to handle realtive dirs)
             new_fullpath = os.path.abspath(os.path.join(old_dir, new_fullpath))
 
