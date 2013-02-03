@@ -34,6 +34,12 @@ def warn(text):
     p(text, file = sys.stderr)
 
 
+def split_extension(filename):
+    base = re.sub(Config["extension_pattern"], "", filename)
+    ext = filename.replace(base, "")
+    return base, ext
+
+
 def _applyReplacements(cfile, replacements):
     """Applies custom replacements.
 
@@ -45,7 +51,7 @@ def _applyReplacements(cfile, replacements):
     for rep in replacements:
         if not rep.get('with_extension', False):
             # By default, preserve extension
-            cfile, cext = os.path.splitext(cfile)
+            cfile, cext = split_extension(cfile)
         else:
             cfile = cfile
             cext = ""
@@ -192,6 +198,7 @@ class FileFinder(object):
         if len(self.with_extension) == 0:
             return True
 
+        # don't use split_extension here (otherwise valid_extensions is useless)!
         _, extension = os.path.splitext(fname)
         for cext in self.with_extension:
             cext = ".%s" % cext
@@ -207,7 +214,7 @@ class FileFinder(object):
         self.with_blacklist should be a list of strings and/or dicts:
 
         a string, specifying an exact filename to ignore
-        "filename_blacklist": [".DS_Store", "Thumbs.db"], 
+        "filename_blacklist": [".DS_Store", "Thumbs.db"],
 
         a dictionary, where each dict contains:
 
@@ -229,14 +236,15 @@ class FileFinder(object):
             return False
 
         fdir, fullname = os.path.split(filepath)
-        fname, fext = os.path.splitext(fullname)
+        fname, fext = split_extension(fullname)
 
         for fblacklist in self.with_blacklist:
             if isinstance(fblacklist, basestring):
                 if fullname == fblacklist:
                     return True
-                else: continue
-            
+                else:
+                    continue
+
             if "full_path" in fblacklist and fblacklist["full_path"]:
                 to_check = filepath
             else:
@@ -408,10 +416,14 @@ class FileParser(object):
             raise InvalidFilename(emsg)
 
 
-def formatEpisodeName(names, join_with):
-    """Takes a list of episode names, formats them into a string.
+def formatEpisodeName(names, join_with, multiep_format):
+    """
+    Takes a list of episode names, formats them into a string.
+
     If two names are supplied, such as "Pilot (1)" and "Pilot (2)", the
-    returned string will be "Pilot (1-2)"
+    returned string will be "Pilot (1-2)". Note that the first number
+    is not required, for example passing "Pilot" and "Pilot (2)" will
+    also result in returning "Pilot (1-2)".
 
     If two different episode names are found, such as "The first", and
     "Something else" it will return "The first, Something else"
@@ -419,24 +431,23 @@ def formatEpisodeName(names, join_with):
     if len(names) == 1:
         return names[0]
 
-    found_names = []
+    found_name = ""
     numbers = []
     for cname in names:
-        number = re.match("(.*) \(([0-9]+)\)$", cname)
-        if number:
-            epname, epno = number.group(1), number.group(2)
-            if len(found_names) > 0 and epname not in found_names:
-                return join_with.join(names)
-            found_names.append(epname)
-            numbers.append(int(epno))
-        else:
+        match = re.match("(.*) \(([0-9]+)\)$", cname)
+        if found_name != "" and (not match or epname != found_name):
             # An episode didn't match
             return join_with.join(names)
 
-    names = []
-    start, end = min(numbers), max(numbers)
-    names.append("%s (%d-%d)" % (found_names[0], start, end))
-    return join_with.join(names)
+        if match:
+            epname, epno = match.group(1), match.group(2)
+        else: # assume that this is the first episode, without number
+            epname = cname
+            epno = 1
+        found_name = epname
+        numbers.append(int(epno))
+
+    return multiep_format % {'epname': found_name, 'episodemin': min(numbers), 'episodemax': max(numbers)}
 
 
 def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None, replace_with = "_"):
@@ -473,7 +484,7 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
         value = "_" + value
 
     # Treat extension seperatly
-    value, extension = os.path.splitext(value)
+    value, extension = split_extension(value)
 
     # Remove any null bytes
     value = value.replace("\0", "")
@@ -588,14 +599,13 @@ class EpisodeInfo(object):
             self.filename, self.extension = None, None
         else:
             self.filepath, self.filename = os.path.split(value)
-            self.filename, self.extension = os.path.splitext(self.filename)
-            self.extension = self.extension.replace(".", "")
+            self.filename, self.extension = split_extension(self.filename)
 
     fullpath = property(fullpath_get, fullpath_set)
 
     @property
     def fullfilename(self):
-        return u"%s.%s" % (self.filename, self.extension)
+        return u"%s%s" % (self.filename, self.extension)
 
     def sortable_info(self):
         """Returns a tuple of sortable information
@@ -716,7 +726,7 @@ class EpisodeInfo(object):
         if self.extension is None:
             prep_extension = ''
         else:
-            prep_extension = '.%s' % self.extension
+            prep_extension = self.extension
 
         epdata = {
             'seriesname': self.seriesname,
@@ -742,7 +752,8 @@ class EpisodeInfo(object):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    join_with = Config['multiep_join_name_with'])
+                    join_with = Config['multiep_join_name_with'],
+                    multiep_format = Config['multiep_format'])
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         if Config['titlecase_filename']:
@@ -821,7 +832,8 @@ class DatedEpisodeInfo(EpisodeInfo):
         if isinstance(self.episodename, list):
             prep_episodename = formatEpisodeName(
                 self.episodename,
-                join_with = Config['multiep_join_name_with'])
+                join_with = Config['multiep_join_name_with'],
+                multiep_format = Config['multiep_format'])
         else:
             prep_episodename = self.episodename
 
@@ -829,7 +841,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         if self.extension is None:
             prep_extension = ''
         else:
-            prep_extension = '.%s' % self.extension
+            prep_extension = self.extension
 
         epdata = {
             'seriesname': self.seriesname,
@@ -884,7 +896,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
         if self.extension is None:
             prep_extension = ''
         else:
-            prep_extension = '.%s' % self.extension
+            prep_extension = self.extension
 
         epdata = {
             'seriesname': self.seriesname,
@@ -928,7 +940,8 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    join_with = Config['multiep_join_name_with'])
+                    join_with = Config['multiep_join_name_with'],
+                    multiep_format = Config['multiep_format'])
 
         fname = Config[cfgkey] % epdata
 
@@ -976,35 +989,31 @@ def delete_file(fpath):
         items = finder.items().objectAtLocation_(targetfile)
         items.delete()
 
+
+def rename_file(old, new):
+    p("rename %s to %s" % (old, new))
+    stat = os.stat(old)
+    os.rename(old, new)
+    os.utime(new, (stat.st_atime, stat.st_mtime))
+
+
+def copy_file(old, new):
+    p("copy %s to %s" % (old, new))
+    shutil.copyfile(old, new)
+    shutil.copystat(old, new)
+
+
+def symlink_file(target, name):
+    p("symlink %s to %s" % (name, target))
+    os.symlink(target, name)
+
+
 class Renamer(object):
     """Deals with renaming of files
     """
 
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
-
-    def newName(self, newName, force = False, leave_symlink = False):
-        """Renames a file, keeping the path the same.
-        """
-        filepath, filename = os.path.split(self.filename)
-        filename, _ = os.path.splitext(filename)
-
-        newpath = os.path.join(filepath, newName)
-
-        if os.path.isfile(newpath):
-            # If the destination exists, raise exception unless force is True
-            if not force:
-                raise OSError("File %s already exists, not forcefully renaming %s" % (
-                    newpath, self.filename))
-
-        os.rename(self.filename, newpath)
-
-        # Leave a symlink behind if configured to do so
-        if leave_symlink:
-            p("symlink %s to %s" % (self.filename, newpath))
-            os.symlink(newpath, self.filename)
-
-        self.filename = newpath
 
     def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, leave_symlink = False, create_dirs = True, getPathPreview = False):
         """Moves the file to a new path.
@@ -1013,7 +1022,7 @@ class Renamer(object):
         If it is on a different partition, it will be copied, and the original
         only deleted if always_move is True.
         If the target file already exists, it will raise OSError unless force is True.
-        If it was moved, a symlink will be left behind with the original name 
+        If it was moved, a symlink will be left behind with the original name
         pointing to the file's new destination if leave_symlink is True.
         """
 
@@ -1023,9 +1032,8 @@ class Renamer(object):
         if (new_path is None and new_fullpath is None) or (new_path is not None and new_fullpath is not None):
             raise ValueError("Specify only new_dir or new_fullpath")
 
+        old_dir, old_filename = os.path.split(self.filename)
         if new_path is not None:
-            old_dir, old_filename = os.path.split(self.filename)
-
             # Join new filepath to old one (to handle realtive dirs)
             new_dir = os.path.abspath(os.path.join(old_dir, new_path))
 
@@ -1033,8 +1041,6 @@ class Renamer(object):
             new_fullpath = os.path.join(new_dir, old_filename)
 
         else:
-            old_dir, old_filename = os.path.split(self.filename)
-
             # Join new filepath to old one (to handle realtive dirs)
             new_fullpath = os.path.abspath(os.path.join(old_dir, new_fullpath))
 
@@ -1068,21 +1074,17 @@ class Renamer(object):
         if same_partition(self.filename, new_dir):
             if always_copy:
                 # Same partition, but forced to copy
-                p("copy %s to %s" % (self.filename, new_fullpath))
-                shutil.copyfile(self.filename, new_fullpath)
+                copy_file(self.filename, new_fullpath)
             else:
                 # Same partition, just rename the file to move it
-                p("move %s to %s" % (self.filename, new_fullpath))
-                os.rename(self.filename, new_fullpath)
+                rename_file(self.filename, new_fullpath)
 
                 # Leave a symlink behind if configured to do so
                 if leave_symlink:
-                    p("symlink %s to %s" % (self.filename, new_fullpath))
-                    os.symlink(new_fullpath, self.filename)
+                    symlink_file(new_fullpath, self.filename)
         else:
             # File is on different partition (different disc), copy it
-            p("copy %s to %s" % (self.filename, new_fullpath))
-            shutil.copyfile(self.filename, new_fullpath)
+            copy_file(self.filename, new_fullpath)
             if always_move:
                 # Forced to move file, we just trash old file
                 p("Deleting %s" % (self.filename))
@@ -1090,7 +1092,6 @@ class Renamer(object):
 
                 # Leave a symlink behind if configured to do so
                 if leave_symlink:
-                    p("symlink %s to %s" % (self.filename, new_fullpath))
-                    os.symlink(new_fullpath, self.filename)
+                    symlink_file(new_fullpath, self.filename)
 
         self.filename = new_fullpath
