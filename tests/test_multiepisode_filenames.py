@@ -13,7 +13,14 @@ def test_multiep_different_names():
     """
 
     conf = """
-    {"multiep_join_name_with": ", ",
+    {
+    "output_filename_replacements": [
+        {"is_regex": false,
+        "match": ":",
+        "replacement": " -"}
+    ],
+
+    "multiep_join_name_with": ", ",
     "batch": true,
     "multiep_format": "%(foo)s"}
     """
@@ -23,7 +30,7 @@ def test_multiep_different_names():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['Star Trek: Enterprise - [01x03-04] - Fight or Flight, Strange New World.avi']
+    expected_files = ['Star Trek - Enterprise - [01x03-04] - Fight or Flight, Strange New World.avi']
 
     verify_out_data(out_data, expected_files)
 
@@ -33,7 +40,13 @@ def test_multiep_same_names():
     """
 
     conf = """
-    {"multiep_join_name_with": ", ",
+    {
+    "output_filename_replacements": [
+        {"is_regex": false,
+        "match": ":",
+        "replacement": " -"}
+    ],
+    "multiep_join_name_with": ", ",
     "batch": true,
     "multiep_format": "%(epname)s (%(episodemin)s-%(episodemax)s)"}
     """
@@ -43,7 +56,7 @@ def test_multiep_same_names():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['Star Trek: Enterprise - [01x01-02] - Broken Bow (1-2).avi']
+    expected_files = ['Star Trek - Enterprise - [01x01-02] - Broken Bow (1-2).avi']
 
     verify_out_data(out_data, expected_files)
 
@@ -53,7 +66,14 @@ def test_multiep_same_names_without_number():
     """
 
     conf = """
-    {"multiep_join_name_with": ", ",
+    {
+    "output_filename_replacements": [
+        {"is_regex": false,
+        "match": ":",
+        "replacement": " -"}
+    ],
+
+    "multiep_join_name_with": ", ",
     "batch": true,
     "multiep_format": "%(epname)s (Parts %(episodemin)s-%(episodemax)s)"}
     """
@@ -63,6 +83,6 @@ def test_multiep_same_names_without_number():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['Star Trek: Deep Space Nine - [01x01-02] - Emissary (Parts 1-2).avi']
+    expected_files = ['Star Trek - Deep Space Nine - [01x01-02] - Emissary (Parts 1-2).avi']
 
     verify_out_data(out_data, expected_files)
