@@ -13,8 +13,7 @@ def test_temp_override():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true}
+    {"batch": true}
     """
 
     out_data = run_tvnamer(

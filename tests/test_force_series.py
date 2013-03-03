@@ -13,8 +13,7 @@ def test_series_id():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true}
+    {"batch": true}
     """
 
     out_data = run_tvnamer(

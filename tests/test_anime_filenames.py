@@ -15,8 +15,7 @@ def test_group():
         with_files = ['[Some Group] Scrubs - 01 [A1B2C3].avi'],
         with_config = """
 {
-    "always_rename": true,
-    "select_first": true,
+    "batch": true,
 
     "filename_anime_with_episode": "[%(group)s] %(seriesname)s - %(episodenumber)s - %(episodename)s [%(crc)s]%(ext)s"
 }
@@ -35,8 +34,7 @@ def test_group_no_epname():
         with_files = ['[Some Group] Somefakeseries - 01 [A1B2C3].avi'],
         with_config = """
 {
-    "always_rename": true,
-    "select_first": true,
+    "batch": true,
 
     "filename_anime_without_episode": "[%(group)s] %(seriesname)s - %(episodenumber)s [%(crc)s]%(ext)s"
 }

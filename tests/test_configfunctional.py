@@ -14,8 +14,7 @@ def test_batchconfig():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true}
+    {"batch": true}
     """
 
     out_data = run_tvnamer(
@@ -35,7 +34,7 @@ def test_skip_file_on_error():
 
     conf = """
     {"skip_file_on_error": true,
-    "always_rename": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -55,7 +54,7 @@ def test_do_not_skip_file_on_error():
 
     conf = """
     {"skip_file_on_error": false,
-    "always_rename": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -75,8 +74,7 @@ def test_lowercase_names():
 
     conf = """
     {"lowercase_filename": true,
-    "always_rename": true,
-    "select_first": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -97,8 +95,7 @@ def test_replace_with_underscore():
     conf = """
     {"custom_filename_character_blacklist": " ",
     "replace_blacklisted_characters_with": "_",
-    "always_rename": true,
-    "select_first": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -121,8 +118,7 @@ def test_abs_epnmber():
 
     conf = """
     {"filename_with_episode": "%(seriesname)s - %(absoluteepisode)s%(ext)s",
-    "always_rename": true,
-    "select_first": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -141,8 +137,7 @@ def test_resolve_absoloute_episode():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true}
+    {"batch": true}
     """
 
     out_data = run_tvnamer(
@@ -171,8 +166,7 @@ def test_valid_extension_recursive():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "valid_extensions": ["avi","mp4","m4v","wmv","mkv","mov","srt"],
     "recursive": true}
     """
@@ -194,8 +188,7 @@ def test_replace_ands():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "input_filename_replacements": [
         {"is_regex": true,
         "match": "(\\Wand\\W| & )",
@@ -221,8 +214,7 @@ def test_replace_ands_in_output_also():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "input_filename_replacements": [
         {"is_regex": true,
         "match": "(\\Wand\\W| & )",
@@ -253,8 +245,7 @@ def test_force_overwrite_enabled():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "overwrite_destination_on_rename": true
     }
     """
@@ -276,8 +267,7 @@ def test_force_overwrite_disabled():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "overwrite_destination_on_rename": false
     }
     """
@@ -299,9 +289,7 @@ def test_force_overwrite_default():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true
-    }
+    {"batch": true}
     """
 
     out_data = run_tvnamer(
@@ -321,8 +309,7 @@ def test_titlecase():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "skip_file_on_error": false,
     "titlecase_filename": true
     }

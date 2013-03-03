@@ -15,7 +15,6 @@ def test_issue_56_dated_episode():
 
     conf = """
     {"batch": true,
-    "select_first": true,
     "filename_with_episode":  "%(seriesname)s %(date)s - %(episodename)s%(ext)s"}
     """
 
@@ -38,8 +37,7 @@ def test_date_in_s01e01_out():
 
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_with_episode": "%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s"}
     """
 

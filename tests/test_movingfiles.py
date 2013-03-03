@@ -70,13 +70,13 @@ def test_move_interactive_allyes():
     conf = """
     {"move_files_enable": true,
     "move_files_destination": "test",
-    "select_first": true}
+    "batch": false}
     """
 
     out_data = run_tvnamer(
         with_files = ['scrubs.s01e01.avi', 'scrubs.s01e02.avi'],
         with_config = conf,
-        with_input = "y\ny\ny\ny\n")
+        with_input = "1\ny\n1\ny\n")
 
     expected_files = ['test/Scrubs - [01x01] - My First Day.avi',
         'test/Scrubs - [01x02] - My Mentor.avi']
@@ -92,23 +92,22 @@ def test_move_interactive_allno():
     conf = """
     {"move_files_enable": true,
     "move_files_destination": "test",
-    "select_first": true}
+    "batch": false}
     """
 
     out_data = run_tvnamer(
         with_files = ['scrubs.s01e01.avi', 'scrubs.s01e02.avi'],
         with_config = conf,
-        with_input = "y\nn\ny\nn\n")
+        with_input = "1\nn\n1\nn\n")
 
-    expected_files = ['Scrubs - [01x01] - My First Day.avi',
-        'Scrubs - [01x02] - My Mentor.avi']
+    expected_files = ['scrubs.s01e01.avi', 'scrubs.s01e02.avi']
 
     verify_out_data(out_data, expected_files)
 
 
 @attr("functional")
 def test_move_interactive_somefiles():
-    """Tests interactive UI allows not renaming some files, renaming/moving others
+    """Tests interactive UI allows not renaming some files
 
     Rename and move first file, don't rename second file (so no move), and
     rename but do not move last file (Input is: y/y, n, y/n)
@@ -117,17 +116,16 @@ def test_move_interactive_somefiles():
     conf = """
     {"move_files_enable": true,
     "move_files_destination": "test",
-    "select_first": true}
+    "batch": false}
     """
 
     out_data = run_tvnamer(
-        with_files = ['scrubs.s01e01.avi', 'scrubs.s01e02.avi', 'scrubs.s01e03.avi'],
+        with_files = ['scrubs.s01e01.avi', 'scrubs.s01e02.avi'],
         with_config = conf,
-        with_input = "y\ny\nn\ny\nn\n")
+        with_input = "1\ny\n1\nn\n")
 
     expected_files = ['test/Scrubs - [01x01] - My First Day.avi',
-        'scrubs.s01e02.avi',
-        'Scrubs - [01x03] - My Best Friend\'s Mistake.avi']
+        'scrubs.s01e02.avi']
 
     verify_out_data(out_data, expected_files)
 
@@ -369,7 +367,7 @@ def test_forcefully_moving_disabled():
         with_config = conf)
 
     expected_files = [
-        'Scrubs - [01x01] - My First Day.avi',
+        'scrubs.s01e01.avi',
         'tv/Scrubs/season 1/Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
@@ -391,7 +389,7 @@ def test_forcefully_moving_default():
         with_config = conf)
 
     expected_files = [
-        'Scrubs - [01x01] - My First Day.avi',
+        'scrubs.s01e01.avi',
         'tv/Scrubs/season 1/Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)

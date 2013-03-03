@@ -20,8 +20,7 @@ def test_simple_input_replacements():
         "match": "uuuuuu",
         "replacement": "u"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -43,8 +42,7 @@ def test_simple_output_replacements():
         "match": "u",
         "replacement": "v"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -66,8 +64,7 @@ def test_regex_input_replacements():
         "match": "[u]+",
         "replacement": "u"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -89,8 +86,7 @@ def test_regex_output_replacements():
         "match": "[ua]+",
         "replacement": "v"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -112,8 +108,7 @@ def test_replacing_spaces():
         "match": "[ ]",
         "replacement": "."}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -140,8 +135,7 @@ def test_replacing_ands():
         "match": " & ",
         "replacement": " and "}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -166,8 +160,7 @@ def test_multiple_replacements():
         "match": "v",
         "replacement": "_"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -191,8 +184,7 @@ def test_fullpath_replacements():
         "match": "Scr.*?s",
         "replacement": "A Test"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -214,8 +206,7 @@ def test_restoring_dot():
         "match": "tosh.0",
         "replacement": "tosh0"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -237,8 +228,7 @@ def test_replacement_order():
         "match": ":",
         "replacement": "-"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -260,8 +250,7 @@ def test_replacement_preserve_extension():
         "match": "avi",
         "replacement": "ohnobroken"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -284,8 +273,7 @@ def test_replacement_including_extension():
         "match": "Day.avi",
         "replacement": "Day.nl.avi"}
     ],
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 

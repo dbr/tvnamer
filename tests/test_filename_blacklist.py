@@ -13,8 +13,7 @@ def test_no_blacklist():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": []}
     """
 
@@ -35,8 +34,7 @@ def test_partial_blacklist_using_simple_match():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
         {"is_regex": false,
          "match": "s02e01"}
@@ -62,8 +60,7 @@ def test_partial_blacklist_using_regex():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
         {"is_regex": true,
          "match": ".*s02e01.*"}
@@ -89,8 +86,7 @@ def test_partial_blacklist_using_mix():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
         {"is_regex": true,
          "match": ".*s02e01.*"},
@@ -118,8 +114,7 @@ def test_full_blacklist():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
         {"is_regex": true,
          "match": ".*"}
@@ -142,8 +137,7 @@ def test_dotfiles():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
         {"is_regex": true,
          "match": "^\\\\..*"}
@@ -166,8 +160,7 @@ def test_blacklist_fullpath():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
         {"is_regex": true,
          "full_path": true,
@@ -191,8 +184,7 @@ def test_blacklist_exclude_extension():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
         {"is_regex": true,
          "full_path": true,
@@ -217,8 +209,7 @@ def test_simple_blacklist():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
             "scrubs.s02e01.avi"
         ]
@@ -244,8 +235,7 @@ def test_simple_blacklist_mixed():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "filename_blacklist": [
             "scrubs.s02e01.avi",
             {"is_regex": true,

@@ -94,8 +94,7 @@ def test_interactive_always_option():
 
     out_data = run_tvnamer(
         with_files = input_files,
-        with_flags = ["--selectfirst"],
-        with_input = "a\n")
+        with_input = "1\na\n1\n1\n1\n")
 
     verify_out_data(out_data, expected_files)
 
@@ -242,7 +241,7 @@ def test_skipping_after_replacements():
     """
 
     conf = """
-    {"select_first": true,
+    {"batch": true,
     "input_filename_replacements": [
         {"is_regex": false,
         "match": "v",
