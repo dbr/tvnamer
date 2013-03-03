@@ -24,13 +24,15 @@ import cliarg_parser
 from config_defaults import defaults
 
 from unicode_helper import p
-from utils import (Config, FileFinder, FileParser, Renamer, warn,
+from utils import (Config, FileFinder, FileParser, warn,
 applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename,
-DatedEpisodeInfo, NoSeasonEpisodeInfo)
+DatedEpisodeInfo, NoSeasonEpisodeInfo, applyCustomFullpathReplacements)
 
-from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
+from tvnamer_exceptions import (ConfigValueError, ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
 InvalidFilename, DataRetrievalError)
+
+from renamer import Renamer
 
 
 def log():
@@ -57,11 +59,10 @@ def getMoveDestination(episode):
             custom_blacklist = Config['custom_filename_character_blacklist'],
             replace_with = Config['replace_invalid_characters_with'])
 
-
     # Calls makeValidFilename on series name, as it must valid for a filename
     if isinstance(episode, DatedEpisodeInfo):
         print Config['move_files_destination_date']
-        destdir = Config['move_files_destination_date'] % {
+        path = Config['move_files_destination_date'] % {
             'seriesname': makeValidFilename(episode.seriesname),
             'year': episode.episodenumbers[0].year,
             'month': episode.episodenumbers[0].month,
@@ -69,55 +70,19 @@ def getMoveDestination(episode):
             'originalfilename': episode.originalfilename,
             }
     elif isinstance(episode, NoSeasonEpisodeInfo):
-        destdir = Config['move_files_destination'] % {
+        path = Config['move_files_destination'] % {
             'seriesname': wrap_validfname(episode.seriesname),
             'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
             'originalfilename': episode.originalfilename,
             }
     else:
-        destdir = Config['move_files_destination'] % {
+        path = Config['move_files_destination'] % {
             'seriesname': wrap_validfname(episode.seriesname),
             'seasonnumber': episode.seasonnumber,
             'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
             'originalfilename': episode.originalfilename,
             }
-    return destdir
-
-
-def doRenameFile(cnamer, newName):
-    """Renames the file. cnamer should be Renamer instance,
-    newName should be string containing new filename.
-    """
-    try:
-        cnamer.newPath(new_fullpath = newName, force = Config['overwrite_destination_on_rename'], leave_symlink = Config['leave_symlink'])
-    except OSError, e:
-        warn(e)
-
-
-def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = False):
-    """Moves file to destDir, or to destFilepath
-    """
-
-    if (destDir is None and destFilepath is None) or (destDir is not None and destFilepath is not None):
-        raise ValueError("Specify only destDir or destFilepath")
-
-    if not Config['move_files_enable']:
-        raise ValueError("move_files feature is disabled but doMoveFile was called")
-
-    if Config['move_files_destination'] is None:
-        raise ValueError("Config value for move_files_destination cannot be None if move_files_enabled is True")
-
-    try:
-        return cnamer.newPath(
-            new_path = destDir,
-            new_fullpath = destFilepath,
-            always_move = Config['always_move'],
-            leave_symlink = Config['leave_symlink'],
-            getPathPreview = getPathPreview,
-            force = Config['overwrite_destination_on_move'])
-
-    except OSError, e:
-        warn(e)
+    return path 
 
 
 def confirm(question, options, default = "y"):
@@ -152,6 +117,7 @@ def confirm(question, options, default = "y"):
 def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
+
     p("#" * 20)
     p("# Processing file: %s" % episode.fullfilename)
 
@@ -168,96 +134,84 @@ def processFile(tvdb_instance, episode):
 
     try:
         episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
-    except (DataRetrievalError, ShowNotFound), errormsg:
-        if Config['always_rename'] and Config['skip_file_on_error'] is True:
-            warn("Skipping file due to error: %s" % errormsg)
-            return
-        else:
-            warn(errormsg)
-    except (SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound), errormsg:
+    except (DataRetrievalError, ShowNotFound, SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound), errormsg:
         # Show was found, so use corrected series name
-        if Config['always_rename'] and Config['skip_file_on_error']:
+        if Config['batch'] and Config['skip_file_on_error']:
             warn("Skipping file due to error: %s" % errormsg)
             return
-
         warn(errormsg)
 
     cnamer = Renamer(episode.fullpath)
 
+    # set defaults
+    newPath, newName = os.path.split(episode.fullpath)
+    overwrite = Config['overwrite_destination_on_rename']
 
-    shouldRename = False
-
-    if Config["move_files_only"]:
-
-        newName = episode.fullfilename
-        shouldRename = True
-
-    else:
+    if not Config["move_files_only"]:
+        p("#" * 20)
+        p("Original filename: %s" % newName)
         newName = episode.generateFilename()
-        if newName == episode.fullfilename:
-            p("#" * 20)
-            p("Existing filename is correct: %s" % episode.fullfilename)
-            p("#" * 20)
 
-            shouldRename = True
+        if len(Config['output_filename_replacements']) > 0:
+            p("Before custom output replacements: %s" % (episode.generateFilename(preview_orig_filename=True)))
+            p("After custom output replacements: %s" % newName)
 
-        else:
-            p("#" * 20)
-            p("Old filename: %s" % episode.fullfilename)
-
-            if len(Config['output_filename_replacements']) > 0:
-                # Show filename without replacements
-                p("Before custom output replacements: %s" % (episode.generateFilename(preview_orig_filename = False)))
-
-            p("New filename: %s" % newName)
-
-            if Config['always_rename']:
-                doRenameFile(cnamer, newName)
-                if Config['move_files_enable']:
-                    if Config['move_files_destination_is_filepath']:
-                        doMoveFile(cnamer = cnamer, destFilepath = getMoveDestination(episode))
-                    else:
-                        doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
-                return
-
-            ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
-
-            if ans == "a":
-                p("Always renaming")
-                Config['always_rename'] = True
-                shouldRename = True
-            elif ans == "q":
-                p("Quitting")
-                raise UserAbort("User exited with q")
-            elif ans == "y":
-                p("Renaming")
-                shouldRename = True
-            elif ans == "n":
-                p("Skipping")
-            else:
-                p("Invalid input, skipping")
-
-            if shouldRename:
-                doRenameFile(cnamer, newName)
-
-    if shouldRename and Config['move_files_enable']:
+    if Config['move_files_enable']:
+        p("Old path: %s" % newPath)
+        overwrite = Config['overwrite_destination_on_move']
         newPath = getMoveDestination(episode)
         if Config['move_files_destination_is_filepath']:
-            doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
-        else:
-            doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+            newPath, newName = os.path.split(newPath)
+        p("New path: %s" % newPath)
 
-        if not Config['batch'] and Config['move_files_confirmation']:
-            ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
-        else:
-            ans = 'y'
+    # join final filename
+    newFullPath = os.path.join(newPath, newName)
 
-        if ans == 'y':
-            p("Moving file")
-            doMoveFile(cnamer, newPath)
-        elif ans == 'q':
+    # Join new filepath to old one (to handle realtive dirs)
+    old_dir = os.path.dirname(episode.fullpath)
+    newFullPath = os.path.abspath(os.path.join(old_dir, newFullPath))
+
+    # apply full-path replacements
+    if len(Config['move_files_fullpath_replacements']) > 0:
+        p("Before custom full path replacements: %s" % (newFullPath))
+        newFullPath = applyCustomFullpathReplacements(newFullPath)
+
+    # don't do anything if filename was not changed
+    if newFullPath == episode.fullpath:
+        p("#" * 20)
+        p("Existing filename is correct: %s" % episode.fullfilename)
+        p("#" * 20)
+        return
+
+    p("Final filename: %s" % newFullPath)
+
+    if not Config['batch'] and Config['move_files_confirmation']:
+        ans = confirm("Move file?", options = ['y', 'n', 'a', 'q'], default = 'y')
+        if ans == "a":
+            p("Always moving files")
+            Config['move_files_confirmation'] = False
+        elif ans == "q":
             p("Quitting")
-            raise UserAbort("user exited with q")
+            raise UserAbort("User exited with q")
+        elif ans == "y":
+            p("Renaming")
+        elif ans == "n":
+            p("Skipping")
+            return
+        else:
+            p("Invalid input, skipping")
+            return
+
+    # finally move file
+    try:
+        cnamer.rename(
+            new_fullpath = newFullPath,
+            always_move = Config['always_move'],
+            always_copy = Config['always_copy'],
+            leave_symlink = Config['leave_symlink'],
+            force = overwrite)
+    except OSError as e:
+        warn(e)
 
 
 def findFiles(paths):
@@ -317,7 +271,7 @@ def tvnamer(paths):
     episodes_found.sort(key = lambda x: x.sortable_info())
 
     tvdb_instance = Tvdb(
-        interactive = not Config['select_first'],
+        interactive = not Config['batch'],
         search_all_languages = Config['search_all_languages'],
         language = Config['language'])
 
@@ -394,22 +348,27 @@ def main():
         print json.dumps(opts.__dict__, sort_keys=True, indent=2)
         return
 
-    # Process values
-    if opts.batch:
-        opts.select_first = True
-        opts.always_rename = True
-
     # Update global config object
     Config.update(opts.__dict__)
 
-    if Config["move_files_only"] and not Config["move_files_enable"]:
+    # TODO: write function to check all exclusive options
+    try:
+        if Config["move_files_only"] and not Config["move_files_enable"]:
+            raise ConfigValueError("Parameter move_files_enable cannot be set to false while parameter move_only is set to true.")
+
+        if Config['always_copy'] and Config['always_move']:
+            raise ConfigValueError("Both always_copy and always_move cannot be specified.")
+    except ConfigValueError as e:
         p("#" * 20)
-        p("Parameter move_files_enable cannot be set to false while parameter move_only is set to true.")
+        p("Error in config:")
+        p(e.message)
         p("#" * 20)
         opter.exit(0)
 
     if Config['titlecase_filename'] and Config['lowercase_filename']:
         warnings.warn("Setting 'lowercase_filename' clobbers 'titlecase_filename' option")
+
+
 
     if len(args) == 0:
         opter.error("No filenames or directories supplied")

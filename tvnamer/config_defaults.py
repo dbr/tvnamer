@@ -4,17 +4,15 @@
 """
 
 defaults = {
-    # Select first series search result
-    'select_first': False,
+    # Do not perform any file operations, only preview changes
+    'dry_run': True,
 
-    # Always rename files
-    'always_rename': False,
-
-    # Batch (same as select_first and always_rename)
+    # Operation mode - True for batchi mode, False for interactive mode
+    # In batch mode first search result is selected, in interactive mode user is asked to select
     'batch': False,
 
-    # Fail if error finding show data (thetvdb.com is down etc)
-    # Only functions when always_rename is True
+    # Skip files if finding show data failed (thetvdb.com is down etc)
+    # Applied only in batch mode
     'skip_file_on_error': True,
 
     # Forcefully overwrite existing files when renaming or
@@ -131,6 +129,13 @@ defaults = {
     # copied).  If True, this will delete the file from the original
     # volume, after the copy has complete.
     'always_move': False,
+
+    # Force the copy-files feature to always copy the file.
+    #
+    # If True, original file is left behind, even if destination is
+    # on the same partition. If False and destination is on the same partition
+    # as source file, file is moved.
+    'always_copy': False,
 
     # Whenever a file is moved leave a symlink to the new file behind, named
     # after the original file.
