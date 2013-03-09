@@ -34,6 +34,16 @@ def warn(text):
 
 
 def split_extension(filename):
+    """ Splits the extension from the filename. Uses regular expression
+    specified in config under 'extension_pattern' key.
+
+    By default the dot is included in the extension, so other functions
+    should use something like '
+        full = basename + extension
+    or
+        full = u"%s%s" % (basename, extension)
+    to get full filename again.
+    """
     base = re.sub(Config["extension_pattern"], "", filename)
     ext = filename.replace(base, "")
     return base, ext
@@ -285,9 +295,6 @@ class FileFinder(object):
             else:
                 if self.recursive:
                     allfiles.extend(self._findFilesInPath(newpath))
-                #end if recursive
-            #end if isfile
-        #end for sf
         return allfiles
 
 

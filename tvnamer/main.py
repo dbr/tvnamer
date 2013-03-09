@@ -61,7 +61,6 @@ def getMoveDestination(episode):
 
     # Calls makeValidFilename on series name, as it must valid for a filename
     if isinstance(episode, DatedEpisodeInfo):
-        print Config['move_files_destination_date']
         path = Config['move_files_destination_date'] % {
             'seriesname': makeValidFilename(episode.seriesname),
             'year': episode.episodenumbers[0].year,
@@ -82,7 +81,7 @@ def getMoveDestination(episode):
             'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
             'originalfilename': episode.originalfilename,
             }
-    return path 
+    return path
 
 
 def confirm(question, options, default = "y"):
@@ -90,6 +89,7 @@ def confirm(question, options, default = "y"):
     when user simply hits enter).
     Asks until valid option is entered.
     """
+
     # Highlight default option with [ ]
     options_str = []
     for x in options:
@@ -217,6 +217,7 @@ def processFile(tvdb_instance, episode):
 def findFiles(paths):
     """Takes an array of paths, returns all files found
     """
+
     valid_files = []
 
     for cfile in paths:
@@ -286,6 +287,7 @@ def tvnamer(paths):
 def main():
     """Parses command line arguments, displays errors from tvnamer in terminal
     """
+
     opter = cliarg_parser.getCommandlineParser(defaults)
 
     opts, args = opter.parse_args()
@@ -328,24 +330,26 @@ def main():
     # as the args are reparsed when the config is loaded)
     args = [x.decode(sys.getfilesystemencoding()) for x in args]
 
-    # Save config argument
-    if opts.saveconfig is not None:
-        p("Saving config: %s" % (opts.saveconfig))
+    # dump config into file or stdout
+    if opts.saveconfig or opts.showconfig:
         configToSave = dict(opts.__dict__)
         del configToSave['saveconfig']
         del configToSave['loadconfig']
         del configToSave['showconfig']
-        json.dump(
-            configToSave,
-            open(os.path.expanduser(opts.saveconfig), "w+"),
-            sort_keys=True,
-            indent=4)
 
-        opter.exit(0)
+        # Save config argument
+        if opts.saveconfig:
+            p("Saving config: %s" % (opts.saveconfig))
+            json.dump(
+                configToSave,
+                open(os.path.expanduser(opts.saveconfig), "w+"),
+                sort_keys=True,
+                indent=4)
 
-    # Show config argument
-    if opts.showconfig:
-        print json.dumps(opts.__dict__, sort_keys=True, indent=2)
+        # Show config argument
+        elif opts.showconfig:
+            print json.dumps(opts.__dict__, sort_keys=True, indent=2)
+
         return
 
     # Update global config object

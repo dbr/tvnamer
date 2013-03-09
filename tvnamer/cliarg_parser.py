@@ -72,7 +72,6 @@ def getCommandlineParser(defaults):
 
         g.add_option("-h", "--help", action = "help", help = "show this help message and exit")
 
-
     return parser
 
 
