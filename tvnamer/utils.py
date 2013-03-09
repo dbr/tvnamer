@@ -750,7 +750,7 @@ class EpisodeInfo(object):
 
         return epdata
 
-    def generateFilename(self, lowercase = False, preview_orig_filename = False):
+    def generateFilename(self):
         epdata = self.getepdata()
 
         # Add in extra dict keys, without clobbering existing values in epdata
@@ -772,22 +772,7 @@ class EpisodeInfo(object):
             from _titlecase import titlecase
             fname = titlecase(fname)
 
-        if lowercase or Config['lowercase_filename']:
-            fname = fname.lower()
-
-        if preview_orig_filename:
-            # Return filename without custom replacements or filesystem-validness
-            return fname
-
-        if len(Config['output_filename_replacements']) > 0:
-            fname = applyCustomOutputReplacements(fname)
-
-        return makeValidFilename(
-            fname,
-            normalize_unicode = Config['normalize_unicode_filenames'],
-            windows_safe = Config['windows_safe_filenames'],
-            custom_blacklist = Config['custom_filename_character_blacklist'],
-            replace_with = Config['replace_invalid_characters_with'])
+        return fname
 
     def __repr__(self):
         return u"<%s: %r>" % (
@@ -926,7 +911,7 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
     CFG_KEY_WITH_EP_NO_CRC = "filename_anime_with_episode_without_crc"
     CFG_KEY_WITHOUT_EP_NO_CRC = "filename_anime_without_episode_without_crc"
 
-    def generateFilename(self, lowercase = False, preview_orig_filename = False):
+    def generateFilename(self):
         epdata = self.getepdata()
 
         # Add in extra dict keys, without clobbering existing values in epdata
@@ -957,21 +942,5 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
 
         fname = Config[cfgkey] % epdata
 
-
-        if lowercase or Config['lowercase_filename']:
-            fname = fname.lower()
-
-        if preview_orig_filename:
-            # Return filename without custom replacements or filesystem-validness
-            return fname
-
-        if len(Config['output_filename_replacements']) > 0:
-            fname = applyCustomOutputReplacements(fname)
-
-        return makeValidFilename(
-            fname,
-            normalize_unicode = Config['normalize_unicode_filenames'],
-            windows_safe = Config['windows_safe_filenames'],
-            custom_blacklist = Config['custom_filename_character_blacklist'],
-            replace_with = Config['replace_invalid_characters_with'])
+        return fname
 

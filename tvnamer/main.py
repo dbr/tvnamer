@@ -25,8 +25,8 @@ from config_defaults import defaults
 
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser, warn,
-applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename,
-DatedEpisodeInfo, NoSeasonEpisodeInfo, applyCustomFullpathReplacements)
+applyCustomInputReplacements, applyCustomOutputReplacements, applyCustomFullpathReplacements,
+formatEpisodeNumbers, makeValidFilename, DatedEpisodeInfo, NoSeasonEpisodeInfo)
 
 from tvnamer_exceptions import (ConfigValueError, ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
@@ -45,24 +45,9 @@ def getMoveDestination(episode):
     """Constructs the location to move/copy the file
     """
 
-    #TODO: Write functional test to ensure this valid'ifying works
-    def wrap_validfname(fname):
-        """Wrap the makeValidFilename function as it's called twice
-        and this is slightly long..
-        """
-        if Config['move_files_lowercase_destination']:
-            fname = fname.lower()
-        return makeValidFilename(
-            fname,
-            normalize_unicode = Config['normalize_unicode_filenames'],
-            windows_safe = Config['windows_safe_filenames'],
-            custom_blacklist = Config['custom_filename_character_blacklist'],
-            replace_with = Config['replace_invalid_characters_with'])
-
-    # Calls makeValidFilename on series name, as it must valid for a filename
     if isinstance(episode, DatedEpisodeInfo):
         path = Config['move_files_destination_date'] % {
-            'seriesname': makeValidFilename(episode.seriesname),
+            'seriesname': episode.seriesname,
             'year': episode.episodenumbers[0].year,
             'month': episode.episodenumbers[0].month,
             'day': episode.episodenumbers[0].day,
@@ -70,15 +55,15 @@ def getMoveDestination(episode):
             }
     elif isinstance(episode, NoSeasonEpisodeInfo):
         path = Config['move_files_destination'] % {
-            'seriesname': wrap_validfname(episode.seriesname),
-            'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
+            'seriesname': episode.seriesname,
+            'episodenumbers': formatEpisodeNumbers(episode.episodenumbers),
             'originalfilename': episode.originalfilename,
             }
     else:
         path = Config['move_files_destination'] % {
-            'seriesname': wrap_validfname(episode.seriesname),
+            'seriesname': episode.seriesname,
             'seasonnumber': episode.seasonnumber,
-            'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
+            'episodenumbers': formatEpisodeNumbers(episode.episodenumbers),
             'originalfilename': episode.originalfilename,
             }
     return path
@@ -114,6 +99,8 @@ def confirm(question, options, default = "y"):
             return default
 
 
+# TODO: function is too long, split interaction with user from filename generation and renaming
+# TODO: p() function is really horrible, write simple logger with log levels
 def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
@@ -153,7 +140,8 @@ def processFile(tvdb_instance, episode):
         newName = episode.generateFilename()
 
         if len(Config['output_filename_replacements']) > 0:
-            p("Before custom output replacements: %s" % (episode.generateFilename(preview_orig_filename=True)))
+            p("Before custom output replacements: %s" % newName)
+            newName = applyCustomOutputReplacements(newName)
             p("After custom output replacements: %s" % newName)
 
     if Config['move_files_enable']:
@@ -163,6 +151,23 @@ def processFile(tvdb_instance, episode):
         if Config['move_files_destination_is_filepath']:
             newPath, newName = os.path.split(newPath)
         p("New path: %s" % newPath)
+
+    # make newName and newPath lowercase if specified in config
+    if Config['lowercase_filename']:
+        newName = newName.lower()
+    if Config['move_files_lowercase_destination']:
+        newName = newName.lower()   # move_files_destination can be filename, so this is _really_ necessary
+        newPath = newPath.lower()
+
+# TODO: run makeValidFilename also on newPath, but make _absolutely_ sure it doesn't conflict with
+#       existing paths and paths specified in move_files_destination
+    # make sure the filename is valid
+    newName = makeValidFilename(
+        newName,
+        normalize_unicode = Config['normalize_unicode_filenames'],
+        windows_safe = Config['windows_safe_filenames'],
+        custom_blacklist = Config['custom_filename_character_blacklist'],
+        replace_with = Config['replace_invalid_characters_with'])
 
     # join final filename
     newFullPath = os.path.join(newPath, newName)
