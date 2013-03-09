@@ -380,18 +380,18 @@ def test_forcefully_moving_disabled():
 
     conf = """
     {"move_files_enable": true,
-    "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
+    "move_files_destination": ".",
     "batch": true,
     "overwrite_destination_on_move": false}
     """
 
     out_data = run_tvnamer(
-        with_files = ['scrubs.s01e01.avi', 'scrubs - [01x01].avi'],
+        with_files = ['scrubs.s01e01.avi', 'Scrubs - [01x01] - My First Day.avi'],
         with_config = conf)
 
     expected_files = [
         'scrubs.s01e01.avi',
-        'tv/Scrubs/season 1/Scrubs - [01x01] - My First Day.avi']
+        'Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
 
@@ -403,16 +403,16 @@ def test_forcefully_moving_default():
 
     conf = """
     {"move_files_enable": true,
-    "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
+    "move_files_destination": ".",
     "batch": true}
     """
 
     out_data = run_tvnamer(
-        with_files = ['scrubs.s01e01.avi', 'scrubs - [01x01].avi'],
+        with_files = ['scrubs.s01e01.avi', 'Scrubs - [01x01] - My First Day.avi'],
         with_config = conf)
 
     expected_files = [
         'scrubs.s01e01.avi',
-        'tv/Scrubs/season 1/Scrubs - [01x01] - My First Day.avi']
+        'Scrubs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)

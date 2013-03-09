@@ -1,31 +1,12 @@
 #!/usr/bin/env python
 
+# TODO: move these tests somewhere else, delete this file
+
 """Functional tests for tvnamer tests
 """
 
 from functional_runner import run_tvnamer, verify_out_data
 from nose.plugins.attrib import attr
-from helpers import expected_failure_travisci
-
-
-
-@attr("functional")
-def test_renaming_always_doesnt_overwrite():
-    """If trying to rename a file that exists, should not create new file
-    """
-    input_files = [
-        'Scrubs.s01e01.avi',
-        'Scrubs - [01x01] - My First Day.avi']
-
-    expected_files = [
-        'Scrubs.s01e01.avi',
-        'Scrubs - [01x01] - My First Day.avi']
-
-    out_data = run_tvnamer(
-        with_files = input_files,
-        with_flags = ['--batch'])
-
-    verify_out_data(out_data, expected_files)
 
 
 @attr("functional")
