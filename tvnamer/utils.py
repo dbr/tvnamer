@@ -462,7 +462,7 @@ def formatEpisodeName(names, join_with, multiep_format):
     return multiep_format % {'epname': found_name, 'episodemin': min(numbers), 'episodemax': max(numbers)}
 
 
-def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None, replace_with = "_"):
+def _makeValidFilename(value, normalize_unicode=False, windows_safe=False, custom_blacklist=None, replace_with="_"):
     """
     Takes a string and makes it into a valid filename.
 
@@ -557,6 +557,17 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
             value = value[:new_length]
 
     return value + extension
+
+
+def makeValidFilename(fname):
+    """ Wraps the _makeValidFilename() function, loads arguments from config.
+    """
+    return _makeValidFilename(
+        fname,
+        normalize_unicode = Config['normalize_unicode_filenames'],
+        windows_safe = Config['windows_safe_filenames'],
+        custom_blacklist = Config['custom_filename_character_blacklist'],
+        replace_with = Config['replace_invalid_characters_with'])
 
 
 def formatEpisodeNumbers(episodenumbers):
@@ -795,12 +806,6 @@ class DatedEpisodeInfo(EpisodeInfo):
         self.episodenumbers = episodenumbers
         self.episodename = episodename
         self.fullpath = filename
-
-        if filename is not None:
-            # Remains untouched, for use when renaming file
-            self.originalfilename = os.path.basename(filename)
-        else:
-            self.originalfilename = None
 
         if filename is not None:
             # Remains untouched, for use when renaming file

@@ -47,7 +47,7 @@ def getMoveDestination(episode):
 
     if isinstance(episode, DatedEpisodeInfo):
         path = Config['move_files_destination_date'] % {
-            'seriesname': episode.seriesname,
+            'seriesname': makeValidFilename(episode.seriesname),
             'year': episode.episodenumbers[0].year,
             'month': episode.episodenumbers[0].month,
             'day': episode.episodenumbers[0].day,
@@ -55,13 +55,13 @@ def getMoveDestination(episode):
             }
     elif isinstance(episode, NoSeasonEpisodeInfo):
         path = Config['move_files_destination'] % {
-            'seriesname': episode.seriesname,
+            'seriesname': makeValidFilename(episode.seriesname),
             'episodenumbers': formatEpisodeNumbers(episode.episodenumbers),
             'originalfilename': episode.originalfilename,
             }
     else:
         path = Config['move_files_destination'] % {
-            'seriesname': episode.seriesname,
+            'seriesname': makeValidFilename(episode.seriesname),
             'seasonnumber': episode.seasonnumber,
             'episodenumbers': formatEpisodeNumbers(episode.episodenumbers),
             'originalfilename': episode.originalfilename,
@@ -162,12 +162,7 @@ def processFile(tvdb_instance, episode):
 # TODO: run makeValidFilename also on newPath, but make _absolutely_ sure it doesn't conflict with
 #       existing paths and paths specified in move_files_destination
     # make sure the filename is valid
-    newName = makeValidFilename(
-        newName,
-        normalize_unicode = Config['normalize_unicode_filenames'],
-        windows_safe = Config['windows_safe_filenames'],
-        custom_blacklist = Config['custom_filename_character_blacklist'],
-        replace_with = Config['replace_invalid_characters_with'])
+    newName = makeValidFilename(newName)
 
     # join final filename
     newFullPath = os.path.join(newPath, newName)
@@ -215,7 +210,7 @@ def processFile(tvdb_instance, episode):
             always_copy = Config['always_copy'],
             leave_symlink = Config['leave_symlink'],
             force = overwrite)
-    except OSError as e:
+    except OSError, e:
         warn(e)
 
 
@@ -367,7 +362,7 @@ def main():
 
         if Config['always_copy'] and Config['always_move']:
             raise ConfigValueError("Both always_copy and always_move cannot be specified.")
-    except ConfigValueError as e:
+    except ConfigValueError, e:
         p("#" * 20)
         p("Error in config:")
         p(e.message)

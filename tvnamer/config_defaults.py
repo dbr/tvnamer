@@ -91,6 +91,7 @@ defaults = {
     # prompt.
     'move_files_confirmation': True,
 
+# TODO: I changed the behavior of this, rename feature to prevent confusion
     # If true, convert the variable/dynamic parts of the destination
     # to lower case. Does not affect the static parts; for example,
     # if move_files_destination is set to
