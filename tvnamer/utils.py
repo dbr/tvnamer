@@ -428,9 +428,10 @@ class FileParser(object):
             raise InvalidFilename(emsg)
 
 
-def formatEpisodeName(names, join_with, multiep_format):
+def formatEpisodeNames(names):
     """
     Takes a list of episode names, formats them into a string.
+    If argument is not a list, it is returned as is.
 
     If two names are supplied, such as "Pilot (1)" and "Pilot (2)", the
     returned string will be "Pilot (1-2)". Note that the first number
@@ -440,8 +441,14 @@ def formatEpisodeName(names, join_with, multiep_format):
     If two different episode names are found, such as "The first", and
     "Something else" it will return "The first, Something else"
     """
+
+    if not isinstance(names, list):
+        return names
     if len(names) == 1:
         return names[0]
+
+    join_with = Config['multiep_join_name_with']
+    multiep_format = Config['multiep_format']
 
     found_name = ""
     numbers = []
@@ -460,6 +467,18 @@ def formatEpisodeName(names, join_with, multiep_format):
         numbers.append(int(epno))
 
     return multiep_format % {'epname': found_name, 'episodemin': min(numbers), 'episodemax': max(numbers)}
+
+
+def formatEpisodeNumbers(episodenumbers):
+    """Format episode number(s) into string, using configured values
+    """
+    if len(episodenumbers) == 1:
+        epno = Config['episode_single'] % episodenumbers[0]
+    else:
+        epno = Config['episode_separator'].join(
+            Config['episode_single'] % x for x in episodenumbers)
+
+    return epno
 
 
 def _makeValidFilename(value, normalize_unicode=False, windows_safe=False, custom_blacklist=None, replace_with="_"):
@@ -568,18 +587,6 @@ def makeValidFilename(fname):
         windows_safe = Config['windows_safe_filenames'],
         custom_blacklist = Config['custom_filename_character_blacklist'],
         replace_with = Config['replace_invalid_characters_with'])
-
-
-def formatEpisodeNumbers(episodenumbers):
-    """Format episode number(s) into string, using configured values
-    """
-    if len(episodenumbers) == 1:
-        epno = Config['episode_single'] % episodenumbers[0]
-    else:
-        epno = Config['episode_separator'].join(
-            Config['episode_single'] % x for x in episodenumbers)
-
-    return epno
 
 
 class EpisodeInfo(object):
@@ -742,9 +749,6 @@ class EpisodeInfo(object):
         episode_single # formatting for a single episode number
         episode_separator # used to join multiple episode numbers
         """
-        # Format episode number into string, or a list
-        epno = formatEpisodeNumbers(self.episodenumbers)
-
         # Data made available to config'd output file format
         if self.extension is None:
             prep_extension = ''
@@ -755,8 +759,8 @@ class EpisodeInfo(object):
             'seriesname': self.seriesname,
             'seasonno': self.seasonnumber, # TODO: deprecated attribute, make this warn somehow
             'seasonnumber': self.seasonnumber,
-            'episode': epno,
-            'episodename': self.episodename,
+            'episode': formatEpisodeNumbers(self.episodenumbers),
+            'episodename': formatEpisodeNames(self.episodename),
             'ext': prep_extension}
 
         return epdata
@@ -772,16 +776,8 @@ class EpisodeInfo(object):
         if self.episodename is None:
             fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
         else:
-            if isinstance(self.episodename, list):
-                epdata['episodename'] = formatEpisodeName(
-                    self.episodename,
-                    join_with = Config['multiep_join_name_with'],
-                    multiep_format = Config['multiep_format'])
+            epdata['episodename'] = formatEpisodeNames(self.episodename)
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
-
-        if Config['titlecase_filename']:
-            from _titlecase import titlecase
-            fname = titlecase(fname)
 
         return fname
 
@@ -829,15 +825,8 @@ class DatedEpisodeInfo(EpisodeInfo):
             ", ".join([str(x) for x in self.episodenumbers]))
 
     def getepdata(self):
-        # Format episode number into string, or a list
+        # format self.episodenumbers, it contains datetime.date
         dates = str(self.episodenumbers[0])
-        if isinstance(self.episodename, list):
-            prep_episodename = formatEpisodeName(
-                self.episodename,
-                join_with = Config['multiep_join_name_with'],
-                multiep_format = Config['multiep_format'])
-        else:
-            prep_episodename = self.episodename
 
         # Data made available to config'd output file format
         if self.extension is None:
@@ -848,7 +837,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         epdata = {
             'seriesname': self.seriesname,
             'episode': dates,
-            'episodename': prep_episodename,
+            'episodename': formatEpisodeNames(self.episodename),
             'ext': prep_extension}
 
         return epdata
@@ -892,8 +881,6 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
             ", ".join([str(x) for x in self.episodenumbers]))
 
     def getepdata(self):
-        epno = formatEpisodeNumbers(self.episodenumbers)
-
         # Data made available to config'd output file format
         if self.extension is None:
             prep_extension = ''
@@ -902,7 +889,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
 
         epdata = {
             'seriesname': self.seriesname,
-            'episode': epno,
+            'episode': formatEpisodeNumbers(self.episodenumbers),
             'episodename': self.episodename,
             'ext': prep_extension}
 
@@ -938,12 +925,7 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
             else:
                 cfgkey = self.CFG_KEY_WITH_EP
 
-        if self.episodename is not None:
-            if isinstance(self.episodename, list):
-                epdata['episodename'] = formatEpisodeName(
-                    self.episodename,
-                    join_with = Config['multiep_join_name_with'],
-                    multiep_format = Config['multiep_format'])
+        epdata['episodename'] = formatEpisodeNames(self.episodename)
 
         fname = Config[cfgkey] % epdata
 

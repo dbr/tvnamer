@@ -152,6 +152,10 @@ def processFile(tvdb_instance, episode):
             newPath, newName = os.path.split(newPath)
         p("New path: %s" % newPath)
 
+    # make filename Title Case if specified in config
+    if Config['titlecase_filename']:
+        from _titlecase import titlecase
+        newName = titlecase(newName)
     # make newName and newPath lowercase if specified in config
     if Config['lowercase_filename']:
         newName = newName.lower()
@@ -159,8 +163,6 @@ def processFile(tvdb_instance, episode):
         newName = newName.lower()   # move_files_destination can be filename, so this is _really_ necessary
         newPath = newPath.lower()
 
-# TODO: run makeValidFilename also on newPath, but make _absolutely_ sure it doesn't conflict with
-#       existing paths and paths specified in move_files_destination
     # make sure the filename is valid
     newName = makeValidFilename(newName)
 
