@@ -33,6 +33,14 @@ def warn(text):
     p(text, file = sys.stderr)
 
 
+def xstr(s):
+    """Wrapper for str(), returns empty string if argument is None
+    """
+    if s is None:
+        return ''
+    return str(s)
+
+
 def split_extension(filename):
     """ Splits the extension from the filename. Uses regular expression
     specified in config under 'extension_pattern' key.
@@ -473,7 +481,12 @@ def formatEpisodeNumbers(episodenumbers):
     """Format episode number(s) into string, using configured values
     """
     if len(episodenumbers) == 1:
-        epno = Config['episode_single'] % episodenumbers[0]
+        if isinstance(episodenumbers[0], datetime.date):
+            # format dated episode
+            epno = str(episodenumbers[0])
+        else:
+            # format normal episode
+            epno = Config['episode_single'] % episodenumbers[0]
     else:
         epno = Config['episode_separator'].join(
             Config['episode_single'] % x for x in episodenumbers)
@@ -597,27 +610,21 @@ class EpisodeInfo(object):
     CFG_KEY_WITH_EP = "filename_with_episode"
     CFG_KEY_WITHOUT_EP = "filename_without_episode"
 
+    originalfilename = None
+
     def __init__(self,
         seriesname,
-        seasonnumber,
         episodenumbers,
+        seasonnumber = None,
         episodename = None,
         filename = None,
-        extra = None):
+        extra = {}):
 
         self.seriesname = seriesname
-        self.seasonnumber = seasonnumber
         self.episodenumbers = episodenumbers
+        self.seasonnumber = seasonnumber
         self.episodename = episodename
         self.fullpath = filename
-        if filename is not None:
-            # Remains untouched, for use when renaming file
-            self.originalfilename = os.path.basename(filename)
-        else:
-            self.originalfilename = None
-
-        if extra is None:
-            extra = {}
         self.extra = extra
 
     def fullpath_get(self):
@@ -629,6 +636,9 @@ class EpisodeInfo(object):
             self.filename, self.extension = None, None
         else:
             self.filepath, self.filename = os.path.split(value)
+            if self.originalfilename is None:
+                # Remains untouched, for use when renaming file
+                self.originalfilename = self.filename
             self.filename, self.extension = split_extension(self.filename)
 
     fullpath = property(fullpath_get, fullpath_set)
@@ -640,14 +650,23 @@ class EpisodeInfo(object):
     def sortable_info(self):
         """Returns a tuple of sortable information
         """
-        return (self.seriesname, self.seasonnumber, self.episodenumbers)
+        info = []
+        if self.seriesname is not None:
+            info.append(self.seriesname)
+        if self.seasonnumber is not None:
+            info.append(self.seasonnumber)
+        if self.episodenumbers is not None:
+            info.append(self.episodenumbers)
+        return info
 
     def number_string(self):
         """Used in UI
         """
-        return "season: %s, episode: %s" % (
-            self.seasonnumber,
-            ", ".join([str(x) for x in self.episodenumbers]))
+        string = ""
+        if self.seasonnumber is not None:
+            string += "season: %s, " % self.seasonnumber
+        string += "episode: %s" % ", ".join([str(x) for x in self.episodenumbers])
+        return string
 
     def populateFromTvdb(self, tvdb_instance, force_name=None, series_id=None):
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
@@ -693,7 +712,7 @@ class EpisodeInfo(object):
             self.episodename = epnames
             return
 
-        if not hasattr(self, "seasonnumber") or self.seasonnumber is None:
+        if self.seasonnumber is None:
             # Series without concept of seasons have all episodes in season 1
             seasonnumber = 1
         else:
@@ -742,41 +761,26 @@ class EpisodeInfo(object):
         self.episodename = epnames
 
     def getepdata(self):
+        """ Made data available to config'd output file format
         """
-        Uses the following config options:
-        filename_with_episode # Filename when episode name is found
-        filename_without_episode # Filename when no episode can be found
-        episode_single # formatting for a single episode number
-        episode_separator # used to join multiple episode numbers
-        """
-        # Data made available to config'd output file format
-        if self.extension is None:
-            prep_extension = ''
-        else:
-            prep_extension = self.extension
 
-        epdata = {
+        epdata = self.extra.copy()
+        epdata.update({
             'seriesname': self.seriesname,
-            'seasonno': self.seasonnumber, # TODO: deprecated attribute, make this warn somehow
-            'seasonnumber': self.seasonnumber,
             'episode': formatEpisodeNumbers(self.episodenumbers),
             'episodename': formatEpisodeNames(self.episodename),
-            'ext': prep_extension}
+            'ext': xstr(self.extension)})
+        if self.seasonnumber is not None:
+            epdata['seasonnumber'] = self.seasonnumber
 
         return epdata
 
     def generateFilename(self):
         epdata = self.getepdata()
 
-        # Add in extra dict keys, without clobbering existing values in epdata
-        extra = self.extra.copy()
-        extra.update(epdata)
-        epdata = extra
-
         if self.episodename is None:
             fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
         else:
-            epdata['episodename'] = formatEpisodeNames(self.episodename)
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         return fname
@@ -791,112 +795,13 @@ class DatedEpisodeInfo(EpisodeInfo):
     CFG_KEY_WITH_EP = "filename_with_date_and_episode"
     CFG_KEY_WITHOUT_EP = "filename_with_date_without_episode"
 
-    def __init__(self,
-        seriesname,
-        episodenumbers,
-        episodename = None,
-        filename = None,
-        extra = None):
-
-        self.seriesname = seriesname
-        self.episodenumbers = episodenumbers
-        self.episodename = episodename
-        self.fullpath = filename
-
-        if filename is not None:
-            # Remains untouched, for use when renaming file
-            self.originalfilename = os.path.basename(filename)
-        else:
-            self.originalfilename = None
-
-        if extra is None:
-            extra = {}
-        self.extra = extra
-
-    def sortable_info(self):
-        """Returns a tuple of sortable information
-        """
-        return (self.seriesname, self.episodenumbers)
-
-    def number_string(self):
-        """Used in UI
-        """
-        return "episode: %s" % (
-            ", ".join([str(x) for x in self.episodenumbers]))
-
-    def getepdata(self):
-        # format self.episodenumbers, it contains datetime.date
-        dates = str(self.episodenumbers[0])
-
-        # Data made available to config'd output file format
-        if self.extension is None:
-            prep_extension = ''
-        else:
-            prep_extension = self.extension
-
-        epdata = {
-            'seriesname': self.seriesname,
-            'episode': dates,
-            'episodename': formatEpisodeNames(self.episodename),
-            'ext': prep_extension}
-
-        return epdata
-
 
 class NoSeasonEpisodeInfo(EpisodeInfo):
     CFG_KEY_WITH_EP = "filename_with_episode_no_season"
     CFG_KEY_WITHOUT_EP = "filename_without_episode_no_season"
 
-    def __init__(self,
-        seriesname,
-        episodenumbers,
-        episodename = None,
-        filename = None,
-        extra = None):
 
-        self.seriesname = seriesname
-        self.episodenumbers = episodenumbers
-        self.episodename = episodename
-        self.fullpath = filename
-
-        if filename is not None:
-            # Remains untouched, for use when renaming file
-            self.originalfilename = os.path.basename(filename)
-        else:
-            self.originalfilename = None
-
-        if extra is None:
-            extra = {}
-        self.extra = extra
-
-    def sortable_info(self):
-        """Returns a tuple of sortable information
-        """
-        return (self.seriesname, self.episodenumbers)
-
-    def number_string(self):
-        """Used in UI
-        """
-        return "episode: %s" % (
-            ", ".join([str(x) for x in self.episodenumbers]))
-
-    def getepdata(self):
-        # Data made available to config'd output file format
-        if self.extension is None:
-            prep_extension = ''
-        else:
-            prep_extension = self.extension
-
-        epdata = {
-            'seriesname': self.seriesname,
-            'episode': formatEpisodeNumbers(self.episodenumbers),
-            'episodename': self.episodename,
-            'ext': prep_extension}
-
-        return epdata
-
-
-class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
+class AnimeEpisodeInfo(EpisodeInfo):
     CFG_KEY_WITH_EP = "filename_anime_with_episode"
     CFG_KEY_WITHOUT_EP = "filename_anime_without_episode"
 
@@ -905,11 +810,6 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
 
     def generateFilename(self):
         epdata = self.getepdata()
-
-        # Add in extra dict keys, without clobbering existing values in epdata
-        extra = self.extra.copy()
-        extra.update(epdata)
-        epdata = extra
 
         # Get appropriate config key, depending on if episode name was
         # found, and if crc value was found
@@ -924,8 +824,6 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
                 cfgkey = self.CFG_KEY_WITH_EP_NO_CRC
             else:
                 cfgkey = self.CFG_KEY_WITH_EP
-
-        epdata['episodename'] = formatEpisodeNames(self.episodename)
 
         fname = Config[cfgkey] % epdata
 
