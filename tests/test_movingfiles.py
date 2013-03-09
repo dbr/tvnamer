@@ -193,7 +193,7 @@ def test_move_files_lowercase_destination():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['Test/This/scrubs/S01/Scrubs - [01x01] - My First Day.avi']
+    expected_files = ['test/this/scrubs/s01/scrubs - [01x01] - my first day.avi']
 
     verify_out_data(out_data, expected_files)
 
@@ -215,7 +215,7 @@ def test_move_date_based_episode():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['Test/The Colbert Report/2011/9/28/The Colbert Report - [2011-09-28] - Ken Burns.avi']
+    expected_files = ['test/the colbert report/2011/9/28/the colbert report - [2011-09-28] - ken burns.avi']
 
     verify_out_data(out_data, expected_files)
 
