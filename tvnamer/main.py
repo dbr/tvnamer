@@ -45,9 +45,15 @@ def getMoveDestination(episode):
     """Constructs the location to move/copy the file
     """
 
+    # wrap function to convert string to lowercase and make it valid
+    def wrapMakeValid(string):
+        if Config['move_files_lowercase_destination']:
+            string = string.lower()
+        return makeValidFilename(string)
+
     if isinstance(episode, DatedEpisodeInfo):
         path = Config['move_files_destination_date'] % {
-            'seriesname': makeValidFilename(episode.seriesname),
+            'seriesname': wrapMakeValid(episode.seriesname),
             'year': episode.episodenumbers[0].year,
             'month': episode.episodenumbers[0].month,
             'day': episode.episodenumbers[0].day,
@@ -55,13 +61,13 @@ def getMoveDestination(episode):
             }
     elif isinstance(episode, NoSeasonEpisodeInfo):
         path = Config['move_files_destination'] % {
-            'seriesname': makeValidFilename(episode.seriesname),
+            'seriesname': wrapMakeValid(episode.seriesname),
             'episodenumbers': formatEpisodeNumbers(episode.episodenumbers),
             'originalfilename': episode.originalfilename,
             }
     else:
         path = Config['move_files_destination'] % {
-            'seriesname': makeValidFilename(episode.seriesname),
+            'seriesname': wrapMakeValid(episode.seriesname),
             'seasonnumber': episode.seasonnumber,
             'episodenumbers': formatEpisodeNumbers(episode.episodenumbers),
             'originalfilename': episode.originalfilename,
@@ -150,18 +156,17 @@ def processFile(tvdb_instance, episode):
         newPath = getMoveDestination(episode)
         if Config['move_files_destination_is_filepath']:
             newPath, newName = os.path.split(newPath)
+        elif Config['move_files_lowercase_destination']:
+            newName = newName.lower()
         p("New path: %s" % newPath)
-
-    # make filename Title Case if specified in config
-    if Config['titlecase_filename']:
-        from _titlecase import titlecase
-        newName = titlecase(newName)
-    # make newName and newPath lowercase if specified in config
-    if Config['lowercase_filename']:
-        newName = newName.lower()
-    if Config['move_files_lowercase_destination']:
-        newName = newName.lower()   # move_files_destination can be filename, so this is _really_ necessary
-        newPath = newPath.lower()
+    else:
+        # make newName Title Case if specified in config
+        if Config['titlecase_filename']:
+            from _titlecase import titlecase
+            newName = titlecase(newName)
+        # make newName lowercase if specified in config
+        if Config['lowercase_filename']:
+            newName = newName.lower()
 
     # make sure the filename is valid
     newName = makeValidFilename(newName)

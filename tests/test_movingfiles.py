@@ -193,7 +193,30 @@ def test_move_files_lowercase_destination():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['test/this/scrubs/s01/scrubs - [01x01] - my first day.avi']
+    expected_files = ['Test/This/scrubs/S01/scrubs - [01x01] - my first day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_move_files_lowercase_originalfilename():
+    """Test move_files_lowercase_destination does not change %(originalfilename)
+    """
+
+    conf = """
+    {"move_files_enable": true,
+    "move_files_destination": "Test/This/%(seriesname)s/S%(seasonnumber)02d/%(originalfilename)s",
+    "move_files_destination_is_filepath": true,
+    "move_files_lowercase_destination": true,
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.This.Is.a.Test.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['Test/This/scrubs/S01/scrubs.s01e01.This.Is.a.Test.avi']
 
     verify_out_data(out_data, expected_files)
 
@@ -215,7 +238,7 @@ def test_move_date_based_episode():
         with_config = conf,
         with_input = "")
 
-    expected_files = ['test/the colbert report/2011/9/28/the colbert report - [2011-09-28] - ken burns.avi']
+    expected_files = ['Test/the colbert report/2011/9/28/the colbert report - [2011-09-28] - ken burns.avi']
 
     verify_out_data(out_data, expected_files)
 
