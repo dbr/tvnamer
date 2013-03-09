@@ -5,7 +5,6 @@
 
 from functional_runner import run_tvnamer, verify_out_data
 from nose.plugins.attrib import attr
-from helpers import expected_failure
 
 
 @attr("functional")
@@ -104,29 +103,6 @@ def test_replace_with_underscore():
         with_input = "")
 
     expected_files = ['Scrubs_-_[01x01]_-_My_First_Day.avi']
-
-    verify_out_data(out_data, expected_files)
-
-
-@attr("functional")
-@expected_failure
-def test_abs_epnmber():
-    """Ensure the absolute episode number is available for custom
-    filenames in config
-    """
-
-
-    conf = """
-    {"filename_with_episode": "%(seriesname)s - %(absoluteepisode)s%(ext)s",
-    "batch": true}
-    """
-
-    out_data = run_tvnamer(
-        with_files = ['scrubs.s01e01.avi'],
-        with_config = conf,
-        with_input = "")
-
-    expected_files = ['Scrubs - 01.avi']
 
     verify_out_data(out_data, expected_files)
 
