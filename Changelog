@@ -1,0 +1,14 @@
+3.0.0
+* added 'dry_run' config option
+* removed 'always_rename' and 'select_first' config options, simply 'batch'
+mode is enough (in interactive mode you can still select to autorename files
+from now on)
+* added support for logging into file ('log_file' config option)
+* 'titlecase_filename' and 'move_files_lowercase_destination' options
+replaced with 'titlecase_dynamic_parts' and 'lowercase_dynamic_parts'
+respectively
+* In 'move_files_destination' variable, %(episodenumbers)s format parameter
+is replaced with %(episode)s (as is used in 'filename_*' variables)
+* Removed 'move_files_only' config option (all files are moved actualy, not
+renamed). For preserving old behavior use %(originalfilename)s in
+'move_files_destination' and set 'move_files_destination_is_filepath' to True

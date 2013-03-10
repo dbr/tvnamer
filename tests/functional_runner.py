@@ -29,6 +29,7 @@ import subprocess
 import atexit
 
 from tvnamer.unicode_helper import p, unicodify
+from tvnamer import __version__
 
 
 try:
@@ -131,6 +132,8 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     dummy_files = make_dummy_files(with_files, episodes_location)
 
     if with_config is not None:
+        # insert correct version into config
+        with_config = with_config.replace("{", """{"__version__": "%s",\n""" % __version__, 1)
         configfname = make_temp_config(with_config)
         # register cleanup function
         atexit.register(os.unlink, configfname)

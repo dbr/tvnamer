@@ -3,7 +3,13 @@
 """Holds default config values
 """
 
+from __init__ import __version__
+
 defaults = {
+    # Config file version - must be greater or equal to program version.
+    # If lower, see https://github.com/dbr/tvnamer/blob/master/tvnamer/config_defaults.py and merge updates.
+    '__version__': __version__,
+
     # Do not perform any file operations, only preview changes
     'dry_run': True,
 
@@ -144,11 +150,6 @@ defaults = {
     # Whenever a file is moved leave a symlink to the new file behind, named
     # after the original file.
     'leave_symlink': False,
-
-    # Allow user to copy files to specified move location without renaming files.
-    # UNSUPPORTED FEATURE: use %(originalfilename)s in 'move_files_destination'
-    # and set 'move_files_destination_is_filepath' to True
-    #'move_files_only': False,
 
     # Patterns to parse input filenames with
     'filename_patterns': [

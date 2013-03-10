@@ -12,6 +12,7 @@ try:
 except ImportError:
     import simplejson as json
 
+from __init__ import __version__
 from tvdb_api import Tvdb
 
 import cliarg_parser
@@ -296,8 +297,19 @@ def main():
         p("Loading config: %s" % (configToLoad))
         try:
             loadedConfig = json.load(open(os.path.expanduser(configToLoad)))
+            config_version = loadedConfig.get("__version__") or "0"
+            if cmp(__version__, config_version):
+                msg = "Old config file detected, please see "
+                msg += "https://github.com/dbr/tvnamer/blob/master/tvnamer/config_defaults.py"
+                msg += " and/or "
+                msg += "https://github.com/dbr/tvnamer/blob/master/Changelog"
+                msg += " and merge updates.\nProgram version: %s\nConfig version: %s" % (__version__, config_version)
+                raise ConfigValueError(msg)
         except ValueError, e:
             p("Error loading config: %s" % e)
+            opter.exit(1)
+        except ConfigValueError, e:
+            log().error("Error in config: " + e.message)
             opter.exit(1)
         else:
             # Config loaded, update optparser's defaults and reparse

@@ -53,7 +53,7 @@ def test_cli_destination():
 
     out_data = run_tvnamer(
         with_files = ['scrubs.s01e01.avi'],
-        with_flags = ['--batch', '--move', '--movedestination=season %(seasonnumber)d/'])
+        with_flags = ['--batch', '--movedestination=season %(seasonnumber)d/'])
 
     expected_files = ['season 1/Scrubs - [01x01] - My First Day.avi']
 
