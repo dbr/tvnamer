@@ -26,6 +26,7 @@ import sys
 import shutil
 import tempfile
 import subprocess
+import atexit
 
 from tvnamer.unicode_helper import p, unicodify
 
@@ -132,10 +133,14 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     # Create dummy files (config and episodes)
     tvnpath = get_tvnamer_path()
     episodes_location = make_temp_dir()
+    # register cleanup function
+    atexit.register(clear_temp_dir, episodes_location)
     dummy_files = make_dummy_files(with_files, episodes_location)
 
     if with_config is not None:
         configfname = make_temp_config(with_config)
+        # register cleanup function
+        atexit.register(os.unlink, configfname)
         conf_args = ['-c', configfname]
     else:
         conf_args = []
@@ -172,11 +177,6 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
         curlist = [relpath(x, episodes_location) for x in curlist]
 
         created_files.extend(curlist)
-
-    # Clean up dummy files and config
-    clear_temp_dir(episodes_location)
-    if with_config is not None:
-        os.unlink(configfname)
 
     return {
         'output': output,
