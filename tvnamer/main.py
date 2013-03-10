@@ -6,12 +6,6 @@
 import os
 import sys
 import logging
-import warnings
-
-try:
-    import readline
-except ImportError:
-    pass
 
 try:
     import json
@@ -24,7 +18,7 @@ import cliarg_parser
 from config_defaults import defaults
 
 from unicode_helper import p
-from utils import (Config, FileFinder, FileParser, warn,
+from utils import (Config, FileFinder, FileParser,
 applyCustomInputReplacements, applyCustomOutputReplacements, applyCustomFullpathReplacements,
 formatEpisodeNumbers, makeValidFilename, DatedEpisodeInfo, NoSeasonEpisodeInfo)
 
@@ -106,7 +100,6 @@ def confirm(question, options, default = "y"):
 
 
 # TODO: function is too long, split interaction with user from filename generation and renaming
-# TODO: p() function is really horrible, write simple logger with log levels
 def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
@@ -130,9 +123,10 @@ def processFile(tvdb_instance, episode):
     except (DataRetrievalError, ShowNotFound, SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound), errormsg:
         # Show was found, so use corrected series name
         if Config['batch'] and Config['skip_file_on_error']:
-            warn("Skipping file due to error: %s" % errormsg)
+            log().warn("Skipping file due to error: %s" % errormsg)
             return
-        warn(errormsg)
+        log().warn(errormsg)
+        # TODO: option to exit with returncode
 
     cnamer = Renamer(episode.fullpath)
 
@@ -218,7 +212,7 @@ def processFile(tvdb_instance, episode):
             leave_symlink = Config['leave_symlink'],
             force = overwrite)
     except OSError, e:
-        warn(e)
+        log().warn(e)
 
 
 def findFiles(paths):
@@ -237,7 +231,7 @@ def findFiles(paths):
         try:
             valid_files.extend(cur.findFiles())
         except InvalidPath:
-            warn("Invalid path: %s" % cfile)
+            log().warn("Invalid path: %s" % cfile)
 
     if len(valid_files) == 0:
         raise NoValidFilesFoundError()
@@ -262,11 +256,10 @@ def tvnamer(paths):
         try:
             episode = parser.parse()
         except InvalidFilename, e:
-            warn("Invalid filename: %s" % e)
+            log().warn("Invalid filename: %s" % e)
         else:
             if episode.seriesname is None and Config['force_name'] is None and Config['series_id'] is None:
-                warn("Parsed filename did not contain series name (and --name or --series-id not specified), skipping: %s" % cfile)
-
+                log().warn("Parsed filename did not contain series name (and --name or --series-id not specified), skipping: %s" % cfile)
             else:
                 episodes_found.append(episode)
 
@@ -291,20 +284,62 @@ def tvnamer(paths):
     p("# Done")
 
 
+class Logger:
+    """Helper class holding logging handlers, formatters etc. so that
+    they can be added or removed at runtime.
+    """
+
+    def __init__(self):
+        self.consoleFormatter = logging.Formatter('%(levelname)s - %(message)s')
+        self.fileFormatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+        self.rootLogger = logging.getLogger()
+        self.rootLogger.setLevel(logging.DEBUG)
+        self.consoleHandler = None
+        self.fileHandler = None
+
+    def initLogging(self, verbose_console=False, filename=""):
+        """Init logging to console and file specified by 'filename' argument.
+        Maximum log level of console can be configured by 'consoleLogLevel' argument,
+        log level of file is always DEBUG.
+        """
+
+        self.rootLogger.removeHandler(self.consoleHandler)
+        self.rootLogger.removeHandler(self.fileHandler)
+
+        # create console handler with INFO log level
+        self.consoleHandler = logging.StreamHandler()
+        if verbose_console:
+            self.consoleHandler.setLevel(logging.DEBUG)
+        else:
+            self.consoleHandler.setLevel(logging.INFO)
+        self.consoleHandler.setFormatter(self.consoleFormatter)
+        self.rootLogger.addHandler(self.consoleHandler)
+
+        if filename:
+            # create file handler with DEBUG log level
+            self.fileHandler = logging.FileHandler(filename)
+            self.fileHandler.setLevel(logging.DEBUG)
+            self.fileHandler.setFormatter(self.fileFormatter)
+            self.rootLogger.addHandler(self.fileHandler)
+
+    def __del__(self):
+        log().info("tvnamer exited")
+        logging.shutdown()
+
+
 def main():
     """Parses command line arguments, displays errors from tvnamer in terminal
     """
 
-    opter = cliarg_parser.getCommandlineParser(defaults)
+    logger = Logger()
+    logger.initLogging()
 
+    opter = cliarg_parser.getCommandlineParser(defaults)
     opts, args = opter.parse_args()
 
-    if opts.verbose:
-        logging.basicConfig(
-            level = logging.DEBUG,
-            format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    else:
-        logging.basicConfig()
+    logger.initLogging(verbose_console=opts.verbose, filename=opts.log_file)
+    log().info("tvnamer started")
 
     # If a config is specified, load it, update the defaults using the loaded
     # values, then reparse the options with the updated defaults.
@@ -332,6 +367,8 @@ def main():
             defaults.update(loadedConfig)
             opter = cliarg_parser.getCommandlineParser(defaults)
             opts, args = opter.parse_args()
+            # log file path may be specified in config
+            logger.initLogging(verbose_console=opts.verbose, filename=opts.log_file)
 
     # Decode args using filesystem encoding (done after config loading
     # as the args are reparsed when the config is loaded)
@@ -355,7 +392,7 @@ def main():
 
         # Show config argument
         elif opts.showconfig:
-            print json.dumps(opts.__dict__, sort_keys=True, indent=2)
+            p(json.dumps(opts.__dict__, sort_keys=True, indent=2))
 
         return
 
@@ -370,15 +407,11 @@ def main():
         if Config['always_copy'] and Config['always_move']:
             raise ConfigValueError("Both always_copy and always_move cannot be specified.")
     except ConfigValueError, e:
-        p("#" * 20)
-        p("Error in config:")
-        p(e.message)
-        p("#" * 20)
-        opter.exit(0)
+        log().error("Error in config: " + e.message)
+        opter.exit(1)
 
     if Config['titlecase_filename'] and Config['lowercase_filename']:
-        warnings.warn("Setting 'lowercase_filename' clobbers 'titlecase_filename' option")
-
+        log().warn("Setting 'lowercase_filename' clobbers 'titlecase_filename' option")
 
 
     if len(args) == 0:

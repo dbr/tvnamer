@@ -3,9 +3,17 @@
 import os
 import sys
 import shutil
+import logging
 
 from unicode_helper import p
 from config import Config
+
+
+def log():
+    """Returns the logger for current file
+    """
+    return logging.getLogger(__name__)
+
 
 def same_partition(f1, f2):
     """Returns True if both files or directories are on the same partition
@@ -15,7 +23,6 @@ def same_partition(f1, f2):
 
 def delete_file(fpath):
     """On OS X: Trashes a path using the Finder, via OS X's Scripting Bridge.
-
     On other platforms: unlinks file.
     """
 
@@ -23,9 +30,11 @@ def delete_file(fpath):
         from AppKit import NSURL
         from ScriptingBridge import SBApplication
     except ImportError:
+        p("Deleting %s" % fpath)
         log().debug("Deleting %r" % fpath)
         os.unlink(fpath)
     else:
+        p("Trashing %s" % fpath)
         log().debug("Trashing %r" % fpath)
         targetfile = NSURL.fileURLWithPath_(fpath)
         finder = SBApplication.applicationWithBundleIdentifier_("com.apple.Finder")
@@ -37,7 +46,8 @@ def rename_file(old, new):
     """Rename 'old' file to 'new'. Both files must be on the same partition.
     Preserves access and modification time.
     """
-    p("rename %s to %s" % (old, new))
+    p("Renaming %s to %s" % (old, new))
+    log().debug("Renaming %r to %r" % (old, new))
     stat = os.stat(old)
     os.rename(old, new)
     os.utime(new, (stat.st_atime, stat.st_mtime))
@@ -46,7 +56,8 @@ def rename_file(old, new):
 def copy_file(old, new):
     """Copy 'old' file to 'new'.
     """
-    p("copy %s to %s" % (old, new))
+    p("Copying %s to %s" % (old, new))
+    log().debug("Copying %r to %r" % (old, new))
     shutil.copyfile(old, new)
     shutil.copystat(old, new)
 
@@ -54,7 +65,8 @@ def copy_file(old, new):
 def symlink_file(target, name):
     """Create symbolic link named 'name' pointing to 'target'.
     """
-    p("symlink %s to %s" % (name, target))
+    p("Creating symlink %s to %s" % (name, target))
+    log().debug("Creating symlink %r to %r" % (name, target))
     os.symlink(target, name)
 
 
@@ -108,7 +120,6 @@ class Renamer(object):
             copy_file(self.filename, new_fullpath)
             if always_move:
                 # Forced to move file, we just trash old file
-                p("Deleting %s" % (self.filename))
                 delete_file(self.filename)
 
                 # Leave a symlink behind if configured to do so

@@ -38,9 +38,10 @@ def getCommandlineParser(defaults):
     parser.set_defaults(**defaults)
 
     # Console output
-    with Group(parser, "Console output") as g:
-        g.add_option("-v", "--verbose", action = "store_true", dest = "verbose", help = "show debugging info")
-        g.add_option("-q", "--not-verbose", action = "store_false", dest = "verbose", help = "no verbose output (useful to override 'verbose':true in config file)")
+    with Group(parser, "Logging") as g:
+        g.add_option("-v", "--verbose", action = "store_true", dest = "verbose", help = "Show debugging info in console")
+        g.add_option("-q", "--not-verbose", action = "store_false", dest = "verbose", help = "No verbose output (useful to override 'verbose':true in config file)")
+        g.add_option("--log-file", action = "store", dest = "log_file", help = "Path to log file")
 
 
     # Batch options

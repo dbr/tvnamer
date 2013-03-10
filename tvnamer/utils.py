@@ -13,8 +13,6 @@ import platform
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
 
-from unicode_helper import p
-
 from config import Config
 from tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
@@ -25,12 +23,6 @@ def log():
     """Returns the logger for current file
     """
     return logging.getLogger(__name__)
-
-
-def warn(text):
-    """Displays message to sys.stderr
-    """
-    p(text, file = sys.stderr)
 
 
 def xstr(s):
@@ -323,7 +315,7 @@ class FileParser(object):
             try:
                 cregex = re.compile(cpattern, re.VERBOSE)
             except re.error, errormsg:
-                warn("WARNING: Invalid episode_pattern (error: %s)\nPattern:\n%s" % (
+                log().warn("WARNING: Invalid episode_pattern (error: %s)\nPattern:\n%s" % (
                     errormsg, cpattern))
             else:
                 self.compiled_regexs.append(cregex)
@@ -828,4 +820,3 @@ class AnimeEpisodeInfo(EpisodeInfo):
         fname = Config[cfgkey] % epdata
 
         return fname
-

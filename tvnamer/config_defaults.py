@@ -20,8 +20,12 @@ defaults = {
     'overwrite_destination_on_rename': False,
     'overwrite_destination_on_move': False,
 
-    # Verbose mode (debugging info)
+    # Increase verbosity level of console logging
     'verbose': False,
+
+    # Path of log file - always stores all debug info, regardless of the 'verbose' option.
+    # If empty string, logging to file is disabled.
+    'log_file': '',
 
     # Recurse more than one level into folders. When False, only
     # desends one level.
