@@ -16,15 +16,18 @@ from tvdb_api import Tvdb
 def verify_name_gen(curtest, tvdb_instance):
     if "seasonnumber" in curtest:
         ep = EpisodeInfo(
+            filename = curtest['input'],
             seriesname = curtest['parsedseriesname'],
             seasonnumber = curtest['seasonnumber'],
             episodenumbers = curtest['episodenumbers'])
     elif any([isinstance(x, datetime.date) for x in curtest['episodenumbers']]):
         ep = DatedEpisodeInfo(
+            filename = curtest['input'],
             seriesname = curtest['parsedseriesname'],
             episodenumbers = curtest['episodenumbers'])
     else:
         ep = NoSeasonEpisodeInfo(
+            filename = curtest['input'],
             seriesname = curtest['parsedseriesname'],
             episodenumbers = curtest['episodenumbers'])
 
@@ -119,14 +122,14 @@ def test_multi_episodes_seperate():
 
 
 def test_simple_no_ext():
-    """Simple episode with out extension
+    """Simple episode without extension
     """
     ep = EpisodeInfo(
         seriesname = 'Scrubs',
         seasonnumber = 1,
         episodenumbers = [2],
         episodename = 'My Mentor',
-        filename = None)
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
@@ -140,7 +143,7 @@ def test_no_name():
         seriesname = 'Scrubs',
         seasonnumber = 1,
         episodenumbers = [2],
-        episodename = None,
+        episodename = '',
         filename = 'scrubs.example.file.avi')
 
     assertEquals(
@@ -155,8 +158,8 @@ def test_episode_no_name_no_ext():
         seriesname = 'Scrubs',
         seasonnumber = 1,
         episodenumbers = [2],
-        episodename = None,
-        filename = None)
+        episodename = '',
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
@@ -169,8 +172,8 @@ def test_noseason_no_name_no_ext():
     ep = NoSeasonEpisodeInfo(
         seriesname = 'Scrubs',
         episodenumbers = [2],
-        episodename = None,
-        filename = None)
+        episodename = '',
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
@@ -183,8 +186,8 @@ def test_datedepisode_no_name_no_ext():
     ep = DatedEpisodeInfo(
         seriesname = 'Scrubs',
         episodenumbers = [datetime.date(2010, 11, 23)],
-        episodename = None,
-        filename = None)
+        episodename = '',
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
@@ -198,7 +201,7 @@ def test_no_series_number():
         seriesname = 'Scrubs',
         episodenumbers = [2],
         episodename = 'My Mentor',
-        filename = None)
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),

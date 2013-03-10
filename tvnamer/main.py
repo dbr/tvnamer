@@ -35,40 +35,6 @@ def log():
     return logging.getLogger(__name__)
 
 
-def getMoveDestination(episode):
-    """Constructs the location to move/copy the file
-    """
-
-    # wrap function to convert string to lowercase and make it valid
-    def wrapMakeValid(string):
-        if Config['move_files_lowercase_destination']:
-            string = string.lower()
-        return makeValidFilename(string)
-
-    if isinstance(episode, DatedEpisodeInfo):
-        path = Config['move_files_destination_date'] % {
-            'seriesname': wrapMakeValid(episode.seriesname),
-            'year': episode.episodenumbers[0].year,
-            'month': episode.episodenumbers[0].month,
-            'day': episode.episodenumbers[0].day,
-            'originalfilename': episode.originalfilename,
-            }
-    elif isinstance(episode, NoSeasonEpisodeInfo):
-        path = Config['move_files_destination'] % {
-            'seriesname': wrapMakeValid(episode.seriesname),
-            'episodenumbers': formatEpisodeNumbers(episode.episodenumbers),
-            'originalfilename': episode.originalfilename,
-            }
-    else:
-        path = Config['move_files_destination'] % {
-            'seriesname': wrapMakeValid(episode.seriesname),
-            'seasonnumber': episode.seasonnumber,
-            'episodenumbers': formatEpisodeNumbers(episode.episodenumbers),
-            'originalfilename': episode.originalfilename,
-            }
-    return path
-
-
 def confirm(question, options, default = "y"):
     """Takes a question (string), list of options and a default value (used
     when user simply hits enter).
@@ -108,13 +74,7 @@ def processFile(tvdb_instance, episode):
     p("# Processing file: %s" % episode.fullfilename)
 
     if len(Config['input_filename_replacements']) > 0:
-        replaced = applyCustomInputReplacements(episode.fullfilename)
-        p("# With custom replacements: %s" % (replaced))
-
-    # Use force_name option. Done after input_filename_replacements so
-    # it can be used to skip the replacements easily
-    if Config['force_name'] is not None:
-        episode.seriesname = Config['force_name']
+        p("# With custom replacements: %s" % applyCustomInputReplacements(episode.fullfilename))
 
     p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
 
@@ -128,49 +88,30 @@ def processFile(tvdb_instance, episode):
         log().warn(errormsg)
         # TODO: option to exit with returncode
 
-    cnamer = Renamer(episode.fullpath)
+    newName = episode.generateFilename()
 
-    # set defaults
-    newPath, newName = os.path.split(episode.fullpath)
-    overwrite = Config['overwrite_destination_on_rename']
+    if len(Config['output_filename_replacements']) > 0:
+        p("Before custom output replacements: %s" % newName)
+        newName = applyCustomOutputReplacements(newName)
+        p("After custom output replacements: %s" % newName)
 
-    if not Config["move_files_only"]:
-        p("#" * 20)
-        p("Original filename: %s" % newName)
-        newName = episode.generateFilename()
-
-        if len(Config['output_filename_replacements']) > 0:
-            p("Before custom output replacements: %s" % newName)
-            newName = applyCustomOutputReplacements(newName)
-            p("After custom output replacements: %s" % newName)
-
-    if Config['move_files_enable']:
-        p("Old path: %s" % newPath)
-        overwrite = Config['overwrite_destination_on_move']
-        newPath = getMoveDestination(episode)
-        if Config['move_files_destination_is_filepath']:
-            newPath, newName = os.path.split(newPath)
-        elif Config['move_files_lowercase_destination']:
-            newName = newName.lower()
-        p("New path: %s" % newPath)
+    if isinstance(episode, DatedEpisodeInfo):
+        newPath = Config['move_files_destination_date'] % episode.getepdata()
     else:
-        # make newName Title Case if specified in config
-        if Config['titlecase_filename']:
-            from _titlecase import titlecase
-            newName = titlecase(newName)
-        # make newName lowercase if specified in config
-        if Config['lowercase_filename']:
-            newName = newName.lower()
+        newPath = Config['move_files_destination'] % episode.getepdata()
+    if Config['move_files_destination_is_filepath']:
+        newPath, newName = os.path.split(newPath)
+
+    # make newName lowercase if specified in config
+    if Config['lowercase_filename']:
+        newName = newName.lower()
 
     # make sure the filename is valid
     newName = makeValidFilename(newName)
 
-    # join final filename
-    newFullPath = os.path.join(newPath, newName)
-
     # Join new filepath to old one (to handle realtive dirs)
-    old_dir = os.path.dirname(episode.fullpath)
-    newFullPath = os.path.abspath(os.path.join(old_dir, newFullPath))
+    oldPath = os.path.dirname(episode.fullpath)
+    newFullPath = os.path.abspath(os.path.join(oldPath, newPath, newName))
 
     # apply full-path replacements
     if len(Config['move_files_fullpath_replacements']) > 0:
@@ -179,12 +120,13 @@ def processFile(tvdb_instance, episode):
 
     # don't do anything if filename was not changed
     if newFullPath == episode.fullpath:
-        p("#" * 20)
-        p("Existing filename is correct: %s" % episode.fullfilename)
-        p("#" * 20)
+        p("Existing filename is correct: %s" % episode.fullpath)
         return
 
-    p("Final filename: %s" % newFullPath)
+    p("Old path: %s" % oldPath)
+    p("New path: %s" % newPath)
+    p("Final filename: %s" % newName)
+    p("#" * 20)
 
     if not Config['batch'] and Config['move_files_confirmation']:
         ans = confirm("Move file?", options = ['y', 'n', 'a', 'q'], default = 'y')
@@ -204,13 +146,14 @@ def processFile(tvdb_instance, episode):
             return
 
     # finally move file
+    cnamer = Renamer(episode.fullpath)
     try:
         cnamer.rename(
             new_fullpath = newFullPath,
             always_move = Config['always_move'],
             always_copy = Config['always_copy'],
             leave_symlink = Config['leave_symlink'],
-            force = overwrite)
+            force = Config['overwrite_destination'])
     except OSError, e:
         log().warn(e)
 
@@ -246,9 +189,6 @@ def tvnamer(paths):
     """Main tvnamer function, takes an array of paths, does stuff.
     """
 
-    p("#" * 20)
-    p("# Starting tvnamer")
-
     episodes_found = []
 
     for cfile in findFiles(paths):
@@ -279,9 +219,6 @@ def tvnamer(paths):
     for episode in episodes_found:
         processFile(tvdb_instance, episode)
         p('')
-
-    p("#" * 20)
-    p("# Done")
 
 
 class Logger:
@@ -401,17 +338,13 @@ def main():
 
     # TODO: write function to check all exclusive options
     try:
-        if Config["move_files_only"] and not Config["move_files_enable"]:
-            raise ConfigValueError("Parameter move_files_enable cannot be set to false while parameter move_only is set to true.")
-
         if Config['always_copy'] and Config['always_move']:
             raise ConfigValueError("Both always_copy and always_move cannot be specified.")
+        if Config['titlecase_dynamic_parts'] and Config['lowercase_dynamic_parts']:
+            raise ConfigValueError("Both 'lowercase_filename' and 'titlecase_filename' cannot be specified.")
     except ConfigValueError, e:
         log().error("Error in config: " + e.message)
         opter.exit(1)
-
-    if Config['titlecase_filename'] and Config['lowercase_filename']:
-        log().warn("Setting 'lowercase_filename' clobbers 'titlecase_filename' option")
 
 
     if len(args) == 0:

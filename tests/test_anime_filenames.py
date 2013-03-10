@@ -17,7 +17,7 @@ def test_group():
 {
     "batch": true,
 
-    "filename_anime_with_episode": "[%(group)s] %(seriesname)s - %(episodenumber)s - %(episodename)s [%(crc)s]%(ext)s"
+    "filename_anime_with_episode": "[%(group)s] %(seriesname)s - %(episode)s - %(episodename)s [%(crc)s]%(ext)s"
 }
 """)
 
@@ -36,7 +36,7 @@ def test_group_no_epname():
 {
     "batch": true,
 
-    "filename_anime_without_episode": "[%(group)s] %(seriesname)s - %(episodenumber)s [%(crc)s]%(ext)s"
+    "filename_anime_without_episode": "[%(group)s] %(seriesname)s - %(episode)s [%(crc)s]%(ext)s"
 }
 """)
 

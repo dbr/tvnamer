@@ -7,7 +7,7 @@ defaults = {
     # Do not perform any file operations, only preview changes
     'dry_run': True,
 
-    # Operation mode - True for batchi mode, False for interactive mode
+    # Operation mode - True for batch mode, False for interactive mode
     # In batch mode first search result is selected, in interactive mode user is asked to select
     'batch': False,
 
@@ -17,8 +17,7 @@ defaults = {
 
     # Forcefully overwrite existing files when renaming or
     # moving. This potentially destroys the old file. Default is False
-    'overwrite_destination_on_rename': False,
-    'overwrite_destination_on_move': False,
+    'overwrite_destination': False,
 
     # Increase verbosity level of console logging
     'verbose': False,
@@ -53,13 +52,20 @@ defaults = {
 
     # Replace accented unicode characters with ASCII equivalents,
     # removing characters than can't be translated.
+    # Applied only when 'windows_safe_filenames' is True.
     'normalize_unicode_filenames': False,
 
-    # Convert output filenames to lower case (applied after replacements)
-    'lowercase_filename': False,
+    # Convert dynamic parts to lower case. Does not affect the static parts.
+    # For example, if move_files_destination is set to
+    # '/Foo/Bar/%(seriesname)s/Season %(seasonnumber)d'
+    # then only the series name will be converted to lower case.
+    'lowercase_dynamic_parts': False,
 
-    # Convert output filenames to 'Title Case' (applied after replacements)
-    'titlecase_filename': False,
+    # Convert dynamic parts to 'Title Case'
+    'titlecase_dynamic_parts': False,
+
+    # Convert output filenames to lower case, including static parts (applied after replacements)
+    'lowercase_filename': False,
 
     # Extra characters to consider invalid in output filenames (which are
     # replaced by the character in replace_invalid_characters_with)
@@ -95,28 +101,21 @@ defaults = {
     # prompt.
     'move_files_confirmation': True,
 
-# TODO: I changed the behavior of this, rename feature to prevent confusion
-    # If true, convert the variable/dynamic parts of the destination
-    # to lower case. Does not affect the static parts; for example,
-    # if move_files_destination is set to
-    # '/Foo/Bar/%(seriesname)s/Season %(seasonnumber)d'
-    # then only the series name will be converted to lower case.
-    'move_files_lowercase_destination': False,
-
     # If True, the destination path includes the destination filename,
     # for example: '/example/tv/%(seriesname)s/season %(seasonnumber)d/%(originalfilename)'
     'move_files_destination_is_filepath': False,
 
     # Destination to move files to. Trailing slash is not necessary.
     # Use forward slashes, even on Windows. Realtive paths are realtive to
-    # the existing file's path (not current working dir). A value of '.' will
-    # not move the file anywhere.
+    # the existing file's path (not current working dir).
+    # Default value is '.', which will not move the file anywhere.
     #
     # Use Python's string formatting to add dynamic paths. Available variables:
-    # - %(seriesname)s
-    # - %(seasonnumber)d
-    # - %(episodenumbers)s (Note: this is a string, formatted with config
-    #                       variable episode_single and joined with episode_separator)
+    # - %(seriesname)s          Name of the series
+    # - %(seasonnumber)d        Number of season
+    # - %(episode)s             String containing formatted episode number(s)
+    # - %(originalfilename)s    Original filename, including extension
+    # - %(ext)s                 Extension of the file
     'move_files_destination': '.',
 
     # Same as above, only for date-numbered episodes. The following
@@ -147,7 +146,9 @@ defaults = {
     'leave_symlink': False,
 
     # Allow user to copy files to specified move location without renaming files.
-    'move_files_only': False,
+    # UNSUPPORTED FEATURE: use %(originalfilename)s in 'move_files_destination'
+    # and set 'move_files_destination_is_filepath' to True
+    #'move_files_only': False,
 
     # Patterns to parse input filenames with
     'filename_patterns': [
@@ -352,9 +353,9 @@ defaults = {
         (?:part|pt)?[\._ -]
         (?P<episodenumberstart>[0-9]+)             # Part 1
         (?:
-          [ \._-](?:and|&|to)                        # and
-          [ \._-](?:part|pt)?                        # Part 2
-          [ \._-](?:[0-9]+))*                        # (middle group, optional, repeating)
+        [ \._-](?:and|&|to)                        # and
+        [ \._-](?:part|pt)?                        # Part 2
+        [ \._-](?:[0-9]+))*                        # (middle group, optional, repeating)
         [ \._-](?:and|&|to)                        # and
         [ \._-]?(?:part|pt)?                       # Part 3
         [ \._-](?P<episodenumberend>[0-9]+)        # last episode number, save it
@@ -362,17 +363,18 @@ defaults = {
         ''',
 
         # Show.Name.Part1
-        '''^(?P<seriesname>.+?)                  # Show name\n
-        [ \\._\\-]                               # Padding\n
-        [Pp]art[ ](?P<episodenumber>[0-9]+)      # Part 1\n
-        [\\._ -][^\\/]*$                         # More padding, then anything\n
+        '''^(?P<seriesname>.+?)                  # Show name
+        [ \\._\\-]                               # Padding
+        [Pp]art[ ](?P<episodenumber>[0-9]+)      # Part 1
+        [\\._ -][^\\/]*$                         # More padding, then anything
         ''',
 
         # show name Season 01 Episode 20
         '''^(?P<seriesname>.+?)[ ]?               # Show name
         [Ss]eason[ ]?(?P<seasonnumber>[0-9]+)[ ]? # Season 1
         [Ee]pisode[ ]?(?P<episodenumber>[0-9]+)   # Episode 20
-        [^\\/]*$''',                              # Anything
+        [^\\/]*$                                  # Anything
+        ''',
 
         # foo.103*
         '''^(?P<seriesname>.+)[ \._\-]
@@ -429,7 +431,6 @@ defaults = {
 
     'filename_anime_without_episode_without_crc':
      '[%(group)s] %(seriesname)s - %(episode)s%(ext)s',
-
 
 
     # Used to join multiple episode names together (only when episode names are different)

@@ -13,8 +13,7 @@ def test_simple_realtive_move():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "test/",
+    {"move_files_destination": "test/",
     "batch": true}
     """
 
@@ -34,8 +33,7 @@ def test_dynamic_destination():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
+    {"move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
     "batch": true}
     """
 
@@ -68,8 +66,7 @@ def test_move_interactive_allyes():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "test",
+    {"move_files_destination": "test",
     "batch": false}
     """
 
@@ -90,8 +87,7 @@ def test_move_interactive_allno():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "test",
+    {"move_files_destination": "test",
     "batch": false}
     """
 
@@ -114,8 +110,7 @@ def test_move_interactive_somefiles():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "test",
+    {"move_files_destination": "test",
     "batch": false}
     """
 
@@ -136,8 +131,7 @@ def test_with_invalid_seriesname():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "%(seriesname)s",
+    {"move_files_destination": "%(seriesname)s",
     "batch": true,
     "windows_safe_filenames": true}
     """
@@ -157,8 +151,7 @@ def test_with_invalid_seriesname_test2():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "%(seriesname)s",
+    {"move_files_destination": "%(seriesname)s",
     "batch": true,
     "move_files_fullpath_replacements": [
          {"is_regex": true,
@@ -177,14 +170,34 @@ def test_with_invalid_seriesname_test2():
 
 
 @attr("functional")
-def test_move_files_lowercase_destination():
-    """Test move_files_lowercase_destination configuration option.
+def test_titlecase_dynamic_parts():
+    """Test titlecase_dynamic_parts configuration option.
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "Test/This/%(seriesname)s/S%(seasonnumber)02d",
-    "move_files_lowercase_destination": true,
+    {"move_files_destination": "Test/This/%(seriesname)s/S%(seasonnumber)02d",
+    "titlecase_dynamic_parts": true,
+    "batch": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.This.Is.a.Test.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['Test/This/Scrubs/S01/Scrubs - [01x01] - My First Day.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_lowercase_dynamic_parts():
+    """Test lowercase_dynamic_parts configuration option.
+    """
+
+    conf = """
+    {"move_files_destination": "Test/This/%(seriesname)s/S%(seasonnumber)02d",
+    "lowercase_dynamic_parts": true,
     "batch": true}
     """
 
@@ -199,15 +212,14 @@ def test_move_files_lowercase_destination():
 
 
 @attr("functional")
-def test_move_files_lowercase_originalfilename():
-    """Test move_files_lowercase_destination does not change %(originalfilename)
+def test_lowercase_dynamic_parts_originalfilename():
+    """Test lowercase_dynamic_parts does not change %(originalfilename)
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "Test/This/%(seriesname)s/S%(seasonnumber)02d/%(originalfilename)s",
+    {"move_files_destination": "Test/This/%(seriesname)s/S%(seasonnumber)02d/%(originalfilename)s",
     "move_files_destination_is_filepath": true,
-    "move_files_lowercase_destination": true,
+    "lowercase_dynamic_parts": true,
     "batch": true}
     """
 
@@ -227,9 +239,8 @@ def test_move_date_based_episode():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination_date": "Test/%(seriesname)s/%(year)s/%(month)s/%(day)s",
-    "move_files_lowercase_destination": true,
+    {"move_files_destination_date": "Test/%(seriesname)s/%(year)s/%(month)s/%(day)s",
+    "lowercase_dynamic_parts": true,
     "batch": true}
     """
 
@@ -249,8 +260,7 @@ def test_move_files_full_filepath_simple():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "TestDir/%(seriesname)s/season %(seasonnumber)02d/%(episodenumbers)s/SpecificName.avi",
+    {"move_files_destination": "TestDir/%(seriesname)s/season %(seasonnumber)02d/%(episode)s/SpecificName.avi",
     "move_files_destination_is_filepath": true,
     "batch": true}
     """
@@ -271,8 +281,7 @@ def test_move_files_full_filepath_with_origfilename():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "TestDir/%(seriesname)s/season %(seasonnumber)02d/%(episodenumbers)s/%(originalfilename)s",
+    {"move_files_destination": "TestDir/%(seriesname)s/season %(seasonnumber)02d/%(episode)s/%(originalfilename)s",
     "move_files_destination_is_filepath": true,
     "batch": true}
     """
@@ -295,8 +304,7 @@ def test_move_with_correct_name():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "SubDir",
+    {"move_files_destination": "SubDir",
     "batch": true}
     """
 
@@ -316,8 +324,7 @@ def test_move_no_season():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "SubDir",
+    {"move_files_destination": "SubDir",
     "batch": true}
     """
 
@@ -332,36 +339,14 @@ def test_move_no_season():
 
 
 @attr("functional")
-def test_move_files_only():
-    """With parameter move_files_only set to true files should be moved and not renamed
-    """
-
-    conf = """
-    {"move_files_only": true,
-    "move_files_enable": true,
-    "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
-    "batch": true}
-    """
-
-    out_data = run_tvnamer(
-        with_files = ['scrubs.s01e01.avi'],
-        with_config = conf)
-
-    expected_files = ['tv/Scrubs/season 1/scrubs.s01e01.avi']
-
-    verify_out_data(out_data, expected_files)
-
-
-@attr("functional")
 def test_forcefully_moving_enabled():
     """Forcefully moving files, overwriting destination
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
+    {"move_files_destination": "tv/%(seriesname)s/season %(seasonnumber)d/",
     "batch": true,
-    "overwrite_destination_on_move": true}
+    "overwrite_destination": true}
     """
 
     out_data = run_tvnamer(
@@ -379,10 +364,9 @@ def test_forcefully_moving_disabled():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": ".",
+    {"move_files_destination": ".",
     "batch": true,
-    "overwrite_destination_on_move": false}
+    "overwrite_destination": false}
     """
 
     out_data = run_tvnamer(
@@ -402,8 +386,7 @@ def test_forcefully_moving_default():
     """
 
     conf = """
-    {"move_files_enable": true,
-    "move_files_destination": ".",
+    {"move_files_destination": ".",
     "batch": true}
     """
 
