@@ -358,7 +358,7 @@ class FileParser(object):
                     episodenumbers = [int(match.group('episodenumber')), ]
                     del extra_values["episodenumber"]   # delete auxiliary key from extra_values
 
-                elif 'year' in namedgroups or 'month' in namedgroups or 'day' in namedgroups:
+                elif any(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
                     if not all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
                         raise ConfigValueError(
                             "Date-based regex must contain groups 'year', 'month' and 'day'")
@@ -388,35 +388,21 @@ class FileParser(object):
                     seriesname = cleanRegexedSeriesName(seriesname)
                     seriesname = replaceInputSeriesName(seriesname)
 
-                if 'seasonnumber' in namedgroups:
-                    extra_values['seasonnumber'] = int(match.group('seasonnumber'))
-
-                    episode = EpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
-                elif 'year' in namedgroups and 'month' in namedgroups and 'day' in namedgroups:
-                    episode = DatedEpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
+                if extra_values.get('seasonnumber'):
+                    extra_values['seasonnumber'] = int(extra_values.get('seasonnumber'))
+                    episode = EpisodeInfo
+                elif all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
+                    episode = DatedEpisodeInfo
                 elif 'group' in namedgroups:
-                    episode = AnimeEpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
+                    episode = AnimeEpisodeInfo
                 else:
-                    # No season number specified, usually for Anime
-                    episode = NoSeasonEpisodeInfo(
+                    episode = NoSeasonEpisodeInfo
+
+                return episode(
                         seriesname = seriesname,
                         episodenumbers = episodenumbers,
                         filename = self.path,
                         extra = extra_values)
-
-                return episode
         else:
             emsg = "Cannot parse %r" % self.path
             if len(Config['input_filename_replacements']) > 0:
