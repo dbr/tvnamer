@@ -97,6 +97,7 @@ def cleanRegexedSeriesName(seriesname):
     >>> cleanRegexedSeriesName("an_example_1.0_test")
     'an example 1.0 test'
     """
+    # TODO: Could this be made to clean "Hawaii.Five-0.2010" into "Hawaii Five-0 2010"?
     seriesname = re.sub("(\D)[.](\D)", "\\1 \\2", seriesname)
     seriesname = re.sub("(\D)[.]", "\\1 ", seriesname)
     seriesname = re.sub("[.](\D)", " \\1", seriesname)
