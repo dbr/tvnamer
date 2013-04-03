@@ -341,10 +341,15 @@ class FileParser(object):
                     # Multiple episodes, regex specifies start and end number
                     start = int(match.group('episodenumberstart'))
                     end = int(match.group('episodenumberend'))
-                    if start > end:
+                    if end - start > 5:
+                        warn("WARNING: %s episodes detected in file: %s, possibly confused by numeric show title, using first match: %s" %(end - start, filename, start))
+                        episodenumbers = [start]
+                    elif start > end:
                         # Swap start and end
                         start, end = end, start
-                    episodenumbers = range(start, end + 1)
+                        episodenumbers = range(start, end + 1)
+                    else:
+                        episodenumbers = range(start, end + 1)
 
                 elif 'episodenumber' in namedgroups:
                     episodenumbers = [int(match.group('episodenumber')), ]
