@@ -82,6 +82,25 @@ def test_multi_episodes_continuous():
         'Stargate SG-1 - [01x01-02] - Children of the Gods (1-2).avi')
 
 
+def test_episode_numeric_title():
+    """An episode with a name starting with a number should not be
+    detected as a range
+    """
+    
+    ep = EpisodeInfo(
+        seriesname = 'Star Trek TNG',
+        seasonnumber = 1,
+        episodenumbers = [15],
+        episodename = [
+            '11001001'
+        ],
+        filename = 'STTNG-S01E15-11001001.avi')
+
+    assertEquals(
+        ep.generateFilename(),
+        'Star Trek TNG - [01x15] - 11001001.avi')
+
+
 def test_multi_episodes_seperate():
     """File with two episodes, but with different names
     """
