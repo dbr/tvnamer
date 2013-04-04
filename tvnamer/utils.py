@@ -342,7 +342,7 @@ class FileParser(object):
                     start = int(match.group('episodenumberstart'))
                     end = int(match.group('episodenumberend'))
                     if end - start > 5:
-                        warn("WARNING: %s episodes detected in file: %s, possibly confused by numeric show title, using first match: %s" %(end - start, filename, start))
+                        warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
                         episodenumbers = [start]
                     elif start > end:
                         # Swap start and end
