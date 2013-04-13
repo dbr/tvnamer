@@ -65,6 +65,7 @@ def getCommandlineParser(defaults):
     with Group(parser, "Override values") as g:
         g.add_option("-n", "--name", action="store", dest = "force_name", help = "override the parsed series name with this (applies to all files)")
         g.add_option("--series-id", action="store", dest = "series_id", help = "explicitly set the show id for TVdb to use (applies to all files)")
+        g.add_option("--use-folder-name", action="store_true", dest = "use_folder_name", help = "Use the parent folder name help determine the series name")
 
     # Misc
     with Group(parser, "Misc") as g:
