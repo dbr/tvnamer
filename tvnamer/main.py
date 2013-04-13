@@ -167,7 +167,7 @@ def processFile(tvdb_instance, episode):
     p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
 
     try:
-        episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
+        episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'], use_folder_name=Config['use_folder_name'])
     except (DataRetrievalError, ShowNotFound), errormsg:
         if Config['always_rename'] and Config['skip_file_on_error'] is True:
             warn("Skipping file due to error: %s" % errormsg)
@@ -302,7 +302,7 @@ def tvnamer(paths):
         except InvalidFilename, e:
             warn("Invalid filename: %s" % e)
         else:
-            if episode.seriesname is None and Config['force_name'] is None and Config['series_id'] is None:
+            if episode.seriesname is None and Config['force_name'] is None and Config['series_id'] is None and Config['use_folder_name'] is None:
                 warn("Parsed filename did not contain series name (and --name or --series-id not specified), skipping: %s" % cfile)
 
             else:

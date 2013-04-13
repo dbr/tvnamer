@@ -625,7 +625,7 @@ class EpisodeInfo(object):
             self.seasonnumber,
             ", ".join([str(x) for x in self.episodenumbers]))
 
-    def populateFromTvdb(self, tvdb_instance, force_name=None, series_id=None):
+    def populateFromTvdb(self, tvdb_instance, force_name=None, series_id=None, use_folder_name=None):
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
         series name.
         If series cannot be found, it will warn the user. If the episode is not
@@ -634,12 +634,14 @@ class EpisodeInfo(object):
         it will catch tvdb_api's user abort error and raise tvnamer's
         """
         try:
-            if series_id is None:
-                show = tvdb_instance[force_name or self.seriesname]
-            else:
+            if series_id:
                 series_id = int(series_id)
                 tvdb_instance._getShowData(series_id, Config['language'])
                 show = tvdb_instance[series_id]
+            elif use_folder_name:
+                show = tvdb_instance[os.path.split(self.filepath)[1]]
+            else:
+                show = tvdb_instance[force_name or self.seriesname]
         except tvdb_error, errormsg:
             raise DataRetrievalError("Error with www.thetvdb.com: %s" % errormsg)
         except tvdb_shownotfound:
