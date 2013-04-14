@@ -229,13 +229,13 @@ files['multiple_episodes'] = [
     'parsedseriesname': 'Flight of the Conchords',
     'correctedseriesname': 'Flight of the Conchords',
     'seasonnumber': 1, 'episodenumbers': [1, 2],
-    'episodenames': ['Sally', 'Bret Gives Up The Dream']},
+    'episodenames': ['Sally', 'Bret Gives Up the Dream']},
 
     {'input': 'Flight.of.the.Conchords.S01E02e01.An.Ep.name.avi',
     'parsedseriesname': 'Flight of the Conchords',
     'correctedseriesname': 'Flight of the Conchords',
     'seasonnumber': 1, 'episodenumbers': [1, 2],
-    'episodenames': ['Sally', 'Bret Gives Up The Dream']},
+    'episodenames': ['Sally', 'Bret Gives Up the Dream']},
 
     {'input': 'Scrubs s01e22 s01e23 s01e24.avi',
     'parsedseriesname': 'Scrubs',
