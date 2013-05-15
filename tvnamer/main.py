@@ -21,13 +21,14 @@ from config_defaults import defaults
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser,
 applyCustomInputReplacements, applyCustomOutputReplacements, applyCustomFullpathReplacements,
-formatEpisodeNumbers, makeValidFilename)
+formatEpisodeNumbers)
 
 from tvnamer_exceptions import (ConfigValueError, ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
 InvalidFilename, DataRetrievalError)
 
 from renamer import Renamer
+from formatting import makeValidFilename
 
 
 def log():

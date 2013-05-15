@@ -7,7 +7,7 @@ import platform
 
 from helpers import assertEquals
 
-from tvnamer.utils import _makeValidFilename
+from tvnamer.formatting import _makeValidFilename
 
 
 def test_basic():

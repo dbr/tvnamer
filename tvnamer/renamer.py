@@ -9,6 +9,9 @@ from unicode_helper import p
 from config import Config
 
 
+__all__ = ["Renamer", "makeValidFilename"]
+
+
 def log():
     """Returns the logger for current file
     """
@@ -98,7 +101,7 @@ class Renamer(object):
                 if e.errno != 17:
                     raise
 
-        if os.path.isfile(new_fullpath):
+        if os.path.exists(new_fullpath):
             # If the destination exists, raise exception unless force is True
             if not force:
                 raise OSError("File %s already exists, not forcefully moving %s" % (
