@@ -21,7 +21,7 @@ from config_defaults import defaults
 from unicode_helper import p
 from utils import (Config, FileFinder, FileParser,
 applyCustomInputReplacements, applyCustomOutputReplacements, applyCustomFullpathReplacements,
-formatEpisodeNumbers, makeValidFilename, DatedEpisodeInfo, NoSeasonEpisodeInfo)
+formatEpisodeNumbers, makeValidFilename)
 
 from tvnamer_exceptions import (ConfigValueError, ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
@@ -96,7 +96,7 @@ def processFile(tvdb_instance, episode):
         newName = applyCustomOutputReplacements(newName)
         p("After custom output replacements: %s" % newName)
 
-    if isinstance(episode, DatedEpisodeInfo):
+    if episode.is_dated_episode():
         newPath = Config['move_files_destination_date'] % episode.getepdata()
     else:
         newPath = Config['move_files_destination'] % episode.getepdata()

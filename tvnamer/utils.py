@@ -323,86 +323,96 @@ class FileParser(object):
 
         for cmatcher in self.compiled_regexs:
             match = cmatcher.match(filename)
-            if match:
-                namedgroups = match.groupdict().keys()
+            if not match:
+                continue
 
-                # create copy of match.groupdict for changed values
-                extra_values = match.groupdict().copy()
+            namedgroups = match.groupdict().keys()
 
-                if 'episodenumber1' in namedgroups:
-                    # Multiple episodes, have episodenumber1 or 2 etc
-                    epnos = []
-                    for cur in namedgroups:
-                        epnomatch = re.match('episodenumber(\d+)', cur)
-                        if epnomatch:
-                            epnos.append(int(match.group(cur)))
-                            del extra_values[cur]   # delete auxiliary key from extra_values
-                    epnos.sort()
-                    episodenumbers = epnos
+            # create copy of match.groupdict for changed values
+            extra_values = match.groupdict().copy()
 
-                elif 'episodenumberstart' in namedgroups:
-                    # Multiple episodes, regex specifies start and end number
-                    start = int(match.group('episodenumberstart'))
-                    end = int(match.group('episodenumberend'))
-                    if start > end:
-                        # Swap start and end
-                        start, end = end, start
-                    episodenumbers = range(start, end + 1)
-                    if end - start > 5:
-                        warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
-                        episodenumbers = [start]
-                    del extra_values["episodenumberstart"]   # delete auxiliary key from extra_values
-                    del extra_values["episodenumberend"]   # delete auxiliary key from extra_values
+            fmt_keys = {"epname": "filename_with_episode_no_season", "noepname": "filename_without_episode_no_season"}
 
-                elif 'episodenumber' in namedgroups:
-                    episodenumbers = [int(match.group('episodenumber')), ]
-                    del extra_values["episodenumber"]   # delete auxiliary key from extra_values
+            if 'episodenumber1' in namedgroups:
+                # Multiple episodes, have episodenumber1 or 2 etc
+                epnos = []
+                for cur in namedgroups:
+                    epnomatch = re.match('episodenumber(\d+)', cur)
+                    if epnomatch:
+                        epnos.append(int(match.group(cur)))
+                        del extra_values[cur]   # delete auxiliary key from extra_values
+                epnos.sort()
+                episodenumbers = epnos
 
-                elif any(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
-                    if not all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
-                        raise ConfigValueError(
-                            "Date-based regex must contain groups 'year', 'month' and 'day'")
+            elif 'episodenumberstart' in namedgroups:
+                # Multiple episodes, regex specifies start and end number
+                start = int(match.group('episodenumberstart'))
+                end = int(match.group('episodenumberend'))
+                if start > end:
+                    # Swap start and end
+                    start, end = end, start
+                episodenumbers = range(start, end + 1)
+                if end - start > 5:
+                    warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
+                    episodenumbers = [start]
+                del extra_values["episodenumberstart"]   # delete auxiliary key from extra_values
+                del extra_values["episodenumberend"]   # delete auxiliary key from extra_values
 
-                    episodenumbers = [datetime.date(handleYear(match.group('year')),
-                                                    int(match.group('month')),
-                                                    int(match.group('day')))]
-                    extra_values["year"] = episodenumbers[0].year
-                    extra_values["month"] = episodenumbers[0].month
-                    extra_values["day"] = episodenumbers[0].day
+            elif 'episodenumber' in namedgroups:
+                episodenumbers = [int(match.group('episodenumber')), ]
+                del extra_values["episodenumber"]   # delete auxiliary key from extra_values
 
-                else:
+            elif any(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
+                if not all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
                     raise ConfigValueError(
-                        "Regex does not contain episode number group, should"
-                        "contain episodenumber, episodenumber1-9, or"
-                        "episodenumberstart and episodenumberend\n\nPattern"
-                        "was:\n" + cmatcher.pattern)
+                        "Date-based regex must contain groups 'year', 'month' and 'day'")
 
-                extra_values['episode'] = formatEpisodeNumbers(episodenumbers)
+                episodenumbers = [datetime.date(handleYear(match.group('year')),
+                                                int(match.group('month')),
+                                                int(match.group('day')))]
+                extra_values["year"] = episodenumbers[0].year
+                extra_values["month"] = episodenumbers[0].month
+                extra_values["day"] = episodenumbers[0].day
 
-                if not 'seriesname' in namedgroups:
-                    raise ConfigValueError(
-                        "Regex must contain seriesname. Pattern was:\n" + cmatcher.pattern)
+                fmt_keys = {"epname": "filename_with_date_and_episode", "noepname": "filename_with_date_without_episode"}
 
-                seriesname = match.group('seriesname')
-                if seriesname:
-                    seriesname = cleanRegexedSeriesName(seriesname)
-                    seriesname = replaceInputSeriesName(seriesname)
+            else:
+                raise ConfigValueError(
+                    "Regex does not contain episode number group, should"
+                    "contain episodenumber, episodenumber1-9, or"
+                    "episodenumberstart and episodenumberend\n\nPattern"
+                    "was:\n" + cmatcher.pattern)
 
-                if extra_values.get('seasonnumber'):
-                    extra_values['seasonnumber'] = int(extra_values.get('seasonnumber'))
-                    episode = EpisodeInfo
-                elif all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
-                    episode = DatedEpisodeInfo
-                elif 'group' in namedgroups:
-                    episode = AnimeEpisodeInfo
+            extra_values['episode'] = formatEpisodeNumbers(episodenumbers)
+
+            if not 'seriesname' in namedgroups:
+                raise ConfigValueError(
+                    "Regex must contain seriesname. Pattern was:\n" + cmatcher.pattern)
+
+            seriesname = match.group('seriesname')
+            if seriesname:
+                seriesname = cleanRegexedSeriesName(seriesname)
+                seriesname = replaceInputSeriesName(seriesname)
+
+            if extra_values.get('seasonnumber'):
+                extra_values['seasonnumber'] = int(extra_values.get('seasonnumber'))
+                # overwrite default *_no_season key
+                fmt_keys = {"epname": "filename_with_episode", "noepname": "filename_without_episode"}
+
+            if 'group' in namedgroups:
+                if extra_values.get('crc'):
+                    fmt_keys = {"epname": "filename_anime_with_episode", "noepname": "filename_anime_without_episode"}
                 else:
-                    episode = NoSeasonEpisodeInfo
+                    fmt_keys = {"epname": "filename_anime_with_episode_without_crc", "noepname": "filename_anime_without_episode_without_crc"}
 
-                return episode(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
+            return EpisodeInfo(
+                    seriesname = seriesname,
+                    episodenumbers = episodenumbers,
+                    filename = self.path,
+                    fmt_keys = fmt_keys,
+                    extra = extra_values)
+
+        # body of for loop didn't return, which means no regex matches the filename
         else:
             emsg = "Cannot parse %r" % self.path
             if len(Config['input_filename_replacements']) > 0:
@@ -581,18 +591,19 @@ class EpisodeInfo(object):
     logic to generate new name
     """
 
-    CFG_KEY_WITH_EP = "filename_with_episode"
-    CFG_KEY_WITHOUT_EP = "filename_without_episode"
-
     _fullpath = str
     filename = str
     extension = str
 
-    def __init__(self, filename, episodenumbers, extra={}, **kwargs):
+    def __init__(self, filename, episodenumbers, fmt_keys, extra=None, **kwargs):
         self.fullpath = filename
         self.episodenumbers = episodenumbers
+        self.fmt_keys = fmt_keys
 
-        self.extra = extra
+        if extra is None:
+            self.extra = {}
+        else:
+            self.extra = extra
         self.extra.update(kwargs)
 
     @property
@@ -639,6 +650,9 @@ class EpisodeInfo(object):
         string += "episode: %s" % ", ".join([str(x) for x in self.episodenumbers])
         return string
 
+    def is_dated_episode(self):
+        return self.fmt_keys["epname"].startswith("filename_with_date_")
+
     def populateFromTvdb(self, tvdb_instance, force_name=None, series_id=None):
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
         series name.
@@ -665,7 +679,7 @@ class EpisodeInfo(object):
             # Series was found, use corrected series name
             self.extra['seriesname'] = replaceOutputSeriesName(show['seriesname'])
 
-        if isinstance(self, DatedEpisodeInfo):
+        if self.is_dated_episode():
             # Date-based episode
             epnames = []
             for cepno in self.episodenumbers:
@@ -756,48 +770,10 @@ class EpisodeInfo(object):
 
     def generateFilename(self):
         epdata = self.getepdata()
-
         if self.extra.get('episodename'):
-            return Config[self.CFG_KEY_WITH_EP] % epdata
+            return Config[self.fmt_keys["epname"]] % epdata
         else:
-            return Config[self.CFG_KEY_WITHOUT_EP] % epdata
+            return Config[self.fmt_keys["noepname"]] % epdata
 
     def __repr__(self):
         return u"<%s: %r>" % (self.__class__.__name__, self.fullfilename)
-
-
-class DatedEpisodeInfo(EpisodeInfo):
-    CFG_KEY_WITH_EP = "filename_with_date_and_episode"
-    CFG_KEY_WITHOUT_EP = "filename_with_date_without_episode"
-
-
-class NoSeasonEpisodeInfo(EpisodeInfo):
-    CFG_KEY_WITH_EP = "filename_with_episode_no_season"
-    CFG_KEY_WITHOUT_EP = "filename_without_episode_no_season"
-
-
-class AnimeEpisodeInfo(EpisodeInfo):
-    CFG_KEY_WITH_EP = "filename_anime_with_episode"
-    CFG_KEY_WITHOUT_EP = "filename_anime_without_episode"
-
-    CFG_KEY_WITH_EP_NO_CRC = "filename_anime_with_episode_without_crc"
-    CFG_KEY_WITHOUT_EP_NO_CRC = "filename_anime_without_episode_without_crc"
-
-    def generateFilename(self):
-        epdata = self.getepdata()
-
-        # Get appropriate config key, depending on if episode name was
-        # found, and if crc value was found
-        if self.extra.get('episodename'):
-            if self.extra.get('crc'):
-                cfgkey = self.CFG_KEY_WITH_EP
-            else:
-                cfgkey = self.CFG_KEY_WITH_EP_NO_CRC
-        else:
-            if self.extra.get('crc'):
-                # Have crc, but no ep name
-                cfgkey = self.CFG_KEY_WITHOUT_EP
-            else:
-                cfgkey = self.CFG_KEY_WITHOUT_EP_NO_CRC
-
-        return Config[cfgkey] % epdata
