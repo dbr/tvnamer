@@ -5,7 +5,7 @@
 
 from helpers import assertEquals
 
-from tvnamer.utils import (FileParser, DatedEpisodeInfo, NoSeasonEpisodeInfo)
+from tvnamer.utils import FileParser
 
 from test_files import files
 
@@ -90,7 +90,7 @@ def test_autogen_names():
                         assertEquals(p.episodenumbers, [name_data['epno']])
                         assertEquals(p.seriesname, name_data['seriesname'])
                         # Only EpisodeInfo has seasonnumber
-                        if not isinstance(p, (DatedEpisodeInfo, NoSeasonEpisodeInfo)):
+                        if p.eptype not in ['dated', 'noseason']:
                             assertEquals(p.seasonnumber, name_data['seasno'])
         #end cur_test
 
@@ -112,7 +112,7 @@ def check_case(curtest):
             curtest['parsedseriesname'].lower())
 
     assertEquals(theep.episodenumbers, curtest['episodenumbers'])
-    if not isinstance(theep, (DatedEpisodeInfo, NoSeasonEpisodeInfo)):
+    if theep.eptype not in ['dated', 'noseason']:
         assertEquals(theep.seasonnumber, curtest['seasonnumber'])
 
 
