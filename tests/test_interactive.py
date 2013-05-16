@@ -30,7 +30,7 @@ def test_simple_multiple_files():
         'scrubs.s01e01.hdtv.fake.avi',
         'my.name.is.earl.s01e01.fake.avi',
         'a.fake.show.s12e24.fake.avi',
-        'total.access.s01e01.avi']
+        'total.access.247.s01e01.avi']
 
     expected_files = [
         'Scrubs - [01x01] - My First Day.avi',
@@ -57,7 +57,7 @@ def test_simple_batch_functionality():
         'expected':'My Name Is Earl - [01x01] - Pilot.avi'},
         {'in':'a.fake.show.s12e24.fake.avi',
         'expected':'a.fake.show.s12e24.fake.avi'},
-        {'in': 'total.access.s01e01.avi',
+        {'in': 'total.access.247.s01e01.avi',
         'expected': 'Total Access 24_7 - [01x01] - Episode #1.avi'},
     ]
 
@@ -83,7 +83,7 @@ def test_interactive_always_option():
         'scrubs.s01e01.hdtv.fake.avi',
         'my.name.is.earl.s01e01.fake.avi',
         'a.fake.show.s12e24.fake.avi',
-        'total.access.s01e01.avi']
+        'total.access.247.s01e01.avi']
 
     expected_files = [
         'Scrubs - [01x01] - My First Day.avi',
