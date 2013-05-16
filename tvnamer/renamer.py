@@ -9,7 +9,7 @@ from unicode_helper import p
 from config import Config
 
 
-__all__ = ["Renamer", "makeValidFilename"]
+__all__ = ["Renamer"]
 
 
 def log():

@@ -21,6 +21,10 @@ defaults = {
     # Applied only in batch mode
     'skip_file_on_error': True,
 
+    # Exit tvnamer (with non-zero return code) if finding show data failed (thetvdb.com is down etc)
+    # Applied only in batch mode, overrides skip_file_on_error
+    'exit_on_error': False,
+
     # Forcefully overwrite existing files when renaming or
     # moving. This potentially destroys the old file. Default is False
     'overwrite_destination': False,
@@ -406,7 +410,7 @@ defaults = {
 
     # Seasonless filenames.
     'filename_with_episode_no_season':
-      '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
+     '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
     'filename_without_episode_no_season':
      '%(seriesname)s - [%(episode)s]%(ext)s',
 

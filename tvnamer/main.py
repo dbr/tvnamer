@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Main tvnamer utility functionality
+""" Main tvnamer utility functionality
 """
 
 import os
@@ -28,19 +28,18 @@ EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
 InvalidFilename, DataRetrievalError)
 
 from renamer import Renamer
-from formatting import makeValidFilename
 
 
 def log():
-    """Returns the logger for current file
+    """ Returns the logger for current file
     """
     return logging.getLogger(__name__)
 
 
 def confirm(question, options, default = "y"):
-    """Takes a question (string), list of options and a default value (used
-    when user simply hits enter).
-    Asks until valid option is entered.
+    """ Takes a question (string), list of options and a default value (used
+        when user simply hits enter).
+        Asks until valid option is entered.
     """
 
     # Highlight default option with [ ]
@@ -67,9 +66,8 @@ def confirm(question, options, default = "y"):
             return default
 
 
-# TODO: function is too long, split interaction with user from filename generation and renaming
 def processFile(tvdb_instance, episode):
-    """Gets episode name, prompts user for input
+    """ Gets episode name, prompts user for input
     """
 
     p("#" * 20)
@@ -83,52 +81,19 @@ def processFile(tvdb_instance, episode):
     try:
         episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
     except (DataRetrievalError, ShowNotFound, SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound), errormsg:
-        # Show was found, so use corrected series name
-        if Config['batch'] and Config['skip_file_on_error']:
-            log().warn("Skipping file due to error: %s" % errormsg)
-            return
         log().warn(errormsg)
-        # TODO: option to exit with returncode
+        if Config['batch'] and Config['exit_on_error']:
+            sys.exit(1)
+        if Config['batch'] and Config['skip_file_on_error']:
+            log().warn("Skipping file due to previous error.")
+            return
 
-    newName = episode.generateFilename()
-
-    if len(Config['output_filename_replacements']) > 0:
-        p("Before custom output replacements: %s" % newName)
-        newName = applyCustomOutputReplacements(newName)
-        p("After custom output replacements: %s" % newName)
-
-    if episode.is_dated_episode():
-        newPath = Config['move_files_destination_date'] % episode.getepdata()
-    else:
-        newPath = Config['move_files_destination'] % episode.getepdata()
-    if Config['move_files_destination_is_filepath']:
-        newPath, newName = os.path.split(newPath)
-
-    # make newName lowercase if specified in config
-    if Config['lowercase_filename']:
-        newName = newName.lower()
-
-    # make sure the filename is valid
-    newName = makeValidFilename(newName)
-
-    # Join new filepath to old one (to handle realtive dirs)
-    oldPath = os.path.dirname(episode.fullpath)
-    newFullPath = os.path.abspath(os.path.join(oldPath, newPath, newName))
-
-    # apply full-path replacements
-    if len(Config['move_files_fullpath_replacements']) > 0:
-        p("Before custom full path replacements: %s" % (newFullPath))
-        newFullPath = applyCustomFullpathReplacements(newFullPath)
+    newFullPath = episode.getNewFullPath()
 
     # don't do anything if filename was not changed
     if newFullPath == episode.fullpath:
         p("Existing filename is correct: %s" % episode.fullpath)
         return
-
-    p("Old path: %s" % oldPath)
-    p("New path: %s" % newPath)
-    p("Final filename: %s" % newName)
-    p("#" * 20)
 
     if not Config['batch'] and Config['move_files_confirmation']:
         ans = confirm("Move file?", options = ['y', 'n', 'a', 'q'], default = 'y')
@@ -161,7 +126,7 @@ def processFile(tvdb_instance, episode):
 
 
 def findFiles(paths):
-    """Takes an array of paths, returns all files found
+    """ Takes an array of paths, returns all files found
     """
 
     valid_files = []
@@ -188,7 +153,7 @@ def findFiles(paths):
 
 
 def tvnamer(paths):
-    """Main tvnamer function, takes an array of paths, does stuff.
+    """ Main tvnamer function, takes an array of paths, does stuff.
     """
 
     episodes_found = []
@@ -224,8 +189,8 @@ def tvnamer(paths):
 
 
 class Logger:
-    """Helper class holding logging handlers, formatters etc. so that
-    they can be added or removed at runtime.
+    """ Helper class holding logging handlers, formatters etc. so that
+        they can be added or removed at runtime.
     """
 
     def __init__(self):
@@ -238,9 +203,9 @@ class Logger:
         self.fileHandler = None
 
     def initLogging(self, verbose_console=False, filename=""):
-        """Init logging to console and file specified by 'filename' argument.
-        Maximum log level of console can be configured by 'consoleLogLevel' argument,
-        log level of file is always DEBUG.
+        """ Init logging to console and file specified by 'filename' argument.
+            Maximum log level of console can be configured by 'consoleLogLevel' argument,
+            log level of file is always DEBUG.
         """
 
         self.rootLogger.removeHandler(self.consoleHandler)
@@ -268,7 +233,7 @@ class Logger:
 
 
 def main():
-    """Parses command line arguments, displays errors from tvnamer in terminal
+    """ Parses command line arguments, displays errors from tvnamer in terminal
     """
 
     logger = Logger()
