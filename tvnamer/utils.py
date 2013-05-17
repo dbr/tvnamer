@@ -268,11 +268,7 @@ class FileFinder(object):
             newpath = os.path.join(startpath, subf)
             newpath = os.path.abspath(newpath)
             if os.path.isfile(newpath):
-                if not self._checkExtension(subf):
-                    continue
-                elif self._blacklistedFilename(subf):
-                    continue
-                else:
+                if self._checkExtension(subf) and not self._blacklistedFilename(subf):
                     allfiles.append(newpath)
             elif self.recursive:
                 allfiles.extend(self._findFilesInPath(newpath))
@@ -447,6 +443,21 @@ class EpisodeInfo(object):
             self.extra = extra
         self.extra.update(kwargs)
 
+    def __getattr__(self, key):
+        """ Expose values of self.extra as attributes of EpisodeInfo.
+            First check if self already has attribute 'key', otherwise look into self.extra.
+        """
+
+        if self.__dict__.has_key(key):
+            return self.__dict__[key]
+        elif self.extra.has_key(key):
+            return self.extra[key]
+        raise AttributeError("'%s' object has no attribute '%s'" % (self.__class__.__name__, key))
+
+    def __hasattr__(self, key):
+        return self.__dict__.has_key(key) or self.extra.has_key(key)
+
+    # TODO: this might not be necessary as self.fullpath is not updated after rename
     def fullpath():
         def fget(self):
             return self._fullpath
@@ -461,24 +472,13 @@ class EpisodeInfo(object):
     def fullfilename(self):
         return u"%s%s" % (self.filename, self.extension)
 
-    @property
-    def seriesname(self):
-        return self.extra.get('seriesname')
-    @property
-    def episodename(self):
-        return self.extra.get('episodename')
-    @property
-    def seasonnumber(self):
-        seasno = self.extra.get('seasonnumber')
-        return int(seasno) if seasno else None
-
     def sortable_info(self):
         """ Returns a list of sortable information
         """
         info = []
         info.append(self.extra['seriesname'])
-        if self.seasonnumber:
-            info.append(self.seasonnumber)
+        if hasattr(self, 'seasonnumber'):
+            info.append(int(self.seasonnumber))
         info.append(self.episodenumbers)
         return info
 
@@ -486,7 +486,7 @@ class EpisodeInfo(object):
         """ Used in UI
         """
         string = ""
-        if self.seasonnumber:
+        if hasattr(self, 'seasonnumber'):
             string += "season: %s, " % self.seasonnumber
         string += "episode: %s" % ", ".join([str(x) for x in self.episodenumbers])
         return string
@@ -542,8 +542,7 @@ class EpisodeInfo(object):
                 try:
                     sr = show.airedOn(cepno)
                     if len(sr) > 1:
-                        raise EpisodeNotFound(
-                            "Ambigious air date %s, there were %s episodes on that day" % (cepno, len(sr)))
+                        raise EpisodeNotFound("Ambigious air date %s, there were %s episodes on that day" % (cepno, len(sr)))
                     epnames.append(sr[0]['episodename'])
                 except tvdb_episodenotfound:
                     raise EpisodeNotFound("Episode that aired on %s could not be found" % cepno)
