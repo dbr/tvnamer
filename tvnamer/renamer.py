@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import shutil
 import logging
 
 from unicode_helper import p
-from config import Config
 
 
 __all__ = ["Renamer"]
@@ -80,7 +78,7 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
 
-    def rename(self, new_fullpath=None, force=False, always_copy=False, always_move=False, leave_symlink=False, create_dirs=True):
+    def rename(self, new_fullpath, force=False, always_copy=False, always_move=False, leave_symlink=False, create_dirs=True):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)

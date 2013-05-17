@@ -3,11 +3,10 @@
 """ Utilities for tvnamer, including filename parsing
 """
 
-import datetime
 import os
 import re
-import sys
 import logging
+import datetime
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
@@ -16,7 +15,7 @@ from config import Config
 from _titlecase import titlecase
 from tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound, ConfigValueError, UserAbort)
+EpisodeNameNotFound, ConfigValueError, UserAbort, BaseTvnamerException)
 
 from formatting import makeValidFilename, formatEpisodeNames, formatEpisodeNumbers
 from unicode_helper import p
@@ -324,7 +323,7 @@ class FileParser(object):
                             "Pattern was:\n" + cpattern)
 
             except re.error, errormsg:
-                log().warn("Invalid episode_pattern (error: %s)\nPattern:\n%s" % (errormsg, cpattern))
+                log().warning("Invalid episode_pattern (error: %s)\nPattern:\n%s" % (errormsg, cpattern))
             else:
                 self.compiled_regexs.append(cregex)
 
@@ -344,7 +343,7 @@ class FileParser(object):
             parsed = match.groupdict()
 
             episode_type = self.getEpType(parsed)
-            episode_numbers = self.getEpNumbers(parsed, episode_type)
+            episode_numbers = self.getEpNumbers(parsed, episode_type, filename)
 
             if parsed.get('seriesname'):
                 parsed['seriesname'] = cleanRegexedSeriesName(parsed['seriesname'])
@@ -373,7 +372,7 @@ class FileParser(object):
             return 'noseason'
         return 'default'
 
-    def getEpNumbers(self, parsed, eptype):
+    def getEpNumbers(self, parsed, eptype, filename):
         """ Returns parsed episode numbers, updates 'parsed' dict (removes auxiliary items,
             adds 'year', 'month', 'day' items for dated episodes.
         """
@@ -395,7 +394,7 @@ class FileParser(object):
                 start, end = end, start
             episodenumbers = range(start, end + 1)
             if end - start > 5:
-                warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
+                log().warning("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
                 episodenumbers = [start]
             del parsed["episodenumberstart"]   # delete auxiliary key from parsed
             del parsed["episodenumberend"]   # delete auxiliary key from parsed

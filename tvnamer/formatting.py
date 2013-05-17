@@ -153,7 +153,7 @@ def formatEpisodeNames(names):
     numbers = []
     for cname in names:
         match = re.match("(.*) \(([0-9]+)\)$", cname)
-        if found_name != "" and (not match or epname != found_name):
+        if found_name != "" and not match:
             # An episode didn't match
             return join_with.join(names)
 

@@ -16,12 +16,10 @@ from __init__ import __version__
 from tvdb_api import Tvdb
 
 import cliarg_parser
-from config_defaults import defaults
+from config import Config
 
 from unicode_helper import p
-from utils import (Config, FileFinder, FileParser,
-applyCustomInputReplacements, applyCustomOutputReplacements, applyCustomFullpathReplacements,
-formatEpisodeNumbers)
+from utils import FileFinder, FileParser, applyCustomInputReplacements
 
 from tvnamer_exceptions import (ConfigValueError, ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
@@ -239,14 +237,14 @@ def main():
     logger = Logger()
     logger.initLogging()
 
-    opter = cliarg_parser.getCommandlineParser(defaults)
+    opter = cliarg_parser.getCommandlineParser(Config)
     opts, args = opter.parse_args()
 
     logger.initLogging(verbose_console=opts.verbose, filename=opts.log_file)
     log().info("tvnamer started")
 
-    # If a config is specified, load it, update the defaults using the loaded
-    # values, then reparse the options with the updated defaults.
+    # If a config is specified, load it, update the Config using the loaded
+    # values, then reparse the options with the updated Config.
     default_configuration = os.path.expanduser("~/.tvnamer.json")
 
     if opts.loadconfig is not None:
@@ -278,9 +276,9 @@ def main():
             log().error("Error in config: " + e.message)
             opter.exit(1)
         else:
-            # Config loaded, update optparser's defaults and reparse
-            defaults.update(loadedConfig)
-            opter = cliarg_parser.getCommandlineParser(defaults)
+            # Config loaded, update optparser's Config and reparse
+            Config.update(loadedConfig)
+            opter = cliarg_parser.getCommandlineParser(Config)
             opts, args = opter.parse_args()
             # log file path may be specified in config
             logger.initLogging(verbose_console=opts.verbose, filename=opts.log_file)
@@ -329,7 +327,8 @@ def main():
         opter.error("No filenames or directories supplied")
 
     try:
-        tvnamer(paths = sorted(args))
+        args.sort()
+        tvnamer(paths = args)
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
     except UserAbort, errormsg:

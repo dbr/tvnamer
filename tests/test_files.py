@@ -145,8 +145,8 @@ files['misc'] = [
     'seasonnumber': None, 'episodenumbers': [11],
     'episodenames': ['The Itchy Tag']},
 
-    {'input': 'Total Access - [01x01]',
-    'parsedseriesname': 'total access',
+    {'input': 'Total Access 247 - [01x01]',
+    'parsedseriesname': 'total access 247',
     'correctedseriesname': 'Total Access 24/7',
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': ['Episode #1']},
