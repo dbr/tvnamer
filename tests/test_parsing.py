@@ -91,7 +91,7 @@ def test_autogen_names():
                         assertEquals(p.seriesname, name_data['seriesname'])
                         # Only EpisodeInfo has seasonnumber
                         if p.eptype not in ['dated', 'noseason']:
-                            assertEquals(p.seasonnumber, name_data['seasno'])
+                            assertEquals(int(p.seasonnumber), name_data['seasno'])
         #end cur_test
 
         cur_test.description = cdata['description']
@@ -112,8 +112,8 @@ def check_case(curtest):
             curtest['parsedseriesname'].lower())
 
     assertEquals(theep.episodenumbers, curtest['episodenumbers'])
-    if theep.eptype not in ['dated', 'noseason']:
-        assertEquals(theep.seasonnumber, curtest['seasonnumber'])
+    if hasattr(curtest, 'seasonnumber'):
+        assertEquals(int(theep.seasonnumber), curtest['seasonnumber'])
 
 
 def test_parsing_generator():
