@@ -654,7 +654,7 @@ class EpisodeInfo(object):
             newFullPath = applyCustomFullpathReplacements(newFullPath)
 
         p("Old path: %s" % oldPath)
-        p("New path: %s" % newPath)
+        p("New path: %s" % os.path.dirname(newFullPath))
         p("Final filename: %s" % newName)
         p("#" * 20)
 
