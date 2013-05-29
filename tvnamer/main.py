@@ -226,7 +226,7 @@ class Logger:
             self.rootLogger.addHandler(self.fileHandler)
 
     def __del__(self):
-        log().info("tvnamer exited")
+        log().debug("tvnamer exited")
         logging.shutdown()
 
 
@@ -241,7 +241,7 @@ def main():
     opts, args = opter.parse_args()
 
     logger.initLogging(verbose_console=opts.verbose, filename=opts.log_file)
-    log().info("tvnamer started")
+    log().debug("tvnamer started")
 
     # If a config is specified, load it, update the Config using the loaded
     # values, then reparse the options with the updated Config.
