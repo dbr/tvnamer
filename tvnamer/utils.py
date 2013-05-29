@@ -626,9 +626,9 @@ class EpisodeInfo(object):
         newName = self.getFormatString() % epdata
 
         if len(Config['output_filename_replacements']) > 0:
-            p("Before custom output replacements: %s" % newName)
+            p("Before custom output replacements: '%s'" % newName)
             newName = applyCustomOutputReplacements(newName)
-            p("After custom output replacements: %s" % newName)
+            p("After custom output replacements:  '%s'" % newName)
 
         if self.eptype == 'dated':
             newPath = Config['move_files_destination_date'] % epdata
@@ -650,13 +650,8 @@ class EpisodeInfo(object):
 
         # apply full-path replacements
         if len(Config['move_files_fullpath_replacements']) > 0:
-            p("Before custom full path replacements: %s" % (newFullPath))
+            p("Before custom full path replacements: '%s'" % (newFullPath))
             newFullPath = applyCustomFullpathReplacements(newFullPath)
-
-        p("Old path: %s" % oldPath)
-        p("New path: %s" % os.path.dirname(newFullPath))
-        p("Final filename: %s" % newName)
-        p("#" * 20)
 
         return newFullPath
 

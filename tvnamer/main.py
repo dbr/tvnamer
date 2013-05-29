@@ -68,13 +68,13 @@ def processFile(tvdb_instance, episode):
     """ Gets episode name, prompts user for input
     """
 
-    p("#" * 20)
-    p("# Processing file: %s" % episode.fullfilename)
+    p("Processing file: '%s'" % episode.fullfilename)
 
     if len(Config['input_filename_replacements']) > 0:
-        p("# With custom replacements: %s" % applyCustomInputReplacements(episode.fullfilename))
+        p("After input replacements: '%s'" % applyCustomInputReplacements(episode.fullfilename))
 
-    p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
+    p("Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
+    p("")
 
     try:
         episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
@@ -87,10 +87,18 @@ def processFile(tvdb_instance, episode):
             return
 
     newFullPath = episode.getNewFullPath()
+    p("")
+
+    p("Old directory: '%s'" % os.path.dirname(episode.fullpath))
+    p("New directory: '%s'" % os.path.dirname(newFullPath))
+    p("")
+    p("Old filename:  '%s'" % episode.fullfilename)
+    p("New filename:  '%s'" % os.path.split(newFullPath)[1])
+    p("")
 
     # don't do anything if filename was not changed
     if newFullPath == episode.fullpath:
-        p("Existing filename is correct: %s" % episode.fullpath)
+        p("Existing filename is correct: '%s'" % episode.fullpath)
         return
 
     if not Config['batch'] and Config['move_files_confirmation']:
@@ -171,7 +179,7 @@ def tvnamer(paths):
     if len(episodes_found) == 0:
         raise NoValidFilesFoundError()
 
-    p("# Found %d episode" % len(episodes_found) + ("s" * (len(episodes_found) > 1)))
+    p("Found %d episode" % len(episodes_found) + ("s" * (len(episodes_found) > 1)))
 
     # Sort episodes by series name, season and episode number
     episodes_found.sort(key = lambda x: x.sortable_info())
@@ -182,8 +190,10 @@ def tvnamer(paths):
         language = Config['language'])
 
     for episode in episodes_found:
+        p("")
+        p("#" * 20)
         processFile(tvdb_instance, episode)
-        p('')
+        p("#" * 20)
 
 
 class Logger:
