@@ -22,8 +22,8 @@ from unicode_helper import p
 from utils import FileFinder, FileParser, applyCustomInputReplacements
 
 from tvnamer_exceptions import (ConfigValueError, ShowNotFound, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
-InvalidFilename, DataRetrievalError)
+                                EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
+                                InvalidFilename, DataRetrievalError)
 
 from renamer import Renamer
 
@@ -34,7 +34,7 @@ def log():
     return logging.getLogger(__name__)
 
 
-def confirm(question, options, default = "y"):
+def confirm(question, options, default="y"):
     """ Takes a question (string), list of options and a default value (used
         when user simply hits enter).
         Asks until valid option is entered.
@@ -102,7 +102,7 @@ def processFile(tvdb_instance, episode):
         return
 
     if not Config['batch'] and Config['move_files_confirmation']:
-        ans = confirm("Move file?", options = ['y', 'n', 'a', 'q'], default = 'y')
+        ans = confirm("Move file?", options=['y', 'n', 'a', 'q'], default='y')
         if ans == "a":
             p("Always moving files")
             Config['move_files_confirmation'] = False
@@ -122,11 +122,11 @@ def processFile(tvdb_instance, episode):
     cnamer = Renamer(episode.fullpath)
     try:
         cnamer.rename(
-            new_fullpath = newFullPath,
-            always_move = Config['always_move'],
-            always_copy = Config['always_copy'],
-            leave_symlink = Config['leave_symlink'],
-            force = Config['overwrite_destination'])
+            new_fullpath=newFullPath,
+            always_move=Config['always_move'],
+            always_copy=Config['always_copy'],
+            leave_symlink=Config['leave_symlink'],
+            force=Config['overwrite_destination'])
     except OSError, e:
         log().warn(e)
 
@@ -140,9 +140,9 @@ def findFiles(paths):
     for cfile in paths:
         cur = FileFinder(
             cfile,
-            with_extension = Config['valid_extensions'],
-            filename_blacklist = Config["filename_blacklist"],
-            recursive = Config['recursive'])
+            with_extension=Config['valid_extensions'],
+            filename_blacklist=Config["filename_blacklist"],
+            recursive=Config['recursive'])
 
         try:
             valid_files.extend(cur.findFiles())
@@ -182,12 +182,12 @@ def tvnamer(paths):
     p("Found %d episode" % len(episodes_found) + ("s" * (len(episodes_found) > 1)))
 
     # Sort episodes by series name, season and episode number
-    episodes_found.sort(key = lambda x: x.sortable_info())
+    episodes_found.sort(key=lambda x: x.sortable_info())
 
     tvdb_instance = Tvdb(
-        interactive = not Config['batch'],
-        search_all_languages = Config['search_all_languages'],
-        language = Config['language'])
+        interactive=not Config['batch'],
+        search_all_languages=Config['search_all_languages'],
+        language=Config['language'])
 
     for episode in episodes_found:
         p("")
@@ -332,13 +332,12 @@ def main():
         log().error("Error in config: " + e.message)
         opter.exit(1)
 
-
     if len(args) == 0:
         opter.error("No filenames or directories supplied")
 
     try:
         args.sort()
-        tvnamer(paths = args)
+        tvnamer(paths=args)
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
     except UserAbort, errormsg:

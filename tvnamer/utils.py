@@ -9,13 +9,14 @@ import logging
 import datetime
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
-tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
+                      tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
 
 from config import Config
 from _titlecase import titlecase
-from tvnamer_exceptions import (InvalidPath, InvalidFilename,
-ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound, ConfigValueError, UserAbort, BaseTvnamerException)
+from tvnamer_exceptions import (InvalidPath, InvalidFilename, ShowNotFound,
+                                DataRetrievalError, SeasonNotFound, EpisodeNotFound,
+                                EpisodeNameNotFound, ConfigValueError, UserAbort,
+                                BaseTvnamerException)
 
 from formatting import makeValidFilename, formatEpisodeNames, formatEpisodeNumbers
 from unicode_helper import p
@@ -114,7 +115,7 @@ def replaceInputSeriesName(seriesname):
     """
 
     for pat, replacement in Config['input_series_replacements'].iteritems():
-        if re.match(pat, seriesname, re.IGNORECASE|re.UNICODE):
+        if re.match(pat, seriesname, re.IGNORECASE | re.UNICODE):
             return replacement
     return seriesname
 
@@ -165,7 +166,7 @@ class FileFinder(object):
         filtering is done
     """
 
-    def __init__(self, path, with_extension = None, filename_blacklist = None, recursive = False):
+    def __init__(self, path, with_extension=None, filename_blacklist=None, recursive=False):
         self.path = path
         if with_extension is None:
             self.with_extension = []
@@ -295,13 +296,15 @@ class FileParser(object):
 
                 # check regex validity
                 if 'seriesname' not in groups:
-                    raise ConfigValueError("Regex must contain group 'seriesname'."
+                    raise ConfigValueError(
+                        "Regex must contain group 'seriesname'."
                         "Pattern was:\n" + cpattern)
 
                 dateset = set(['year', 'month', 'day'])
                 intersection = groups.intersection(dateset)
                 if len(intersection) > 0 and intersection != dateset:
-                    raise ConfigValueError("Date-based regex must contain groups 'year', 'month' and 'day'."
+                    raise ConfigValueError(
+                        "Date-based regex must contain groups 'year', 'month' and 'day'."
                         "Pattern was:\n" + cpattern)
 
                 # check for episodenumber only in non-dated regex
@@ -309,7 +312,8 @@ class FileParser(object):
                     epnoset = set(['episodenumberstart', 'episodenumberend'])
                     intersection = groups.intersection(epnoset)
                     if len(intersection) > 0 and intersection != epnoset:
-                        raise ConfigValueError("Regex must contain both (or none of) following groups:"
+                        raise ConfigValueError(
+                            "Regex must contain both (or none of) following groups:"
                             "'episodenumberstart', 'episodenumberend'"
                             "Pattern was:\n" + cpattern)
 
@@ -394,7 +398,7 @@ class FileParser(object):
                 start, end = end, start
             episodenumbers = range(start, end + 1)
             if end - start > 5:
-                log().warning("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
+                log().warning("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" % (end - start, filename, start))
                 episodenumbers = [start]
             del parsed["episodenumberstart"]   # delete auxiliary key from parsed
             del parsed["episodenumberend"]   # delete auxiliary key from parsed
@@ -447,24 +451,26 @@ class EpisodeInfo(object):
             First check if self already has attribute 'key', otherwise look into self.extra.
         """
 
-        if self.__dict__.has_key(key):
+        if key in self.__dict__:
             return self.__dict__[key]
-        elif self.extra.has_key(key):
+        elif key in self.extra:
             return self.extra[key]
         raise AttributeError("'%s' object has no attribute '%s'" % (self.__class__.__name__, key))
 
     def __hasattr__(self, key):
-        return self.__dict__.has_key(key) or self.extra.has_key(key)
+        return key in self.__dict__ or key in self.extra
 
     # TODO: this might not be necessary as self.fullpath is not updated after rename
     def fullpath():
         def fget(self):
             return self._fullpath
+
         def fset(self, value):
             self._fullpath = value
             self.filename = os.path.split(value)[1]
             self.filename, self.extension = split_extension(self.filename)
         return locals()
+
     fullpath = property(**fullpath())
 
     @property

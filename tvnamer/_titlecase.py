@@ -69,7 +69,7 @@ def titlecase(text):
             match = MAC_MC.match(word)
             if match:
                 tc_line.append("%s%s" % (match.group(1).capitalize(),
-                                      match.group(2).capitalize()))
+                                         match.group(2).capitalize()))
                 continue
 
             if "/" in word and not "//" in word:

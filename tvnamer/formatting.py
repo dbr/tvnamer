@@ -84,16 +84,17 @@ def _makeValidFilename(value, normalize_unicode=False, windows_safe=False, custo
     # There are a bunch of filenames that are not allowed on Windows.
     # As with character blacklist, treat non Darwin/Linux platforms as Windows
     if sysname not in ['Darwin', 'Linux']:
-        invalid_filenames = ["CON", "PRN", "AUX", "NUL", "COM1", "COM2",
-        "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1",
-        "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"]
+        invalid_filenames = [
+            "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5",
+            "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4",
+            "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"]
         if value in invalid_filenames:
             value = "_" + value
 
     # Replace accented characters with ASCII equivalent
     if normalize_unicode:
         import unicodedata
-        value = unicode(value) # cast data to unicode
+        value = unicode(value)  # cast data to unicode
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
     # Truncate filenames to valid/sane length.
@@ -121,10 +122,10 @@ def makeValidFilename(fname):
     """
     return _makeValidFilename(
         fname,
-        normalize_unicode = Config['normalize_unicode_filenames'],
-        windows_safe = Config['windows_safe_filenames'],
-        custom_blacklist = Config['custom_filename_character_blacklist'],
-        replace_with = Config['replace_invalid_characters_with'])
+        normalize_unicode=Config['normalize_unicode_filenames'],
+        windows_safe=Config['windows_safe_filenames'],
+        custom_blacklist=Config['custom_filename_character_blacklist'],
+        replace_with=Config['replace_invalid_characters_with'])
 
 
 def formatEpisodeNames(names):
@@ -159,7 +160,7 @@ def formatEpisodeNames(names):
 
         if match:
             epname, epno = match.group(1), match.group(2)
-        else: # assume that this is the first episode, without number
+        else:   # assume that this is the first episode, without number
             epname = cname
             epno = 1
         found_name = epname
