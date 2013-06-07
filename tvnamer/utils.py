@@ -533,7 +533,7 @@ class EpisodeInfo(object):
             raise DataRetrievalError("Error with www.thetvdb.com: %s" % errormsg)
         except tvdb_shownotfound:
             # No such series found.
-            raise ShowNotFound("Show %s not found on www.thetvdb.com" % self.extra['seriesname'])
+            raise ShowNotFound("Show '%s' not found on www.thetvdb.com" % self.extra['seriesname'])
         except tvdb_userabort, error:
             raise UserAbort(unicode(error))
         else:
@@ -563,7 +563,7 @@ class EpisodeInfo(object):
                 episodeinfo = show[seasonnumber][cepno]
 
             except tvdb_seasonnotfound:
-                raise SeasonNotFound("Season %s of show %s could not be found" % (seasonnumber, self.extra['seriesname']))
+                raise SeasonNotFound("Season %s of show '%s' could not be found" % (seasonnumber, self.extra['seriesname']))
 
             except tvdb_episodenotfound:
                 # Try to search by absolute_number
@@ -582,11 +582,11 @@ class EpisodeInfo(object):
                     epnames.append(sr[0]['episodename'])
                 else:
                     raise EpisodeNotFound(
-                        "Episode %s of show %s, season %s could not be found (also tried searching by absolute episode number)" % (
+                        "Episode %s of show '%s', season %s could not be found (also tried searching by absolute episode number)" % (
                             cepno, self.extra['seriesname'], seasonnumber))
 
             except tvdb_attributenotfound:
-                raise EpisodeNameNotFound("Could not find episode name for %s" % cepno)
+                raise EpisodeNameNotFound("Could not find episode name for '%s'" % cepno)
             else:
                 epnames.append(episodeinfo['episodename'])
 
