@@ -14,10 +14,10 @@ def test_unicode_in_inputname():
     """Tests parsing a file with unicode in the input filename
     """
     input_files = [
-        unicodedata.normalize('NFC', u'The Big Bang Theory - S02E07 - The Panty Pin\u0303ata Polarization.avi')]
+        u'The Big Bang Theory - S02E07 - The Panty Pin\u0303ata Polarization.avi']
 
     expected_files = [
-        unicodedata.normalize('NFC', u'The Big Bang Theory - [02x07] - The Panty Pin\u0303ata Polarization.avi')]
+        u'The Big Bang Theory - [02x07] - The Panty Pin\u0303ata Polarization.avi']
 
     out_data = run_tvnamer(
         with_files = input_files,
@@ -49,11 +49,11 @@ def test_not_overwritting_unicode_filename():
     """
     input_files = [
         u'The Big Bang Theory - S02E07.avi',
-        unicodedata.normalize('NFC', u'The Big Bang Theory - [02x07] - The Panty Pin\u0303ata Polarization.avi')]
+        u'The Big Bang Theory - [02x07] - The Panty Pin\u0303ata Polarization.avi']
 
     expected_files = [
         u'The Big Bang Theory - S02E07.avi',
-        unicodedata.normalize('NFC', u'The Big Bang Theory - [02x07] - The Panty Pin\u0303ata Polarization.avi')]
+        u'The Big Bang Theory - [02x07] - The Panty Pin\u0303ata Polarization.avi']
 
     out_data = run_tvnamer(
         with_files = input_files,
