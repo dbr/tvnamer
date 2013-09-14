@@ -13,8 +13,7 @@ def test_series_id():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true}
+    {"batch": true}
     """
 
     out_data = run_tvnamer(
@@ -41,7 +40,7 @@ def test_series_id_with_nameless_series():
     out_data = run_tvnamer(
         with_files = ['s01e01.avi'],
         with_config = conf,
-        with_flags = ["--series-id", '76156'],
+        with_flags = ["--series-id", '76156', "--batch"],
         with_input = "")
 
     expected_files = ['Scrubs - [01x01] - My First Day.avi']

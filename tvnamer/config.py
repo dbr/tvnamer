@@ -3,6 +3,4 @@
 """Holds Config singleton
 """
 
-from config_defaults import defaults
-
-Config = dict(defaults)
+from config_defaults import defaults as Config

@@ -5,7 +5,6 @@
 
 from functional_runner import run_tvnamer, verify_out_data
 from nose.plugins.attrib import attr
-from helpers import expected_failure
 
 
 @attr("functional")
@@ -14,8 +13,7 @@ def test_batchconfig():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true}
+    {"batch": true}
     """
 
     out_data = run_tvnamer(
@@ -35,7 +33,7 @@ def test_skip_file_on_error():
 
     conf = """
     {"skip_file_on_error": true,
-    "always_rename": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -55,7 +53,7 @@ def test_do_not_skip_file_on_error():
 
     conf = """
     {"skip_file_on_error": false,
-    "always_rename": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -75,8 +73,7 @@ def test_lowercase_names():
 
     conf = """
     {"lowercase_filename": true,
-    "always_rename": true,
-    "select_first": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -97,8 +94,7 @@ def test_replace_with_underscore():
     conf = """
     {"custom_filename_character_blacklist": " ",
     "replace_blacklisted_characters_with": "_",
-    "always_rename": true,
-    "select_first": true}
+    "batch": true}
     """
 
     out_data = run_tvnamer(
@@ -112,37 +108,12 @@ def test_replace_with_underscore():
 
 
 @attr("functional")
-@expected_failure
-def test_abs_epnmber():
-    """Ensure the absolute episode number is available for custom
-    filenames in config
-    """
-
-
-    conf = """
-    {"filename_with_episode": "%(seriesname)s - %(absoluteepisode)s%(ext)s",
-    "always_rename": true,
-    "select_first": true}
-    """
-
-    out_data = run_tvnamer(
-        with_files = ['scrubs.s01e01.avi'],
-        with_config = conf,
-        with_input = "")
-
-    expected_files = ['Scrubs - 01.avi']
-
-    verify_out_data(out_data, expected_files)
-
-
-@attr("functional")
 def test_resolve_absoloute_episode():
     """Test resolving by absolute episode number
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true}
+    {"batch": true}
     """
 
     out_data = run_tvnamer(
@@ -171,8 +142,7 @@ def test_valid_extension_recursive():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "valid_extensions": ["avi","mp4","m4v","wmv","mkv","mov","srt"],
     "recursive": true}
     """
@@ -194,8 +164,7 @@ def test_replace_ands():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "input_filename_replacements": [
         {"is_regex": true,
         "match": "(\\Wand\\W| & )",
@@ -221,8 +190,7 @@ def test_replace_ands_in_output_also():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "input_filename_replacements": [
         {"is_regex": true,
         "match": "(\\Wand\\W| & )",
@@ -253,9 +221,8 @@ def test_force_overwrite_enabled():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
-    "overwrite_destination_on_rename": true
+    {"batch": true,
+    "overwrite_destination": true
     }
     """
 
@@ -276,9 +243,8 @@ def test_force_overwrite_disabled():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
-    "overwrite_destination_on_rename": false
+    {"batch": true,
+    "overwrite_destination": false
     }
     """
 
@@ -299,9 +265,7 @@ def test_force_overwrite_default():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true
-    }
+    {"batch": true}
     """
 
     out_data = run_tvnamer(
@@ -311,29 +275,5 @@ def test_force_overwrite_default():
         run_on_directory = True)
 
     expected_files = ['Scrubs - [01x01] - My First Day.avi', 'scrubs - [01x01].avi']
-
-    verify_out_data(out_data, expected_files)
-
-
-@attr("functional")
-def test_titlecase():
-    """Tests Title Case Option To Make Episodes Like This
-    """
-
-    conf = r"""
-    {"always_rename": true,
-    "select_first": true,
-    "skip_file_on_error": false,
-    "titlecase_filename": true
-    }
-    """
-
-    out_data = run_tvnamer(
-        with_files = ['this.is.a.fake.episode.s01e01.avi'],
-        with_config = conf,
-        with_input = "",
-        run_on_directory = True)
-
-    expected_files = ['This Is a Fake Episode - [01x01].avi']
 
     verify_out_data(out_data, expected_files)

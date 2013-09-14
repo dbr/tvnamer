@@ -26,8 +26,10 @@ import sys
 import shutil
 import tempfile
 import subprocess
+import atexit
 
 from tvnamer.unicode_helper import p, unicodify
+from tvnamer import __version__
 
 
 try:
@@ -113,13 +115,6 @@ def make_dummy_files(files, location):
     return dummies
 
 
-def clear_temp_dir(location):
-    """Removes file or directory at specified location
-    """
-    p("Clearing %s" % unicode(location))
-    shutil.rmtree(location)
-
-
 def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = None, run_on_directory = False):
     """Runs tvnamer on list of file-names in with_files.
     with_files is a list of strings.
@@ -132,10 +127,16 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     # Create dummy files (config and episodes)
     tvnpath = get_tvnamer_path()
     episodes_location = make_temp_dir()
+    # register cleanup function
+    atexit.register(shutil.rmtree, episodes_location)
     dummy_files = make_dummy_files(with_files, episodes_location)
 
     if with_config is not None:
+        # insert correct version into config
+        with_config = with_config.replace("{", """{"__version__": "%s",\n""" % __version__, 1)
         configfname = make_temp_config(with_config)
+        # register cleanup function
+        atexit.register(os.unlink, configfname)
         conf_args = ['-c', configfname]
     else:
         conf_args = []
@@ -172,11 +173,6 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
         curlist = [relpath(x, episodes_location) for x in curlist]
 
         created_files.extend(curlist)
-
-    # Clean up dummy files and config
-    clear_temp_dir(episodes_location)
-    if with_config is not None:
-        os.unlink(configfname)
 
     return {
         'output': output,

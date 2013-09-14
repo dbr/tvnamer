@@ -7,7 +7,7 @@ import datetime
 
 from helpers import assertEquals
 
-from tvnamer.utils import (EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo)
+from tvnamer.utils import EpisodeInfo
 from test_files import files
 
 from tvdb_api import Tvdb
@@ -16,15 +16,21 @@ from tvdb_api import Tvdb
 def verify_name_gen(curtest, tvdb_instance):
     if "seasonnumber" in curtest:
         ep = EpisodeInfo(
+            filename = curtest['input'],
+            eptype = 'default',
             seriesname = curtest['parsedseriesname'],
             seasonnumber = curtest['seasonnumber'],
             episodenumbers = curtest['episodenumbers'])
     elif any([isinstance(x, datetime.date) for x in curtest['episodenumbers']]):
-        ep = DatedEpisodeInfo(
+        ep = EpisodeInfo(
+            filename = curtest['input'],
+            eptype = 'dated',
             seriesname = curtest['parsedseriesname'],
             episodenumbers = curtest['episodenumbers'])
     else:
-        ep = NoSeasonEpisodeInfo(
+        ep = EpisodeInfo(
+            filename = curtest['input'],
+            eptype = 'noseason',
             seriesname = curtest['parsedseriesname'],
             episodenumbers = curtest['episodenumbers'])
 
@@ -119,14 +125,14 @@ def test_multi_episodes_seperate():
 
 
 def test_simple_no_ext():
-    """Simple episode with out extension
+    """Simple episode without extension
     """
     ep = EpisodeInfo(
         seriesname = 'Scrubs',
         seasonnumber = 1,
         episodenumbers = [2],
         episodename = 'My Mentor',
-        filename = None)
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
@@ -140,7 +146,7 @@ def test_no_name():
         seriesname = 'Scrubs',
         seasonnumber = 1,
         episodenumbers = [2],
-        episodename = None,
+        episodename = '',
         filename = 'scrubs.example.file.avi')
 
     assertEquals(
@@ -155,8 +161,8 @@ def test_episode_no_name_no_ext():
         seriesname = 'Scrubs',
         seasonnumber = 1,
         episodenumbers = [2],
-        episodename = None,
-        filename = None)
+        episodename = '',
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
@@ -164,13 +170,14 @@ def test_episode_no_name_no_ext():
 
 
 def test_noseason_no_name_no_ext():
-    """NoSeasonEpisodeInfo with no name or extension
+    """NoSeason EpisodeInfo with no name or extension
     """
-    ep = NoSeasonEpisodeInfo(
+    ep = EpisodeInfo(
         seriesname = 'Scrubs',
+        eptype = 'noseason',
         episodenumbers = [2],
-        episodename = None,
-        filename = None)
+        episodename = '',
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
@@ -178,13 +185,14 @@ def test_noseason_no_name_no_ext():
 
 
 def test_datedepisode_no_name_no_ext():
-    """DatedEpisodeInfo with no name or extension
+    """Dated EpisodeInfo with no name or extension
     """
-    ep = DatedEpisodeInfo(
+    ep = EpisodeInfo(
         seriesname = 'Scrubs',
+        eptype = 'dated',
         episodenumbers = [datetime.date(2010, 11, 23)],
-        episodename = None,
-        filename = None)
+        episodename = '',
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
@@ -194,28 +202,13 @@ def test_datedepisode_no_name_no_ext():
 def test_no_series_number():
     """Episode without season number
     """
-    ep = NoSeasonEpisodeInfo(
+    ep = EpisodeInfo(
         seriesname = 'Scrubs',
+        eptype = 'noseason',
         episodenumbers = [2],
         episodename = 'My Mentor',
-        filename = None)
+        filename = '')
 
     assertEquals(
         ep.generateFilename(),
         'Scrubs - [02] - My Mentor')
-
-
-def test_downcase():
-    """Simple episode name, converted to lowercase
-    """
-
-    ep = EpisodeInfo(
-        seriesname = 'Scrubs',
-        seasonnumber = 1,
-        episodenumbers = [2],
-        episodename = 'My Mentor',
-        filename = 'scrubs.example.file.avi')
-
-    assertEquals(
-        ep.generateFilename(lowercase = True),
-        'scrubs - [01x02] - my mentor.avi')

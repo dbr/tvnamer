@@ -17,8 +17,7 @@ def test_replace_input():
 {
     "input_series_replacements": {
         "scru*bs": "scrubs"},
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -38,8 +37,7 @@ def test_replace_input_with_id():
 {
     "input_series_replacements": {
         "seriesnamegoeshere": 76156},
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 
@@ -58,8 +56,7 @@ def test_replace_output():
 {
     "output_series_replacements": {
         "Scrubs": "Replacement Series Name"},
-    "always_rename": true,
-    "select_first": true
+    "batch": true
 }
 """)
 

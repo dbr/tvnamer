@@ -38,21 +38,16 @@ def getCommandlineParser(defaults):
     parser.set_defaults(**defaults)
 
     # Console output
-    with Group(parser, "Console output") as g:
-        g.add_option("-v", "--verbose", action="store_true", dest="verbose", help = "show debugging info")
-        g.add_option("-q", "--not-verbose", action="store_false", dest="verbose", help = "no verbose output (useful to override 'verbose':true in config file)")
+    with Group(parser, "Logging") as g:
+        g.add_option("-v", "--verbose", action = "store_true", dest = "verbose", help = "Show debugging info in console")
+        g.add_option("-q", "--not-verbose", action = "store_false", dest = "verbose", help = "No verbose output (useful to override 'verbose':true in config file)")
+        g.add_option("--log-file", action = "store", dest = "log_file", help = "Path to log file")
 
 
     # Batch options
     with Group(parser, "Batch options") as g:
-        g.add_option("-a", "--always", action="store_true", dest="always_rename", help = "Always renames files (but prompt for correct series)")
-        g.add_option("--not-always", action="store_true", dest="always_rename", help = "Overrides --always")
-
-        g.add_option("-f", "--selectfirst", action="store_true", dest="select_first", help = "Select first series search result automatically")
-        g.add_option("--not-selectfirst", action="store_false", dest="select_first", help = "Overrides --selectfirst")
-
-        g.add_option("-b", "--batch", action="store_true", dest = "batch", help = "Rename without human intervention, same as --always and --selectfirst combined")
-        g.add_option("--not-batch", action="store_false", dest = "batch", help = "Overrides --batch")
+        g.add_option("-b", "--batch", action = "store_true", dest = "batch", help = "Rename without human intervention")
+        g.add_option("--not-batch", action = "store_false", dest = "batch", help = "Overrides --batch")
 
 
     # Config options
@@ -63,21 +58,17 @@ def getCommandlineParser(defaults):
 
     # Override values
     with Group(parser, "Override values") as g:
-        g.add_option("-n", "--name", action="store", dest = "force_name", help = "override the parsed series name with this (applies to all files)")
-        g.add_option("--series-id", action="store", dest = "series_id", help = "explicitly set the show id for TVdb to use (applies to all files)")
+        g.add_option("-n", "--name", action = "store", dest = "force_name", help = "override the parsed series name with this (applies to all files)")
+        g.add_option("--series-id", action = "store", dest = "series_id", help = "explicitly set the show id for TVdb to use (applies to all files)")
 
     # Misc
     with Group(parser, "Misc") as g:
-        g.add_option("-r", "--recursive", action="store_true", dest = "recursive", help = "Descend more than one level directories supplied as arguments")
-        g.add_option("--not-recursive", action="store_false", dest = "recursive", help = "Only descend one level into directories")
+        g.add_option("-r", "--recursive", action = "store_true", dest = "recursive", help = "Descend more than one level directories supplied as arguments")
+        g.add_option("--not-recursive", action = "store_false", dest = "recursive", help = "Only descend one level into directories")
 
-        g.add_option("-m", "--move", action="store_true", dest="move_files_enable", help = "Move files to destination specified in config or with --movedestination argument")
-        g.add_option("--not-move", action="store_false", dest="move_files_enable", help = "Files will remain in current directory")
+        g.add_option("-d", "--movedestination", action = "store", dest = "move_files_destination", help = "Destination to move files to. Variables: %(seriesname)s %(seasonnumber)d %(episodenumbers)s")
 
-        g.add_option("-d", "--movedestination", action="store", dest = "move_files_destination", help = "Destination to move files to. Variables: %(seriesname)s %(seasonnumber)d %(episodenumbers)s")
-
-        g.add_option("-h", "--help", action="help", help = "show this help message and exit")
-
+        g.add_option("-h", "--help", action = "help", help = "show this help message and exit")
 
     return parser
 

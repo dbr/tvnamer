@@ -13,8 +13,7 @@ def test_no_extensions():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "valid_extensions": []}
     """
 
@@ -35,8 +34,7 @@ def test_single_extensions():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "valid_extensions": ["mkv"]}
     """
 
@@ -57,8 +55,7 @@ def test_single_extension_with_subdirs():
     """
 
     conf = """
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
     "valid_extensions": ["avi"],
     "recursive": true}
     """

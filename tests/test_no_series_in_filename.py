@@ -41,8 +41,7 @@ def test_name_arg_skips_replacements():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
 
     "force_name": "Scrubs",
 
@@ -69,8 +68,7 @@ def test_replacements_applied_before_force_name():
     """
 
     conf = r"""
-    {"always_rename": true,
-    "select_first": true,
+    {"batch": true,
 
     "force_name": "Scrubs",
 
