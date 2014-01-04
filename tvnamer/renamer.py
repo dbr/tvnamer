@@ -3,6 +3,7 @@
 import os
 import shutil
 import logging
+import errno
 
 from unicode_helper import p
 
@@ -51,7 +52,14 @@ def rename_file(old, new):
     log().debug("Renaming %r to %r" % (old, new))
     stat = os.stat(old)
     os.rename(old, new)
-    os.utime(new, (stat.st_atime, stat.st_mtime))
+    try:
+        os.utime(new, (stat.st_atime, stat.st_mtime))
+    except OSError, ex:
+        if ex.errno == errno.EPERM:
+            log().warn("WARNING: Could not preserve times for %s "
+                       "(owner UID mismatch?)" % new)
+        else:
+            raise
 
 
 def copy_file(old, new):
