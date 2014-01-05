@@ -10,6 +10,7 @@ import sys
 import shutil
 import logging
 import platform
+import errno
 
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
@@ -1000,8 +1001,14 @@ def rename_file(old, new):
     p("rename %s to %s" % (old, new))
     stat = os.stat(old)
     os.rename(old, new)
-    os.utime(new, (stat.st_atime, stat.st_mtime))
-
+    try:
+        os.utime(new, (stat.st_atime, stat.st_mtime))
+    except OSError, ex:
+        if ex.errno == errno.EPERM:
+            warn("WARNING: Could not preserve times for %s "
+                 "(owner UID mismatch?)" % new)
+        else:
+            raise
 
 def copy_file(old, new):
     p("copy %s to %s" % (old, new))
