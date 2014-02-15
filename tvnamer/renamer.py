@@ -100,12 +100,13 @@ class Renamer(object):
         new_dir = os.path.dirname(new_fullpath)
 
         if create_dirs:
-            p("Creating directory %s" % new_dir)
             try:
                 os.makedirs(new_dir)
             except OSError, e:
                 if e.errno != 17:
                     raise
+            else:
+                p("Created directory %s" % new_dir)
 
         if os.path.exists(new_fullpath):
             # If the destination exists, raise exception unless force is True
