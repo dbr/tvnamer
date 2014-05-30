@@ -659,6 +659,10 @@ class EpisodeInfo(object):
                 try:
                     sr = show.airedOn(cepno)
                     if len(sr) > 1:
+                        # filter out specials if multiple episodes aired on the day
+                        sr = [ s for s in sr if s['seasonnumber'] != '0' ]
+                    
+                    if len(sr) > 1:
                         raise EpisodeNotFound(
                             "Ambigious air date %s, there were %s episodes on that day" % (
                             cepno, len(sr)))
