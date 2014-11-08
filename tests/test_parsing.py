@@ -3,6 +3,8 @@
 """Test tvnamer's filename parser
 """
 
+import os
+import sys
 from helpers import assertEquals
 
 from tvnamer.utils import (FileParser, DatedEpisodeInfo, NoSeasonEpisodeInfo)
