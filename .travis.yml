@@ -1,9 +1,10 @@
 language: python
 python:
-  - 2.5
   - 2.6
   - 2.7
+  - 3.3
+  - 3.4
 
-install: pip install --upgrade 'nose>=1.2.1' tvdb_api && ( [ $TRAVIS_PYTHON_VERSION == "2.5" ] && pip install simplejson || echo -n)
+install: pip install --upgrade 'nose>=1.2.1' tvdb_api
 
 script: nosetests
