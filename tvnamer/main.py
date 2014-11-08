@@ -61,7 +61,6 @@ def getMoveDestination(episode):
 
     # Calls makeValidFilename on series name, as it must valid for a filename
     if isinstance(episode, DatedEpisodeInfo):
-        print Config['move_files_destination_date']
         destdir = Config['move_files_destination_date'] % {
             'seriesname': makeValidFilename(episode.seriesname),
             'year': episode.episodenumbers[0].year,

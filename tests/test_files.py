@@ -155,7 +155,7 @@ files['misc'] = [
     'parsedseriesname': 'Neighbours',
     'correctedseriesname': 'Neighbours',
     'seasonnumber': 6, 'episodenumbers': [3],
-    'episodenames': ['Episode 1350']},
+    'episodenames': ['Episode 1116']},
 
     {'input': 'Scrubs Season 01 Episode 01 - The Series Title.avi',
     'parsedseriesname': 'Scrubs',

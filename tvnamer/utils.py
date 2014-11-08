@@ -242,7 +242,7 @@ class FileFinder(object):
         fname, fext = split_extension(fullname)
 
         for fblacklist in self.with_blacklist:
-            if isinstance(fblacklist, basestring):
+            if isinstance(fblacklist, string_type):
                 if fullname == fblacklist:
                     return True
                 else:
@@ -765,7 +765,7 @@ class EpisodeInfo(object):
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         if Config['titlecase_filename']:
-            from _titlecase import titlecase
+            from tvnamer._titlecase import titlecase
             fname = titlecase(fname)
 
         if lowercase or Config['lowercase_filename']:
