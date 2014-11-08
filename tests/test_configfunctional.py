@@ -154,7 +154,7 @@ def test_resolve_absoloute_episode():
 
     verify_out_data(out_data, expected_files)
 
-    print "Checking output files are re-parsable"
+    print("Checking output files are re-parsable")
     out_data = run_tvnamer(
         with_files = expected_files,
         with_config = conf,

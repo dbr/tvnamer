@@ -74,8 +74,8 @@ def test_autogen_names():
     for cdata in test_data:
         # Make new wrapped function
         def cur_test():
-            for seas in xrange(1, 11):
-                for ep in xrange(1, 11):
+            for seas in range(1, 11):
+                for ep in range(1, 11):
 
                     name_data = cdata['name_data']
 

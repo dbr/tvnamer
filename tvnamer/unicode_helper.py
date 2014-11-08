@@ -4,13 +4,7 @@
 """
 
 import sys
-
-
-def unicodify(obj, encoding = "utf-8"):
-    if isinstance(obj, basestring):
-        if not isinstance(obj, unicode):
-            obj = unicode(obj, encoding)
-    return obj
+from tvnamer.compat import PY2, string_type
 
 
 def p(*args, **kw):
@@ -18,12 +12,16 @@ def p(*args, **kw):
     http://www.python.org/dev/peps/pep-3105/
 
     def print(*args, sep=' ', end='\n', file=None)
-
     """
+
     kw.setdefault('encoding', 'utf-8')
     kw.setdefault('sep', ' ')
     kw.setdefault('end', '\n')
     kw.setdefault('file', sys.stdout)
+
+    if not PY2:
+        print(kw['sep'].join(string_type(x) for x in args))
+        return
 
     new_args = []
     for x in args:

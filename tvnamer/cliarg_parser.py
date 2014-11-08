@@ -3,7 +3,6 @@
 """Constructs command line argument parser for tvnamer
 """
 
-from __future__ import with_statement
 import sys
 import optparse
 
@@ -86,6 +85,6 @@ if __name__ == '__main__':
 
     def main():
         p = getCommandlineParser({'recursive': True})
-        print p.parse_args()
+        print(p.parse_args())
 
     main()

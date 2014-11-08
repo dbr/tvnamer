@@ -15,10 +15,11 @@ import errno
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
 
-from unicode_helper import p
+from tvnamer.unicode_helper import p
+from tvnamer.compat import string_type
 
-from config import Config
-from tvnamer_exceptions import (InvalidPath, InvalidFilename,
+from tvnamer.config import Config
+from tvnamer.tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, ConfigValueError, UserAbort)
 
@@ -115,7 +116,7 @@ def replaceInputSeriesName(seriesname):
 
     This helps the TVDB query get the right match.
     """
-    for pat, replacement in Config['input_series_replacements'].iteritems():
+    for pat, replacement in Config['input_series_replacements'].items():
         if re.match(pat, seriesname, re.IGNORECASE|re.UNICODE):
             return replacement
     return seriesname
@@ -274,7 +275,7 @@ class FileFinder(object):
             log().info("Skipping inaccessible path %s" % startpath)
             return allfiles
 
-        for subf in os.listdir(unicode(startpath)):
+        for subf in os.listdir(string_type(startpath)):
             newpath = os.path.join(startpath, subf)
             newpath = os.path.abspath(newpath)
             if os.path.isfile(newpath):
@@ -309,7 +310,7 @@ class FileParser(object):
         for cpattern in Config['filename_patterns']:
             try:
                 cregex = re.compile(cpattern, re.VERBOSE)
-            except re.error, errormsg:
+            except re.error as errormsg:
                 warn("WARNING: Invalid episode_pattern (error: %s)\nPattern:\n%s" % (
                     errormsg, cpattern))
             else:
@@ -348,9 +349,9 @@ class FileParser(object):
                     elif start > end:
                         # Swap start and end
                         start, end = end, start
-                        episodenumbers = range(start, end + 1)
+                        episodenumbers = list(range(start, end + 1))
                     else:
-                        episodenumbers = range(start, end + 1)
+                        episodenumbers = list(range(start, end + 1))
 
                 elif 'episodenumber' in namedgroups:
                     episodenumbers = [int(match.group('episodenumber')), ]
@@ -531,7 +532,7 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
     # Replace accented characters with ASCII equivalent
     if normalize_unicode:
         import unicodedata
-        value = unicode(value) # cast data to unicode
+        value = string_type(value) # cast data to unicode
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
     # Truncate filenames to valid/sane length.
@@ -641,13 +642,13 @@ class EpisodeInfo(object):
                 series_id = int(series_id)
                 tvdb_instance._getShowData(series_id, Config['language'])
                 show = tvdb_instance[series_id]
-        except tvdb_error, errormsg:
+        except tvdb_error as errormsg:
             raise DataRetrievalError("Error with www.thetvdb.com: %s" % errormsg)
         except tvdb_shownotfound:
             # No such series found.
             raise ShowNotFound("Show %s not found on www.thetvdb.com" % self.seriesname)
-        except tvdb_userabort, error:
-            raise UserAbort(unicode(error))
+        except tvdb_userabort as error:
+            raise UserAbort(string_type(error))
         else:
             # Series was found, use corrected series name
             self.seriesname = replaceOutputSeriesName(show['seriesname'])
@@ -1003,7 +1004,7 @@ def rename_file(old, new):
     os.rename(old, new)
     try:
         os.utime(new, (stat.st_atime, stat.st_mtime))
-    except OSError, ex:
+    except OSError as ex:
         if ex.errno == errno.EPERM:
             warn("WARNING: Could not preserve times for %s "
                  "(owner UID mismatch?)" % new)
@@ -1073,7 +1074,7 @@ class Renamer(object):
         if create_dirs:
             try:
                 os.makedirs(new_dir)
-            except OSError, e:
+            except OSError as e:
                 if e.errno != 17:
                     raise
             else:

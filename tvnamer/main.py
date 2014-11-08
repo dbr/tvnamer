@@ -20,15 +20,16 @@ except ImportError:
 
 from tvdb_api import Tvdb
 
-import cliarg_parser
-from config_defaults import defaults
+from tvnamer import cliarg_parser
+from tvnamer.compat import PY2, raw_input
+from tvnamer.config_defaults import defaults
 
-from unicode_helper import p
-from utils import (Config, FileFinder, FileParser, Renamer, warn,
+from tvnamer.unicode_helper import p
+from tvnamer.utils import (Config, FileFinder, FileParser, Renamer, warn,
 applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename,
 DatedEpisodeInfo, NoSeasonEpisodeInfo)
 
-from tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
+from tvnamer.tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
 InvalidFilename, DataRetrievalError)
 
@@ -90,7 +91,7 @@ def doRenameFile(cnamer, newName):
     """
     try:
         cnamer.newPath(new_fullpath = newName, force = Config['overwrite_destination_on_rename'], leave_symlink = Config['leave_symlink'])
-    except OSError, e:
+    except OSError as e:
         warn(e)
 
 
@@ -116,7 +117,7 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
             getPathPreview = getPathPreview,
             force = Config['overwrite_destination_on_move'])
 
-    except OSError, e:
+    except OSError as e:
         warn(e)
 
 
@@ -139,7 +140,7 @@ def confirm(question, options, default = "y"):
         p("(%s) " % (options_str), end="")
         try:
             ans = raw_input().strip()
-        except KeyboardInterrupt, errormsg:
+        except KeyboardInterrupt as errormsg:
             p("\n", errormsg)
             raise UserAbort(errormsg)
 
@@ -168,13 +169,13 @@ def processFile(tvdb_instance, episode):
 
     try:
         episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
-    except (DataRetrievalError, ShowNotFound), errormsg:
+    except (DataRetrievalError, ShowNotFound) as errormsg:
         if Config['always_rename'] and Config['skip_file_on_error'] is True:
             warn("Skipping file due to error: %s" % errormsg)
             return
         else:
             warn(errormsg)
-    except (SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound), errormsg:
+    except (SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound) as errormsg:
         # Show was found, so use corrected series name
         if Config['always_rename'] and Config['skip_file_on_error']:
             warn("Skipping file due to error: %s" % errormsg)
@@ -299,7 +300,7 @@ def tvnamer(paths):
         parser = FileParser(cfile)
         try:
             episode = parser.parse()
-        except InvalidFilename, e:
+        except InvalidFilename as e:
             warn("Invalid filename: %s" % e)
         else:
             if episode.seriesname is None and Config['force_name'] is None and Config['series_id'] is None:
@@ -361,7 +362,7 @@ def main():
         p("Loading config: %s" % (configToLoad))
         try:
             loadedConfig = json.load(open(os.path.expanduser(configToLoad)))
-        except ValueError, e:
+        except ValueError as e:
             p("Error loading config: %s" % e)
             opter.exit(1)
         else:
@@ -372,7 +373,8 @@ def main():
 
     # Decode args using filesystem encoding (done after config loading
     # as the args are reparsed when the config is loaded)
-    args = [x.decode(sys.getfilesystemencoding()) for x in args]
+    if PY2:
+        args = [x.decode(sys.getfilesystemencoding()) for x in args]
 
     # Save config argument
     if opts.saveconfig is not None:
@@ -391,7 +393,7 @@ def main():
 
     # Show config argument
     if opts.showconfig:
-        print json.dumps(opts.__dict__, sort_keys=True, indent=2)
+        print(json.dumps(opts.__dict__, sort_keys=True, indent=2))
         return
 
     # Process values
@@ -418,7 +420,7 @@ def main():
         tvnamer(paths = sorted(args))
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
-    except UserAbort, errormsg:
+    except UserAbort as errormsg:
         opter.error(errormsg)
 
 if __name__ == '__main__':

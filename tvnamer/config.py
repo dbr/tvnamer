@@ -3,6 +3,6 @@
 """Holds Config singleton
 """
 
-from config_defaults import defaults
+from tvnamer.config_defaults import defaults
 
 Config = dict(defaults)

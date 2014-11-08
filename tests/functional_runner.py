@@ -27,8 +27,8 @@ import shutil
 import tempfile
 import subprocess
 
-from tvnamer.unicode_helper import p, unicodify
-
+from tvnamer.unicode_helper import p
+from tvnamer.compat import PY2, string_type
 
 try:
     # os.path.relpath was added in 2.6, use custom implimentation if not found
@@ -70,7 +70,7 @@ def get_tvnamer_path():
     cur_location, _ = os.path.split(os.path.abspath(sys.path[0]))
     for cdir in [".", ".."]:
         tvnamer_location = os.path.abspath(
-            os.path.join(cur_location, cdir, "tvnamer", "main.py"))
+            os.path.join(cur_location, cdir, "main.py"))
 
         if os.path.isfile(tvnamer_location):
             return tvnamer_location
@@ -103,7 +103,7 @@ def make_dummy_files(files, location):
         dirnames, _ = os.path.split(floc)
         try:
             os.makedirs(dirnames)
-        except OSError, e:
+        except OSError as e:
             if e.errno != 17:
                 raise
 
@@ -116,7 +116,7 @@ def make_dummy_files(files, location):
 def clear_temp_dir(location):
     """Removes file or directory at specified location
     """
-    p("Clearing %s" % unicode(location))
+    p("Clearing %s" % string_type(location))
     shutil.rmtree(location)
 
 
@@ -160,12 +160,21 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
         stderr = subprocess.STDOUT, # All stderr to stdout
         stdin = subprocess.PIPE)
 
-    proc.stdin.write(with_input)
+    proc.stdin.write(with_input.encode("utf-8"))
     output, _ = proc.communicate()
-    output = unicodify(output)
+
+    if PY2:
+        def unicodify(obj, encoding = "utf-8"):
+            if isinstance(obj, basestring):
+                if not isinstance(obj, unicode):
+                    obj = unicode(obj, encoding)
+            return obj
+        output = unicodify(output)
+
 
     created_files = []
-    for walkroot, walkdirs, walkfiles in os.walk(unicode(episodes_location)):
+
+    for walkroot, walkdirs, walkfiles in os.walk(string_type(episodes_location)):
         curlist = [os.path.join(walkroot, name) for name in walkfiles]
 
         # Remove episodes_location from start of path
