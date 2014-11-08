@@ -16,7 +16,7 @@ try:
 except ImportError:
     needed_pkgs.append('simplejson')
 
-needed_pkgs.append("tvdb_api>=1.5")
+needed_pkgs.append("tvdb_api>=1.10")
 
 
 from setuptools import setup
