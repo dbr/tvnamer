@@ -5,7 +5,6 @@
 
 from functional_runner import run_tvnamer, verify_out_data
 from nose.plugins.attrib import attr
-from helpers import expected_failure_travisci
 
 
 @attr("functional")
@@ -101,10 +100,16 @@ def test_interactive_always_option():
 
 
 @attr("functional")
-@expected_failure_travisci
 def test_unicode_in_inputname():
     """Tests parsing a file with unicode in the input filename
     """
+
+    import os, sys
+    if os.getenv("TRAVIS", "false") == "true" and sys.version_info[0:2] == (2.6):
+        from nose.plugins.skip import SkipTest
+        raise SkipTest("Ignoring test which triggers bizarre bug in nosetests, in python 2.6, only on travis.")
+
+
     input_files = [
         u'The Big Bang Theory - S02E07 - The Panty Pin\u0303ata Polarization.avi']
 

@@ -3,8 +3,6 @@
 """Test tvnamer's filename parser
 """
 
-import os
-import sys
 from helpers import assertEquals
 
 from tvnamer.utils import (FileParser, DatedEpisodeInfo, NoSeasonEpisodeInfo)
@@ -97,9 +95,6 @@ def test_autogen_names():
         #end cur_test
 
         cur_test.description = cdata['description']
-        if os.getenv("TRAVIS", "false") == "true" and cdata['description'] == 'Tests parsing show containing unicode characters' and sys.version_info[0:2] == (2.6):
-            # Bizarre bug in nosetests, in python 2.6, only on travis.
-            continue
         yield cur_test
 
 
