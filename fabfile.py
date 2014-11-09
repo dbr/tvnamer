@@ -23,7 +23,7 @@ def pylint():
 
 @task(default=True)
 def test():
-    local("nosetests")
+    local("python setup.py test")
 
 
 @task

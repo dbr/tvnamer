@@ -4,6 +4,26 @@
 import os
 import sys
 
+
+from setuptools.command.test import test as TestCommand
+
+
+class PyTest(TestCommand):
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(args=['--tb=native'])
+        sys.exit(errno)
+
 # Ensure dir containing script is on PYTHONPATH
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -47,6 +67,8 @@ entry_points = {
 },
 
 install_requires = needed_pkgs,
+tests_require=['pytest'],
+cmdclass = {'test': PyTest},
 
 classifiers=[
     "Environment :: Console",

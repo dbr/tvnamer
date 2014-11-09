@@ -4,7 +4,7 @@
 """
 
 from functional_runner import run_tvnamer, verify_out_data
-from nose.plugins.attrib import attr
+from helpers import attr
 
 
 @attr("functional")

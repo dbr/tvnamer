@@ -4,8 +4,8 @@
 """
 
 from functional_runner import run_tvnamer, verify_out_data
-from nose.plugins.attrib import attr
-from helpers import expected_failure
+from helpers import attr
+import pytest
 
 
 @attr("functional")
@@ -112,7 +112,7 @@ def test_replace_with_underscore():
 
 
 @attr("functional")
-@expected_failure
+@pytest.mark.xfail
 def test_abs_epnmber():
     """Ensure the absolute episode number is available for custom
     filenames in config

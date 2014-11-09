@@ -4,8 +4,8 @@
 """
 
 from functional_runner import run_tvnamer, verify_out_data
-from nose.plugins.attrib import attr
-from nose.plugins.skip import SkipTest
+from helpers import attr
+import pytest
 
 
 @attr("functional")
@@ -29,13 +29,10 @@ def test_issue_56_dated_episode():
 
 
 @attr("functional")
+@pytest.mark.xfail
 def test_date_in_s01e01_out():
     """File with date-stamp, outputs s01e01-ish name
     """
-
-
-    raise SkipTest("Not yet done")
-
 
     conf = """
     {"always_rename": true,

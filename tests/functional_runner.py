@@ -153,12 +153,17 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     p("Running command:")
     p(" ".join(cmd))
 
+    # Copy sys.path to PYTHONPATH so same modules are available as in
+    # test environmen
+    env = os.environ.copy()
+    env['PYTHONPATH'] = ":".join(sys.path)
 
     proc = subprocess.Popen(
         cmd,
         stdout = subprocess.PIPE,
         stderr = subprocess.STDOUT, # All stderr to stdout
-        stdin = subprocess.PIPE)
+        stdin = subprocess.PIPE,
+        env=env)
 
     proc.stdin.write(with_input.encode("utf-8"))
     output, _ = proc.communicate()

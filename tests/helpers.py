@@ -39,3 +39,12 @@ def expected_failure(test):
             raise AssertionError('Failure expected')
 
     return inner
+
+
+def attr(name):
+    try:
+        from nosetest.attrib import attr as _a
+        return _a(name)
+    except ImportError:
+        import pytest
+        return getattr(pytest.mark, name)
