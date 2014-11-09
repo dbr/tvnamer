@@ -5,6 +5,4 @@ python:
   - 3.3
   - 3.4
 
-install: pip install --upgrade 'nose>=1.2.1' tvdb_api
-
-script: nosetests
+script: python setup.py test
