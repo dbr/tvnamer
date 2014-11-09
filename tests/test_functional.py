@@ -102,7 +102,7 @@ def test_interactive_always_option():
 
 
 @attr("functional")
-@pytest.mark.skipif(os.getenv("TRAVIS", "false")=="true")
+@pytest.mark.skipif(os.getenv("TRAVIS", "false")=="true", "Test fails for some reason on Travis-CI")
 def test_unicode_in_inputname():
     """Tests parsing a file with unicode in the input filename
     """
