@@ -3,8 +3,10 @@
 """Functional tests for tvnamer tests
 """
 
+import os
 from functional_runner import run_tvnamer, verify_out_data
 from helpers import attr
+import pytest
 
 
 @attr("functional")
@@ -100,6 +102,7 @@ def test_interactive_always_option():
 
 
 @attr("functional")
+@pytest.mark.skipif(os.getenv("TRAVIS", "false")=="true")
 def test_unicode_in_inputname():
     """Tests parsing a file with unicode in the input filename
     """
