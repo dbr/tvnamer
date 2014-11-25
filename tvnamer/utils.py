@@ -653,6 +653,11 @@ class EpisodeInfo(object):
             # Series was found, use corrected series name
             self.seriesname = replaceOutputSeriesName(show['seriesname'])
 
+        da = Config['data_adjustment'].get(show['id'], {})
+        for cepno in self.episodenumbers:
+            self.episodenumbers[self.episodenumbers.index(cepno)] = cepno + eval(da.get("episode_number", "0"), {'__builtins__' : {}})
+
+
         if isinstance(self, DatedEpisodeInfo):
             # Date-based episode
             epnames = []
@@ -675,6 +680,7 @@ class EpisodeInfo(object):
             # Series without concept of seasons have all episodes in season 1
             seasonnumber = 1
         else:
+            self.seasonnumber += eval(da.get("season_number", "0"), {'__builtins__' : {}})
             seasonnumber = self.seasonnumber
 
         epnames = []

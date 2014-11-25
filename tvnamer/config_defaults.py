@@ -450,4 +450,9 @@ defaults = {
     # since these are perfectly predictable, they are simple strings
     # not regular expressions
     'output_series_replacements': {},
+
+    # adjust episode data if source order diverges from TVDB
+    # format is a dict {<seriesid> : {"episode_number": <x>, "season_number": <x>}}
+    # where x is a basic math expression string, eg. "+1" or "-2"
+    'data_adjustment': {}
 }
