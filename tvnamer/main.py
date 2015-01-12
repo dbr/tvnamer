@@ -319,7 +319,8 @@ def tvnamer(paths):
     tvdb_instance = Tvdb(
         interactive = not Config['select_first'],
         search_all_languages = Config['search_all_languages'],
-        language = Config['language'])
+        language = Config['language'],
+        dvdorder = Config['dvdorder'])
 
     for episode in episodes_found:
         processFile(tvdb_instance, episode)
