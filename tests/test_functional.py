@@ -272,3 +272,22 @@ def test_skipping_after_replacements():
     expected_files = ['Scrvbs - [01x01] - My First Day.avi']
 
     verify_out_data(out_data, expected_files)
+
+@attr("functional")
+def test_dvd_order():
+    """Tests TvDB dvd order naming
+    """
+
+    input_files = [
+        'batman the animated series s01e01.xvid']
+
+    expected_files = [
+        'Batman: The Animated Series - [01x01] - On Leather Wings.xvid']
+
+    out_data = run_tvnamer(
+        with_files = input_files,
+        with_flags = ["--order", 'dvd'],
+        with_input = "1\ny\n")
+
+    verify_out_data(out_data, expected_files)
+

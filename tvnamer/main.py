@@ -316,11 +316,17 @@ def tvnamer(paths):
     # Sort episodes by series name, season and episode number
     episodes_found.sort(key = lambda x: x.sortable_info())
 
+    # episode sort order
+    if Config['order'] == 'dvd':
+        dvdorder = True
+    else:
+        dvdorder = False
+
     tvdb_instance = Tvdb(
         interactive = not Config['select_first'],
         search_all_languages = Config['search_all_languages'],
         language = Config['language'],
-        dvdorder = Config['dvdorder'])
+        dvdorder = dvdorder)
 
     for episode in episodes_found:
         processFile(tvdb_instance, episode)

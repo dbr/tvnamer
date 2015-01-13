@@ -452,5 +452,5 @@ defaults = {
     'output_series_replacements': {},
 
     # use dvd episode order of tvdb, instead of aired order
-    'dvdorder': False,
+    'order': 'aired',
 }
