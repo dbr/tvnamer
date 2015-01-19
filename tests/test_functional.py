@@ -282,12 +282,23 @@ def test_dvd_order():
         'batman the animated series s01e01.xvid']
 
     expected_files = [
-        'Batman: The Animated Series - [01x01] - On Leather Wings.xvid']
+        'Batman - The Animated Series - [01x01] - On Leather Wings.xvid']
+
+    conf = r"""
+    {
+      "output_filename_replacements": [
+        {"is_regex": true,
+        "match": ": ",
+        "replacement": " - "}
+      ]
+    }
+    """
 
     out_data = run_tvnamer(
         with_files = input_files,
         with_flags = ["--order", 'dvd'],
-        with_input = "1\ny\n")
+        with_input = "1\ny\n",
+        with_config = conf)
 
     verify_out_data(out_data, expected_files)
 
