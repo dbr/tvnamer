@@ -450,4 +450,7 @@ defaults = {
     # since these are perfectly predictable, they are simple strings
     # not regular expressions
     'output_series_replacements': {},
+
+    # use dvd episode order of tvdb, instead of aired order
+    'order': 'aired',
 }

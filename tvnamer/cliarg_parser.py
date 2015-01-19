@@ -64,6 +64,7 @@ def getCommandlineParser(defaults):
     with Group(parser, "Override values") as g:
         g.add_option("-n", "--name", action="store", dest = "force_name", help = "override the parsed series name with this (applies to all files)")
         g.add_option("--series-id", action="store", dest = "series_id", help = "explicitly set the show id for TVdb to use (applies to all files)")
+        g.add_option("--order", action = "store", dest = "order", help = "set the TvDB episode order ('aired' [default] or 'dvd')")
 
     # Misc
     with Group(parser, "Misc") as g:
