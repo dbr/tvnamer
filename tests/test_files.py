@@ -151,11 +151,11 @@ files['misc'] = [
     'seasonnumber': 1, 'episodenumbers': [1],
     'episodenames': ['Episode #1']},
 
-    {'input': 'Neighbours - Episode 5824 [S 6 - Ep 003] - Fri 15 Jan 2010 [KCRT].avi',
-    'parsedseriesname': 'Neighbours',
-    'correctedseriesname': 'Neighbours',
-    'seasonnumber': 6, 'episodenumbers': [3],
-    'episodenames': ['Episode 1116']},
+    {'input': 'Scrubs - Episode 2 [S 1 - Ep 002] - Fri 24 Jan 2001 [KCRT].avi',
+    'parsedseriesname': 'Scrubs',
+    'correctedseriesname': 'Scrubs',
+    'seasonnumber': 1, 'episodenumbers': [2],
+    'episodenames': ['My Mentor']},
 
     {'input': 'Scrubs Season 01 Episode 01 - The Series Title.avi',
     'parsedseriesname': 'Scrubs',
