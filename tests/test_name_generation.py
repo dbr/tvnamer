@@ -7,6 +7,7 @@ import datetime
 
 from helpers import assertEquals
 
+from tvnamer.compat import PY2
 from tvnamer.utils import (EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo)
 from test_files import files
 
