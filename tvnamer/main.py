@@ -322,11 +322,21 @@ def tvnamer(paths):
     else:
         dvdorder = False
 
+    if not PY2 and os.getenv("TRAVIS", "false") == "true":
+        # Disable caching on Travis-CI because in Python 3 it errors with:
+        #
+        # Can't pickle <class 'http.cookiejar.DefaultCookiePolicy'>: it's not the same object as http.cookiejar.DefaultCookiePolicy
+        cache = False
+    else:
+        cache = True
+
     tvdb_instance = Tvdb(
         interactive = not Config['select_first'],
         search_all_languages = Config['search_all_languages'],
         language = Config['language'],
-        dvdorder = dvdorder)
+        dvdorder = dvdorder,
+        cache=cache,
+    )
 
     for episode in episodes_found:
         processFile(tvdb_instance, episode)
