@@ -3,6 +3,7 @@
 """Test tvnamer's EpisodeInfo file name generation
 """
 
+import os
 import datetime
 
 from helpers import assertEquals
