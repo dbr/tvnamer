@@ -40,7 +40,16 @@ def verify_name_gen(curtest, tvdb_instance):
 def test_name_generation_on_testfiles():
     # Test data stores episode names in English, language= is normally set
     # via the configuration, same with search_all_languages.
-    tvdb_instance = Tvdb(search_all_languages=True, language='en')
+
+    if not PY2 and os.getenv("TRAVIS", "false") == "true":
+        # Disable caching on Travis-CI because in Python 3 it errors with:
+        #
+        # Can't pickle <class 'http.cookiejar.DefaultCookiePolicy'>: it's not the same object as http.cookiejar.DefaultCookiePolicy
+        cache = False
+    else:
+        cache = True
+
+    tvdb_instance = Tvdb(search_all_languages=True, language='en', cache=cache)
     for category, testcases in files.items():
         for testindex, curtest in enumerate(testcases):
             cur_tester = lambda x: verify_name_gen(x, tvdb_instance)

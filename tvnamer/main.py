@@ -326,7 +326,6 @@ def tvnamer(paths):
         # Disable caching on Travis-CI because in Python 3 it errors with:
         #
         # Can't pickle <class 'http.cookiejar.DefaultCookiePolicy'>: it's not the same object as http.cookiejar.DefaultCookiePolicy
-        p("WARNING: Disabling caching in Python 3 on Travis-CI")
         cache = False
     else:
         cache = True
