@@ -323,100 +323,104 @@ class FileParser(object):
         _, filename = os.path.split(self.path)
 
         filename = applyCustomInputReplacements(filename)
+        fullname =  applyCustomInputReplacements(self.path)
+        filenames = [filename, fullname]
 
-        for cmatcher in self.compiled_regexs:
-            match = cmatcher.match(filename)
-            if match:
-                namedgroups = match.groupdict().keys()
+        for filename in filenames:
+            for cmatcher in self.compiled_regexs:
+                print "Try to match " + filename + " against " + cmatcher.pattern
+                match = cmatcher.match(filename)
+                if match:
+                    namedgroups = match.groupdict().keys()
 
-                if 'episodenumber1' in namedgroups:
-                    # Multiple episodes, have episodenumber1 or 2 etc
-                    epnos = []
-                    for cur in namedgroups:
-                        epnomatch = re.match('episodenumber(\d+)', cur)
-                        if epnomatch:
-                            epnos.append(int(match.group(cur)))
-                    epnos.sort()
-                    episodenumbers = epnos
+                    if 'episodenumber1' in namedgroups:
+                        # Multiple episodes, have episodenumber1 or 2 etc
+                        epnos = []
+                        for cur in namedgroups:
+                            epnomatch = re.match('episodenumber(\d+)', cur)
+                            if epnomatch:
+                                epnos.append(int(match.group(cur)))
+                        epnos.sort()
+                        episodenumbers = epnos
 
-                elif 'episodenumberstart' in namedgroups:
-                    # Multiple episodes, regex specifies start and end number
-                    start = int(match.group('episodenumberstart'))
-                    end = int(match.group('episodenumberend'))
-                    if end - start > 5:
-                        warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
-                        episodenumbers = [start]
-                    elif start > end:
-                        # Swap start and end
-                        start, end = end, start
-                        episodenumbers = list(range(start, end + 1))
+                    elif 'episodenumberstart' in namedgroups:
+                        # Multiple episodes, regex specifies start and end number
+                        start = int(match.group('episodenumberstart'))
+                        end = int(match.group('episodenumberend'))
+                        if end - start > 5:
+                            warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
+                            episodenumbers = [start]
+                        elif start > end:
+                            # Swap start and end
+                            start, end = end, start
+                            episodenumbers = list(range(start, end + 1))
+                        else:
+                            episodenumbers = list(range(start, end + 1))
+
+                    elif 'episodenumber' in namedgroups:
+                        episodenumbers = [int(match.group('episodenumber')), ]
+
+                    elif 'year' in namedgroups or 'month' in namedgroups or 'day' in namedgroups:
+                        if not all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
+                            raise ConfigValueError(
+                                "Date-based regex must contain groups 'year', 'month' and 'day'")
+                        match.group('year')
+
+                        year = handleYear(match.group('year'))
+
+                        episodenumbers = [datetime.date(year,
+                                                        int(match.group('month')),
+                                                        int(match.group('day')))]
+
                     else:
-                        episodenumbers = list(range(start, end + 1))
-
-                elif 'episodenumber' in namedgroups:
-                    episodenumbers = [int(match.group('episodenumber')), ]
-
-                elif 'year' in namedgroups or 'month' in namedgroups or 'day' in namedgroups:
-                    if not all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
                         raise ConfigValueError(
-                            "Date-based regex must contain groups 'year', 'month' and 'day'")
-                    match.group('year')
+                            "Regex does not contain episode number group, should"
+                            "contain episodenumber, episodenumber1-9, or"
+                            "episodenumberstart and episodenumberend\n\nPattern"
+                            "was:\n" + cmatcher.pattern)
 
-                    year = handleYear(match.group('year'))
+                    if 'seriesname' in namedgroups:
+                        seriesname = match.group('seriesname')
+                    else:
+                        raise ConfigValueError(
+                            "Regex must contain seriesname. Pattern was:\n" + cmatcher.pattern)
 
-                    episodenumbers = [datetime.date(year,
-                                                    int(match.group('month')),
-                                                    int(match.group('day')))]
+                    if seriesname != None:
+                        seriesname = cleanRegexedSeriesName(seriesname)
+                        seriesname = replaceInputSeriesName(seriesname)
 
-                else:
-                    raise ConfigValueError(
-                        "Regex does not contain episode number group, should"
-                        "contain episodenumber, episodenumber1-9, or"
-                        "episodenumberstart and episodenumberend\n\nPattern"
-                        "was:\n" + cmatcher.pattern)
+                    extra_values = match.groupdict()
 
-                if 'seriesname' in namedgroups:
-                    seriesname = match.group('seriesname')
-                else:
-                    raise ConfigValueError(
-                        "Regex must contain seriesname. Pattern was:\n" + cmatcher.pattern)
+                    if 'seasonnumber' in namedgroups:
+                        seasonnumber = int(match.group('seasonnumber'))
 
-                if seriesname != None:
-                    seriesname = cleanRegexedSeriesName(seriesname)
-                    seriesname = replaceInputSeriesName(seriesname)
+                        episode = EpisodeInfo(
+                            seriesname = seriesname,
+                            seasonnumber = seasonnumber,
+                            episodenumbers = episodenumbers,
+                            filename = self.path,
+                            extra = extra_values)
+                    elif 'year' in namedgroups and 'month' in namedgroups and 'day' in namedgroups:
+                        episode = DatedEpisodeInfo(
+                            seriesname = seriesname,
+                            episodenumbers = episodenumbers,
+                            filename = self.path,
+                            extra = extra_values)
+                    elif 'group' in namedgroups:
+                        episode = AnimeEpisodeInfo(
+                            seriesname = seriesname,
+                            episodenumbers = episodenumbers,
+                            filename = self.path,
+                            extra = extra_values)
+                    else:
+                        # No season number specified, usually for Anime
+                        episode = NoSeasonEpisodeInfo(
+                            seriesname = seriesname,
+                            episodenumbers = episodenumbers,
+                            filename = self.path,
+                            extra = extra_values)
 
-                extra_values = match.groupdict()
-
-                if 'seasonnumber' in namedgroups:
-                    seasonnumber = int(match.group('seasonnumber'))
-
-                    episode = EpisodeInfo(
-                        seriesname = seriesname,
-                        seasonnumber = seasonnumber,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
-                elif 'year' in namedgroups and 'month' in namedgroups and 'day' in namedgroups:
-                    episode = DatedEpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
-                elif 'group' in namedgroups:
-                    episode = AnimeEpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
-                else:
-                    # No season number specified, usually for Anime
-                    episode = NoSeasonEpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
-
-                return episode
+                    return episode
         else:
             emsg = "Cannot parse %r" % self.path
             if len(Config['input_filename_replacements']) > 0:
