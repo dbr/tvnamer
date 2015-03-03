@@ -328,7 +328,6 @@ class FileParser(object):
 
         for filename in filenames:
             for cmatcher in self.compiled_regexs:
-                print "Try to match " + filename + " against " + cmatcher.pattern
                 match = cmatcher.match(filename)
                 if match:
                     namedgroups = match.groupdict().keys()
