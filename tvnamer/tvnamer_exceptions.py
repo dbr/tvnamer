@@ -34,6 +34,12 @@ class UserAbort(BaseTvnamerException):
     pass
 
 
+class OSErrorAbort(BaseTvnamerException):
+    """Base exception for config errors
+    """
+    pass
+
+
 class BaseConfigError(BaseTvnamerException):
     """Base exception for config errors
     """

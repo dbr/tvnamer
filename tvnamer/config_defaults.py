@@ -4,6 +4,9 @@
 """
 
 defaults = {
+    # Select to exit if OSError occurs
+    'oserror_exit': False,
+
     # Select first series search result
     'select_first': False,
 

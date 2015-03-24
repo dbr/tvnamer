@@ -31,7 +31,7 @@ DatedEpisodeInfo, NoSeasonEpisodeInfo)
 
 from tvnamer.tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
-InvalidFilename, DataRetrievalError)
+InvalidFilename, DataRetrievalError, OSErrorAbort)
 
 
 def log():
@@ -92,6 +92,9 @@ def doRenameFile(cnamer, newName):
         cnamer.newPath(new_fullpath = newName, force = Config['overwrite_destination_on_rename'], leave_symlink = Config['leave_symlink'])
     except OSError as e:
         warn(e)
+	if Config['oserror_exit']:
+		p("OSError occured")
+		raise OSErrorAbort("Warning message displayed, erroring out")
 
 
 def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = False):
@@ -118,6 +121,9 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
 
     except OSError as e:
         warn(e)
+	if Config['oserror_exit']:
+		p("OSError occured")
+		raise OSErrorAbort("Warning message displayed, erroring out")
 
 
 def confirm(question, options, default = "y"):
@@ -437,6 +443,8 @@ def main():
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
     except UserAbort as errormsg:
+        opter.error(errormsg)
+    except OSErrorAbort as errormsg:
         opter.error(errormsg)
 
 if __name__ == '__main__':
