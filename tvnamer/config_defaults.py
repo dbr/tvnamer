@@ -16,6 +16,10 @@ defaults = {
     # Fail if error finding show data (thetvdb.com is down etc)
     # Only functions when always_rename is True
     'skip_file_on_error': True,
+    
+    # Fail if error finding show data (thetvdb.com is down etc)
+    # Changes the default behaviour for skip_file_on_error from skip to exit
+    'skip_behaviour': 'skip',
 
     # Forcefully overwrite existing files when renaming or
     # moving. This potentially destroys the old file. Default is False

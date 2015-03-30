@@ -10,6 +10,12 @@ class BaseTvnamerException(Exception):
     pass
 
 
+class SkipBehaviourAbort(BaseTvnamerException):
+    """Raised when skip_behaviour is set to exit
+    """
+    pass
+
+
 class InvalidPath(BaseTvnamerException):
     """Raised when an argument is a non-existent file or directory path
     """
