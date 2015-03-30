@@ -322,13 +322,17 @@ class FileParser(object):
         """
         _, filename = os.path.split(self.path)
 
+        """Create an array of operands to parse later.
+        This will make further additions like metadata contained 
+        somewhere easier to add.
+        """
         filename = applyCustomInputReplacements(filename)
-        fullname =  applyCustomInputReplacements(self.path)
-        filenames = [filename, fullname]
+        fullpath =  applyCustomInputReplacements(self.path)
+        operands = [fullpath, filename]
 
-        for filename in filenames:
+        for parsingelement in operands:
             for cmatcher in self.compiled_regexs:
-                match = cmatcher.match(filename)
+                match = cmatcher.match(parsingelement)
                 if match:
                     namedgroups = match.groupdict().keys()
 
@@ -347,7 +351,7 @@ class FileParser(object):
                         start = int(match.group('episodenumberstart'))
                         end = int(match.group('episodenumberend'))
                         if end - start > 5:
-                            warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
+                            warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, parsingelement, start))
                             episodenumbers = [start]
                         elif start > end:
                             # Swap start and end
@@ -397,26 +401,26 @@ class FileParser(object):
                             seriesname = seriesname,
                             seasonnumber = seasonnumber,
                             episodenumbers = episodenumbers,
-                            filename = self.path,
+                            parsingelement = self.path,
                             extra = extra_values)
                     elif 'year' in namedgroups and 'month' in namedgroups and 'day' in namedgroups:
                         episode = DatedEpisodeInfo(
                             seriesname = seriesname,
                             episodenumbers = episodenumbers,
-                            filename = self.path,
+                            parsingelement = self.path,
                             extra = extra_values)
                     elif 'group' in namedgroups:
                         episode = AnimeEpisodeInfo(
                             seriesname = seriesname,
                             episodenumbers = episodenumbers,
-                            filename = self.path,
+                            parsingelement = self.path,
                             extra = extra_values)
                     else:
                         # No season number specified, usually for Anime
                         episode = NoSeasonEpisodeInfo(
                             seriesname = seriesname,
                             episodenumbers = episodenumbers,
-                            filename = self.path,
+                            parsingelement = self.path,
                             extra = extra_values)
 
                     return episode
