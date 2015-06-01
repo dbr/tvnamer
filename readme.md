@@ -10,6 +10,11 @@ You can easily install `tvnamer` via `easy_install`
 
 This installs the `tvnamer` command-line tool (and the `tvdb_api` module as a requirement)
 
+Installing with Homebrew (OSX):
+```sh
+brew install tvnamer
+```
+
 If you wish to install the latest (non-stable) development version from source, download the latest version of the code, either from <http://github.com/dbr/tvnamer/tarball/master> or by running:
 
     git clone git://github.com/dbr/tvnamer.git
