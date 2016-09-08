@@ -220,6 +220,12 @@ def processFile(tvdb_instance, episode):
                         doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
                 return
 
+            elif Config['dry_run']:
+                p("%s will be renamed to %s" % (episode.fullfilename, newName))
+                if Config['move_files_enable']:
+                    p("%s will be moved to %s" % (newName, getMoveDestination(episode)))
+                return
+
             ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
 
             if ans == "a":
@@ -242,6 +248,10 @@ def processFile(tvdb_instance, episode):
 
     if shouldRename and Config['move_files_enable']:
         newPath = getMoveDestination(episode)
+        if Config['dry_run']:
+            p("%s will be moved to %s" % (newName, getMoveDestination(episode)))
+            return
+
         if Config['move_files_destination_is_filepath']:
             doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
         else:
