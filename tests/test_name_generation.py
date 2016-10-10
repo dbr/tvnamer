@@ -53,12 +53,8 @@ def test_name_generation_on_testfiles():
 
     tvdb_instance = Tvdb(search_all_languages=True, language='en', cache=cache)
     for category, testcases in files.items():
-        for testindex, curtest in enumerate(testcases):
-            cur_tester = lambda x: verify_name_gen(x, tvdb_instance)
-            cur_tester.description = 'test_name_generation_%s_%d: %r' % (
-                category, testindex, curtest['input'])
-            yield (cur_tester, curtest)
-
+        for curtest in testcases:
+            verify_name_gen(curtest, tvdb_instance)
 
 def test_single_episode():
     """Simple episode name, with show/season/episode/name/filename
@@ -97,7 +93,7 @@ def test_episode_numeric_title():
     """An episode with a name starting with a number should not be
     detected as a range
     """
-    
+
     ep = EpisodeInfo(
         seriesname = 'Star Trek TNG',
         seasonnumber = 1,

@@ -94,8 +94,8 @@ def test_autogen_names():
                             assertEquals(p.seasonnumber, name_data['seasno'])
         #end cur_test
 
-        cur_test.description = cdata['description']
-        yield cur_test
+        print "Testing: %s" % cdata['description']
+        cur_test()
 
 
 def check_case(curtest):
@@ -120,11 +120,8 @@ def test_parsing_generator():
     """Generates test for each test case in test_files.py
     """
     for category, testcases in files.items():
-        for testindex, curtest in enumerate(testcases):
-            cur_tester = lambda x: check_case(x)
-            cur_tester.description = 'test_parsing_%s_%d: %r' % (
-                category, testindex, curtest['input'])
-            yield (cur_tester, curtest)
+        for curtest in testcases:
+            check_case(curtest)
 
 
 if __name__ == '__main__':
