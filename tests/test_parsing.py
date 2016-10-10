@@ -94,7 +94,7 @@ def test_autogen_names():
                             assertEquals(p.seasonnumber, name_data['seasno'])
         #end cur_test
 
-        print "Testing: %s" % cdata['description']
+        print("Testing: %s" % cdata['description'])
         cur_test()
 
 
