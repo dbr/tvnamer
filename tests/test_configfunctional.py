@@ -69,6 +69,48 @@ def test_do_not_skip_file_on_error():
 
 
 @attr("functional")
+def test_skip_behaviour_warn():
+    """skip_behaivour:warn should keep renaming other files
+    """
+
+    conf = """
+    {"skip_file_on_error": false,
+    "batch": true,
+    "skip_behaviour": "warn"}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'a.fake.episode.s01e01.avi', 'scrubs.s01e02.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['a fake episode - [01x01].avi', 'Scrubs - [01x01] - My First Day.avi', 'Scrubs - [01x02] - My Mentor.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_skip_behaviour_error():
+    """With skip_behaviour:error, should end process
+    """
+
+    conf = """
+    {"skip_file_on_error": false,
+    "batch": true,
+    "skip_behaviour": "warn"}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'a.fake.episode.s01e01.avi', 'scrubs.s01e02.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['a fake episode - [01x01].avi', 'Scrubs - [01x01] - My First Day.avi', 'Scrubs - [01x02] - My Mentor.avi']
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
 def test_lowercase_names():
     """Test setting "lowercase_filename" config option
     """
