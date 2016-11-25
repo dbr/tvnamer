@@ -73,6 +73,7 @@ def getMoveDestination(episode):
             'seriesname': wrap_validfname(episode.seriesname),
             'episodenumbers': wrap_validfname(formatEpisodeNumbers(episode.episodenumbers)),
             'originalfilename': episode.originalfilename,
+            'seasonnumber': 0,
             }
     else:
         destdir = Config['move_files_destination'] % {
@@ -97,7 +98,7 @@ def doRenameFile(cnamer, newName):
         warn("Skipping file due to error: %s" % e)
 
 
-def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = False):
+def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = False, newName = None):
     """Moves file to destDir, or to destFilepath
     """
 
@@ -111,13 +112,21 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
         raise ValueError("Config value for move_files_destination cannot be None if move_files_enabled is True")
 
     try:
-        return cnamer.newPath(
-            new_path = destDir,
-            new_fullpath = destFilepath,
-            always_move = Config['always_move'],
-            leave_symlink = Config['leave_symlink'],
-            getPathPreview = getPathPreview,
-            force = Config['overwrite_destination_on_move'])
+        if (newName is None):
+            return cnamer.newPath(
+	        new_path = destDir,
+	        new_fullpath = destFilepath,
+	        always_move = Config['always_move'],
+	        leave_symlink = Config['leave_symlink'],
+	        getPathPreview = getPathPreview,
+	        force = Config['overwrite_destination_on_move'])
+        else:
+            return cnamer.newPath(
+                new_fullpath = destDir + os.sep + newName,
+                always_move = Config['always_move'],
+                leave_symlink = Config['leave_symlink'],
+                getPathPreview = getPathPreview,
+                force = Config['overwrite_destination_on_move'])
 
     except OSError as e:
         if Config['skip_behaviour'] == 'exit':
@@ -224,12 +233,14 @@ def processFile(tvdb_instance, episode):
             p("New filename: %s" % newName)
 
             if Config['always_rename']:
-                doRenameFile(cnamer, newName)
                 if Config['move_files_enable']:
                     if Config['move_files_destination_is_filepath']:
+	                doRenameFile(cnamer, newName) # TODO: understand this option
                         doMoveFile(cnamer = cnamer, destFilepath = getMoveDestination(episode))
                     else:
-                        doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
+                        doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode) , newName = newName)
+		else:
+                    doRenameFile(cnamer, newName)
                 return
 
             elif Config['dry_run']:
@@ -267,7 +278,7 @@ def processFile(tvdb_instance, episode):
         if Config['move_files_destination_is_filepath']:
             doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
         else:
-            doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+            doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True, newName = newName )
 
         if not Config['batch'] and Config['move_files_confirmation']:
             ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
