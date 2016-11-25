@@ -334,7 +334,7 @@ files['anime'] = [
 
     {'input': '[Shinsen-Subs] True Mazinger - 07 [848x480 H.264 Vorbis][787D0074].mkv',
     'parsedseriesname': 'True Mazinger',
-    'correctedseriesname': 'Mazinger Edition Z: The Impact!',
+    'correctedseriesname': 'True Mazinger: Shocking! Z Chapter',
     'seasonnumber': None, 'episodenumbers': [7],
     'episodenames': ['Legend! The Mechanical Beasts of Bardos!']},
 
