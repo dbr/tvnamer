@@ -30,7 +30,7 @@ applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename,
 DatedEpisodeInfo, NoSeasonEpisodeInfo)
 
 from tvnamer.tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError,
+EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError, SkipBehaviourAbort,
 InvalidFilename, DataRetrievalError)
 
 
@@ -91,7 +91,10 @@ def doRenameFile(cnamer, newName):
     try:
         cnamer.newPath(new_fullpath = newName, force = Config['overwrite_destination_on_rename'], leave_symlink = Config['leave_symlink'])
     except OSError as e:
-        warn(e)
+        if Config['skip_behaviour'] == 'exit':
+            warn("Exiting due to error: %s" % e)
+            raise SkipBehaviourAbort()
+        warn("Skipping file due to error: %s" % e)
 
 
 def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = False):
@@ -117,7 +120,10 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
             force = Config['overwrite_destination_on_move'])
 
     except OSError as e:
-        warn(e)
+        if Config['skip_behaviour'] == 'exit':
+            warn("Exiting due to error: %s" % e)
+            raise SkipBehaviourAbort()
+        warn("Skipping file due to error: %s" % e)
 
 
 def confirm(question, options, default = "y"):
@@ -170,6 +176,9 @@ def processFile(tvdb_instance, episode):
         episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
     except (DataRetrievalError, ShowNotFound) as errormsg:
         if Config['always_rename'] and Config['skip_file_on_error'] is True:
+            if Config['skip_behaviour'] == 'exit':
+                warn("Exiting due to error: %s" % errormsg)
+                raise SkipBehaviourAbort()
             warn("Skipping file due to error: %s" % errormsg)
             return
         else:
@@ -177,6 +186,9 @@ def processFile(tvdb_instance, episode):
     except (SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound) as errormsg:
         # Show was found, so use corrected series name
         if Config['always_rename'] and Config['skip_file_on_error']:
+            if Config['skip_behaviour'] == 'exit':
+                warn("Exiting due to error: %s" % errormsg)
+                raise SkipBehaviourAbort()
             warn("Skipping file due to error: %s" % errormsg)
             return
 
@@ -437,6 +449,8 @@ def main():
     except NoValidFilesFoundError:
         opter.error("No valid files were supplied")
     except UserAbort as errormsg:
+        opter.error(errormsg)
+    except SkipBehaviourAbort as errormsg:
         opter.error(errormsg)
 
 if __name__ == '__main__':
