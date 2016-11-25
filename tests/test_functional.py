@@ -65,8 +65,8 @@ def test_simple_batch_functionality():
 
     for curtest in tests:
 
-        print "Expecting %r to turn into %r" % (
-            curtest['in'], curtest['expected'])
+        print("Expecting %r to turn into %r" % (
+            curtest['in'], curtest['expected']))
         out_data = run_tvnamer(
             with_files = [curtest['in'], ],
             with_flags = ['--batch'],
