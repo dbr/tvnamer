@@ -29,6 +29,9 @@ defaults = {
     # Verbose mode (debugging info)
     'verbose': False,
 
+    # Dry-run mode (do nothing)
+    'dry_run': False,
+
     # Recurse more than one level into folders. When False, only
     # desends one level.
     'recursive': False,

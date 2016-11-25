@@ -40,7 +40,7 @@ def getCommandlineParser(defaults):
     with Group(parser, "Console output") as g:
         g.add_option("-v", "--verbose", action="store_true", dest="verbose", help = "show debugging info")
         g.add_option("-q", "--not-verbose", action="store_false", dest="verbose", help = "no verbose output (useful to override 'verbose':true in config file)")
-
+        g.add_option("--dry-run", action="store_true", dest="dry_run", help = "Only tell what script is going to do")
 
     # Batch options
     with Group(parser, "Batch options") as g:
@@ -52,7 +52,6 @@ def getCommandlineParser(defaults):
 
         g.add_option("-b", "--batch", action="store_true", dest = "batch", help = "Rename without human intervention, same as --always and --selectfirst combined")
         g.add_option("--not-batch", action="store_false", dest = "batch", help = "Overrides --batch")
-
 
     # Config options
     with Group(parser, "Config options") as g:
