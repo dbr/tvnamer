@@ -95,6 +95,9 @@ defaults = {
     # Move renamed files to directory?
     'move_files_enable': False,
 
+    # Rename original file only after source file has copied
+    'rename_only_copied_file': True,
+
     # Separate confirmation of moving or copying renamed file?  If
     # False, will move files when renaming. In batch mode, will never
     # prompt.
@@ -138,6 +141,8 @@ defaults = {
     # copied).  If True, this will delete the file from the original
     # volume, after the copy has complete.
     'always_move': False,
+
+    'always_copy': True,
 
     # Whenever a file is moved leave a symlink to the new file behind, named
     # after the original file.

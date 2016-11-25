@@ -114,6 +114,7 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
         return cnamer.newPath(
             new_path = destDir,
             new_fullpath = destFilepath,
+            always_copy = Config['always_copy'],
             always_move = Config['always_move'],
             leave_symlink = Config['leave_symlink'],
             getPathPreview = getPathPreview,
@@ -224,12 +225,15 @@ def processFile(tvdb_instance, episode):
             p("New filename: %s" % newName)
 
             if Config['always_rename']:
-                doRenameFile(cnamer, newName)
+                if not Config['rename_only_copied_file']:
+                    doRenameFile(cnamer, newName)
                 if Config['move_files_enable']:
                     if Config['move_files_destination_is_filepath']:
                         doMoveFile(cnamer = cnamer, destFilepath = getMoveDestination(episode))
                     else:
                         doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
+                if Config['rename_only_copied_file']:
+                    doRenameFile(cnamer, newName)
                 return
 
             elif Config['dry_run']:
@@ -255,7 +259,7 @@ def processFile(tvdb_instance, episode):
             else:
                 p("Invalid input, skipping")
 
-            if shouldRename:
+            if shouldRename and not Config['rename_only_copied_file']:
                 doRenameFile(cnamer, newName)
 
     if shouldRename and Config['move_files_enable']:
@@ -281,6 +285,8 @@ def processFile(tvdb_instance, episode):
             p("Quitting")
             raise UserAbort("user exited with q")
 
+        if Config['rename_only_copied_file']:
+            doRenameFile(cnamer, newName)
 
 def findFiles(paths):
     """Takes an array of paths, returns all files found
