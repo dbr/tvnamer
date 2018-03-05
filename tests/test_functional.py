@@ -132,7 +132,7 @@ def test_unicode_in_search_results():
         'psych.s04e11.avi']
 
     expected_files = [
-        'Psych - [04x11] - Thrill Seekers & Hell Raisers.avi']
+        'Psych - [04x11] - Thrill Seekers and Hell-Raisers.avi']
 
     out_data = run_tvnamer(
         with_files = input_files,

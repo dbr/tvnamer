@@ -242,7 +242,7 @@ def test_replacement_order():
 }
 """)
 
-    expected_files = ['24 - [03x02] - Day 3- 2-00 P.M.-3-00 P.M..avi']
+    expected_files = ['24 - [03x02] - Day 3- 2-00 P.M. - 3-00 P.M..avi']
 
     verify_out_data(out_data, expected_files)
 
