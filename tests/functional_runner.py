@@ -168,6 +168,8 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     proc.stdin.write(with_input.encode("utf-8"))
     output, _ = proc.communicate()
 
+    output = output.decode("utf-8")
+
     if PY2:
         def unicodify(obj, encoding = "utf-8"):
             if isinstance(obj, basestring):
