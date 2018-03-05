@@ -31,11 +31,6 @@ from tvnamer import __version__
 
 needed_pkgs = []
 
-try:
-    import json
-except ImportError:
-    needed_pkgs.append('simplejson')
-
 needed_pkgs.append("tvdb_api>=2.0")
 
 

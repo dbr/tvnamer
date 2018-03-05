@@ -13,10 +13,7 @@ try:
 except ImportError:
     pass
 
-try:
-    import json
-except ImportError:
-    import simplejson as json
+import json
 
 from tvdb_api import Tvdb
 
@@ -32,12 +29,6 @@ DatedEpisodeInfo, NoSeasonEpisodeInfo)
 from tvnamer.tvnamer_exceptions import (ShowNotFound, SeasonNotFound, EpisodeNotFound,
 EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError, SkipBehaviourAbort,
 InvalidFilename, DataRetrievalError)
-
-
-def log():
-    """Returns the logger for current file
-    """
-    return logging.getLogger(__name__)
 
 
 def getMoveDestination(episode):
