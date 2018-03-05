@@ -3,4 +3,5 @@
 tvnamer.egg-info/*
 htmlcov/*
 .pytest_cache/*
-.coverage
+.coverage/*
+.coverage.*

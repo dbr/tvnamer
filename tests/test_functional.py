@@ -216,7 +216,7 @@ def test_correct_filename():
 
 @attr("functional")
 def test_filename_already_exists():
-    """If the filename is already correct, don't prompt
+    """Don't overwrite
     """
 
     out_data = run_tvnamer(
