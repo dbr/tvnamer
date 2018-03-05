@@ -694,13 +694,13 @@ class EpisodeInfo(object):
                     self.seriesname))
 
             except tvdb_episodenotfound:
-                # Try to search by absolute_number
-                sr = show.search(cepno, "absolute_number")
+                # Try to search by absolute number
+                sr = show.search(cepno, "absoluteNumber")
                 if len(sr) > 1:
                     # For multiple results try and make sure there is a direct match
                     unsure = True
                     for e in sr:
-                        if int(e['absolute_number']) == cepno:
+                        if int(e['absoluteNumber']) == cepno:
                             epnames.append(e['episodename'])
                             unsure = False
                     # If unsure error out
