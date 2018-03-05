@@ -298,11 +298,14 @@ See the other flags
 # Change log
 
 # `2.5` (work in progress)
-- Added `--force-rename` and `--force-move` arguments ([PR #133](https://github.com/dbr/tvnamer/pull/133))
-- Added `skip_behavior` option ([PR #111](https://github.com/dbr/tvnamer/pull/111))
-- Added `--dry-run` argument ([PR #130](https://github.com/dbr/tvnamer/pull/130))
-- Fix `normalize_unicode_filenames` in Python 3 ([Issue #134](https://github.com/dbr/tvnamer/issues/134))
-- Dropped support for Python 2.6
-
-# `2.4`
-- Last version to support Python 2.6
+- Began keeping a changelog
+- Added `--force-rename` and `--force-move` arguments
+  ([PR #133](https://github.com/dbr/tvnamer/pull/133))
+- Added `skip_behavior` option
+  ([PR #111](https://github.com/dbr/tvnamer/pull/111))
+- Added `--dry-run` argument
+  ([PR #130](https://github.com/dbr/tvnamer/pull/130))
+- Fix `normalize_unicode_filenames` in Python 3
+  ([Issue #134](https://github.com/dbr/tvnamer/issues/134))
+- Dropped support for Python 2.6. `tvnamer==2.4` is last version to
+  support Python 2.6
