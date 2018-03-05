@@ -82,12 +82,3 @@ def getCommandlineParser(defaults):
 
 
     return parser
-
-
-if __name__ == '__main__':
-
-    def main():
-        p = getCommandlineParser({'recursive': True})
-        print(p.parse_args())
-
-    main()
