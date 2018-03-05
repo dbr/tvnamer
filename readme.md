@@ -2,18 +2,22 @@
 
 `tvnamer` is a utility which to rename files from `some.show.s01e03.blah.abc.avi` to `Some Show - [01x03] - The Episode Name.avi` (by retrieving the episode name using data from [`tvdb_api`](http://github.com/dbr/tvdb_api))
 
-## To install
+## Installing
 
-You can easily install `tvnamer` via `easy_install`
+The "official" way to install `tvnamer` is via `pip`:
 
-    sudo easy_install tvnamer
+    pip install tvnamer
 
-This installs the `tvnamer` command-line tool (and the `tvdb_api` module as a requirement)
+This installs the `tvnamer` command-line tool and the requirements from [the `tvnamer` package on PyPI](https://pypi.python.org/pypi/tvnamer/)
 
-Installing with Homebrew (OSX):
-```sh
-brew install tvnamer
-```
+Alternatively, the community have packaged tvnamer in various platform/distro specific package managers, including:
+
+1. [Homebrew for OS X](http://brewformulas.org/Tvnamer) - `brew install tvnamer`
+2. [Debian](https://tracker.debian.org/pkg/tvnamer) - `apt-get install tvnamer`
+3. [FreeBSD/DragonFlyBSD/MacPorts](https://www.freshports.org/multimedia/py-tvnamer) - `pkg install py27-tvnamer` etc
+
+
+# Installing development version
 
 If you wish to install the latest (non-stable) development version from source, download the latest version of the code, either from <http://github.com/dbr/tvnamer/tarball/master> or by running:
 
@@ -21,19 +25,27 @@ If you wish to install the latest (non-stable) development version from source, 
 
 ..then `cd` into the directory, and run:
 
-    sudo python setup.py install
+    python setup.py install
 
-Example terminal session (you can skip the `curl` line if you have already downloaded and extracted [the above link](http://github.com/dbr/tvnamer/tarball/master)):
+You may wish to do this via virtualenv to avoid cluttering your global install
 
-    $ cd Downloads/
-    $ curl -L http://github.com/dbr/tvnamer/tarball/master | gunzip - | tar -x -
-    $ ls
-    dbr-tvnamer-ce3ac8d/
-    $ cd dbr-tvnamer-ce3ac8d/
-    $ sudo python setup.py install
-    Password:
+Example terminal session:
+
+    $ virtualenv tvn-env
     [...]
-    Finished processing dependencies for tvnamer==2.0
+    Installing setuptools, pip, wheel...done.
+    $ source tvn-env/bin/activate
+    (tvn-env) $ git clone git://github.com/dbr/tvnamer.git
+    Cloning into 'tvnamer'...
+    [...]
+    (tvn-env) $ cd tvnamer/
+    (tvn-env) $ python setup.py develop
+    [...]
+    (tvn-env) $ tvnamer --help
+    [...]
+    (tvn-env) $ deactivate
+    $ tvnamer
+    -bash: tvnamer: command not found
 
 ## Improvements over v1
 
@@ -47,7 +59,7 @@ tvnamer v2 is a near-complete rewrite of the tvnamer released as part of `tvdb_a
 
 ## Bugs?
 
-Ideally file a ticket on the [tvnamer Lighthouse ticket site](http://dbr.lighthouseapp.com/projects/36049-tvnamer). Lighthouse is preferred, but alternatively you can leave a ticket on on tvnamer's [Github Issues page](http://github.com/dbr/tvnamer/issues)
+Please file issues on tvnamer's [Github Issues page](http://github.com/dbr/tvnamer/issues) (older tickets can be found on [Lighthouse](http://dbr.lighthouseapp.com/projects/36049-tvnamer))
 
 Please make tickets for any possible bugs or feature requests, or if you discover a filename format that tvnamer cannot parse (as long as a reasonably common format, and has enough information to be parsed!), or if you are struggling with the a custom configuration (please state your desired filename output, and what problems you are encountering)
 
@@ -71,13 +83,13 @@ For example:
     # Old filename: brass.eye.s01e01.avi
     # New filename: Brass Eye - [01x01] - Animals.avi
     Rename?
-    ([y]/n/a/q) 
+    ([y]/n/a/q)
 
 Enter `y` then press `return` and the file will be renamed to "Brass Eye - [01x01] - Animals.avi". You can also simply press `return` to select the default option, denoted by the surrounding `[]`
 
 If there are multiple shows with the same (or similar) names or languages, you will be asked to select the correct one - "Lost" is a good example of this:
 
-    $ tvnamer lost.s01e01.avi 
+    $ tvnamer lost.s01e01.avi
     ####################
     # Starting tvnamer
     # Found 1 episodes
