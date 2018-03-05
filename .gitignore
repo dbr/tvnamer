@@ -1,3 +1,6 @@
 .DS_Store
 *.pyc
 tvnamer.egg-info/*
+htmlcov/*
+.pytest_cache/*
+.coverage
