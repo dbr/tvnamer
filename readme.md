@@ -2,6 +2,8 @@
 
 `tvnamer` is a utility which to rename files from `some.show.s01e03.blah.abc.avi` to `Some Show - [01x03] - The Episode Name.avi` (by retrieving the episode name using data from [`tvdb_api`](http://github.com/dbr/tvdb_api))
 
+It supports Python 2.7 and 3.3 onwards
+
 ## Installing
 
 The "official" way to install `tvnamer` is via `pip`:
