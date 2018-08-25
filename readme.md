@@ -311,3 +311,6 @@ See the other flags
   ([Issue #134](https://github.com/dbr/tvnamer/issues/134))
 - Dropped support for Python 2.6. `tvnamer==2.4` is last version to
   support Python 2.6
+- Added support for Python 3.6 and 3.7
+- Fix search by air-date when episode had special episodes aired on same day
+  ([PR #97](https://github.com/dbr/tvnamer/pull/97))
