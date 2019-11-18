@@ -1006,7 +1006,7 @@ def delete_file(fpath):
 def rename_file(old, new):
     p("rename %s to %s" % (old, new))
     stat = os.stat(old)
-    os.rename(old, new)
+    shutil.move(old, new)
     try:
         os.utime(new, (stat.st_atime, stat.st_mtime))
     except OSError as ex:
