@@ -976,13 +976,6 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
             custom_blacklist = Config['custom_filename_character_blacklist'],
             replace_with = Config['replace_invalid_characters_with'])
 
-
-def same_partition(f1, f2):
-    """Returns True if both files or directories are on the same partition
-    """
-    return os.stat(f1).st_dev == os.stat(f2).st_dev
-
-
 def delete_file(fpath):
     """On OS X: Trashes a path using the Finder, via OS X's Scripting Bridge.
 
@@ -1001,7 +994,6 @@ def delete_file(fpath):
         finder = SBApplication.applicationWithBundleIdentifier_("com.apple.Finder")
         items = finder.items().objectAtLocation_(targetfile)
         items.delete()
-
 
 def rename_file(old, new):
     p("rename %s to %s" % (old, new))
@@ -1092,27 +1084,15 @@ class Renamer(object):
                 raise OSError("File %s already exists, not forcefully moving %s" % (
                     new_fullpath, self.filename))
 
-        if same_partition(self.filename, new_dir):
-            if always_copy:
-                # Same partition, but forced to copy
-                copy_file(self.filename, new_fullpath)
-            else:
-                # Same partition, just rename the file to move it
-                rename_file(self.filename, new_fullpath)
-
-                # Leave a symlink behind if configured to do so
-                if leave_symlink:
-                    symlink_file(new_fullpath, self.filename)
-        else:
-            # File is on different partition (different disc), copy it
+        if always_copy:
+            # Same partition, but forced to copy
             copy_file(self.filename, new_fullpath)
-            if always_move:
-                # Forced to move file, we just trash old file
-                p("Deleting %s" % (self.filename))
-                delete_file(self.filename)
+        else:
+            # Same partition, just rename the file to move it
+            rename_file(self.filename, new_fullpath)
 
-                # Leave a symlink behind if configured to do so
-                if leave_symlink:
-                    symlink_file(new_fullpath, self.filename)
+            # Leave a symlink behind if configured to do so
+            if leave_symlink:
+                symlink_file(new_fullpath, self.filename)
 
         self.filename = new_fullpath
