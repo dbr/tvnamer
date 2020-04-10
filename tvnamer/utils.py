@@ -1034,7 +1034,7 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
 
-    def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, always_hardlink = False, leave_symlink = False, create_dirs = True, getPathPreview = False):
+    def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, prefer_hardlink_to_copy = False, always_move = False, always_hardlink = False, leave_symlink = False, create_dirs = True, getPathPreview = False):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)
