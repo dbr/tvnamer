@@ -1019,6 +1019,14 @@ def symlink_file(target, name):
     os.symlink(target, name)
 
 
+def hardlink_file(old, new):
+    """Creates a hard link from the 'old' file at a 'new' target path with same permissions
+    """
+    p("hardlink %s to %s" % (old, new))
+    os.link(old, new)
+    shutil.copystat(old, new)
+
+
 class Renamer(object):
     """Deals with renaming of files
     """
@@ -1026,7 +1034,7 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
 
-    def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, leave_symlink = False, create_dirs = True, getPathPreview = False):
+    def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, always_hardlink = False, leave_symlink = False, create_dirs = True, getPathPreview = False):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)
@@ -1037,8 +1045,9 @@ class Renamer(object):
         pointing to the file's new destination if leave_symlink is True.
         """
 
-        if always_copy and always_move:
-            raise ValueError("Both always_copy and always_move cannot be specified")
+        if (always_copy, always_move, always_hardlink).count(True) > 1:
+            raise ValueError("Different incompatible renaming operation cannot be specified: "
+                             "always_copy or always_move or always_hardlink")
 
         if (new_path is None and new_fullpath is None) or (new_path is not None and new_fullpath is not None):
             raise ValueError("Specify only new_dir or new_fullpath")
@@ -1086,7 +1095,15 @@ class Renamer(object):
 
         if always_copy:
             # Same partition, but forced to copy
-            copy_file(self.filename, new_fullpath)
+            if Config['prefer_hardlink_to_copy']:
+                try:
+                    hardlink_file(self.filename, new_fullpath)
+                except OSError:
+                    copy_file(self.filename, new_fullpath)
+            else:
+                copy_file(self.filename, new_fullpath)
+        elif always_hardlink:
+            hardlink_file(self.filename, new_fullpath)
         else:
             # Same partition, just rename the file to move it
             rename_file(self.filename, new_fullpath)
