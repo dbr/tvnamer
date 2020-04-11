@@ -26,6 +26,7 @@ import sys
 import shutil
 import tempfile
 import subprocess
+import unicodedata
 
 from tvnamer.unicode_helper import p
 from tvnamer.compat import PY2, string_type
@@ -182,7 +183,11 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     created_files = []
 
     for walkroot, walkdirs, walkfiles in os.walk(string_type(episodes_location)):
-        curlist = [os.path.join(walkroot, name) for name in walkfiles]
+        curlist = [
+            os.path.join(
+                walkroot,
+                unicodedata.normalize('NFKD', name)) # Make unicode stuff consistent
+            for name in walkfiles]
 
         # Remove episodes_location from start of path
         curlist = [relpath(x, episodes_location) for x in curlist]
