@@ -4,6 +4,8 @@
 
 It supports Python 2.7 and 3.3 onwards
 
+TV information is provided by TheTVDB.com, but we are not endorsed or certified by TheTVDB.com or its affiliates.
+
 ## Installing
 
 The "official" way to install `tvnamer` is via `pip`:
@@ -61,7 +63,7 @@ tvnamer v2 is a near-complete rewrite of the tvnamer released as part of `tvdb_a
 
 ## Bugs?
 
-Please file issues on tvnamer's [Github Issues page](http://github.com/dbr/tvnamer/issues) (older tickets can be found on [Lighthouse](http://dbr.lighthouseapp.com/projects/36049-tvnamer))
+Please file issues on tvnamer's [Github Issues page](http://github.com/dbr/tvnamer/issues)
 
 Please make tickets for any possible bugs or feature requests, or if you discover a filename format that tvnamer cannot parse (as long as a reasonably common format, and has enough information to be parsed!), or if you are struggling with the a custom configuration (please state your desired filename output, and what problems you are encountering)
 
