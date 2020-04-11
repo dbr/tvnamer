@@ -659,7 +659,7 @@ class EpisodeInfo(object):
             epnames = []
             for cepno in self.episodenumbers:
                 try:
-                    sr = show.airedOn(cepno)
+                    sr = show.aired_on(cepno)
                     if len(sr) > 1:
                         # filter out specials if multiple episodes aired on the day
                         sr = [ s for s in sr if s['seasonnumber'] != '0' ]
