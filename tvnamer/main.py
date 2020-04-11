@@ -31,6 +31,10 @@ EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError, SkipBehavio
 InvalidFilename, DataRetrievalError)
 
 
+# Key for use in tvnamer only - other keys can easily be registered at https://thetvdb.com/api-information
+TVNAMER_API_KEY = "fb51f9b848ffac9750bada89ecba0225"
+
+
 def getMoveDestination(episode):
     """Constructs the location to move/copy the file
     """
@@ -348,6 +352,7 @@ def tvnamer(paths):
         language = Config['language'],
         dvdorder = dvdorder,
         cache=cache,
+        apikey=TVNAMER_API_KEY,
     )
 
     for episode in episodes_found:
