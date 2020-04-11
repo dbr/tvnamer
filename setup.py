@@ -1,37 +1,13 @@
-"""Setup tools for tvnamer,
+"""Setup tools for tvnamer
 """
 
 import os
 import sys
 
-
-from setuptools.command.test import test as TestCommand
-
-
-class PyTest(TestCommand):
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = []
-
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(args=['--tb=native'])
-        sys.exit(errno)
-
 # Ensure dir containing script is on PYTHONPATH
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from tvnamer import __version__
-
-needed_pkgs = []
-
-needed_pkgs.append("tvdb_api>=2.0")
 
 
 from setuptools import setup
@@ -61,9 +37,7 @@ entry_points = {
     ],
 },
 
-install_requires = needed_pkgs,
-tests_require=['pytest'],
-cmdclass = {'test': PyTest},
+install_requires = ["tvdb_api>=2.0"],
 
 classifiers=[
     "Environment :: Console",
