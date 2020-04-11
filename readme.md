@@ -296,21 +296,3 @@ with the `(?...)` syntax, e.g to replace `and`, `And`, `AND` etc with
 See the other flags
 [in the Python `re` docs](http://docs.python.org/2/library/re.html#regular-expression-syntax)
 (search for `(?iLmsux)` on the page)
-
-# Change log
-
-# `2.5` (work in progress)
-- Began keeping a changelog
-- Added `--force-rename` and `--force-move` arguments
-  ([PR #133](https://github.com/dbr/tvnamer/pull/133))
-- Added `skip_behavior` option
-  ([PR #111](https://github.com/dbr/tvnamer/pull/111))
-- Added `--dry-run` argument
-  ([PR #130](https://github.com/dbr/tvnamer/pull/130))
-- Fix `normalize_unicode_filenames` in Python 3
-  ([Issue #134](https://github.com/dbr/tvnamer/issues/134))
-- Dropped support for Python 2.6. `tvnamer==2.4` is last version to
-  support Python 2.6
-- Added support for Python 3.6 and 3.7
-- Fix search by air-date when episode had special episodes aired on same day
-  ([PR #97](https://github.com/dbr/tvnamer/pull/97))
