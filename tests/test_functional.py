@@ -31,13 +31,13 @@ def test_simple_multiple_files():
     input_files = [
         'scrubs.s01e01.hdtv.fake.avi',
         'my.name.is.earl.s01e01.fake.avi',
-        'a.fake.show.s12e24.fake.avi',
+        'a.nonsensical.fake.show.s12e24.fake.avi',
         'total.access.s01e01.avi']
 
     expected_files = [
         'Scrubs - [01x01] - My First Day.avi',
         'My Name Is Earl - [01x01] - Pilot.avi',
-        'a fake show - [12x24].avi',
+        'a nonsensical fake show - [12x24].avi',
          'Total Access 24_7 - [01x01] - Episode #1.avi']
 
     out_data = run_tvnamer(
@@ -82,13 +82,13 @@ def test_interactive_always_option():
     input_files = [
         'scrubs.s01e01.hdtv.fake.avi',
         'my.name.is.earl.s01e01.fake.avi',
-        'a.fake.show.s12e24.fake.avi',
+        'a.nonsensical.fake.show.s12e24.fake.avi',
         'total.access.s01e01.avi']
 
     expected_files = [
         'Scrubs - [01x01] - My First Day.avi',
         'My Name Is Earl - [01x01] - Pilot.avi',
-        'a fake show - [12x24].avi',
+        'a nonsensical fake show - [12x24].avi',
          'Total Access 24_7 - [01x01] - Episode #1.avi']
 
     out_data = run_tvnamer(

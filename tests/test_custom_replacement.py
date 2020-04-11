@@ -127,7 +127,7 @@ def test_replacing_ands():
     """Tests removind "and" and "&" from input files
     """
     out_data = run_tvnamer(
-        with_files = ['Law & Order s01e01.avi'],
+        with_files = ['Law & Order UK s01e01.avi'],
         with_config = """
 {
     "input_filename_replacements": [
@@ -145,7 +145,7 @@ def test_replacing_ands():
 }
 """)
 
-    expected_files = ['Law and Order - [01x01] - Prescription for Death.avi']
+    expected_files = ['Law and Order_ UK - [01x01] - Care.avi']
 
     verify_out_data(out_data, expected_files)
 

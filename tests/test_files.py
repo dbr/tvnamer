@@ -73,19 +73,19 @@ files['s01e01_format'] = [
 
     {'input': 'Next Stop Discovery - s2001e02 - Arkawa line.avi',
     'parsedseriesname': 'Next Stop Discovery',
-    'correctedseriesname': 'Next Stop Discovery',
+    'correctedseriesname': 'Next Stop, Discovery',
     'seasonnumber': 2001, 'episodenumbers': [2],
     'episodenames': ['Arakawa line']},
 
     {'input': 'next.stop.discovery.s2001e02.arkawa.line.avi',
     'parsedseriesname': 'next stop discovery',
-    'correctedseriesname': 'Next Stop Discovery',
+    'correctedseriesname': 'Next Stop, Discovery',
     'seasonnumber': 2001, 'episodenumbers': [2],
     'episodenames': ['Arakawa line']},
 
     {'input': 'next stop discovery - [2001x03] - Total Isolation.avi',
     'parsedseriesname': 'next stop discovery',
-    'correctedseriesname': 'Next Stop Discovery',
+    'correctedseriesname': 'Next Stop, Discovery',
     'seasonnumber': 2001, 'episodenumbers': [3],
     'episodenames': ['Spring winds in the Bay City']},
 
@@ -307,12 +307,6 @@ files['anime'] = [
     'correctedseriesname': 'Armored Trooper VOTOMS',
     'seasonnumber': None, 'episodenumbers': [1],
     'episodenames': ['War\'s End']},
-
-    {'input': '[Shinsen-Subs] Beet - 19 [24DAB497].mkv',
-    'parsedseriesname': 'beet',
-    'correctedseriesname': 'Beet the Vandel Buster',
-    'seasonnumber': None, 'episodenumbers': [19],
-    'episodenames': ['Threat of the Planet Earth']},
 
     {'input': '[AG-SHS]Victory_Gundam-03_DVD[FC6E3A6F].mkv',
     'parsedseriesname': 'victory gundam',
