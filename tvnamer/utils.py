@@ -100,9 +100,9 @@ def cleanRegexedSeriesName(seriesname):
     'an example 1.0 test'
     """
     # TODO: Could this be made to clean "Hawaii.Five-0.2010" into "Hawaii Five-0 2010"?
-    seriesname = re.sub("(\D)[.](\D)", "\\1 \\2", seriesname)
-    seriesname = re.sub("(\D)[.]", "\\1 ", seriesname)
-    seriesname = re.sub("[.](\D)", " \\1", seriesname)
+    seriesname = re.sub(r"(\D)[.](\D)", "\\1 \\2", seriesname)
+    seriesname = re.sub(r"(\D)[.]", "\\1 ", seriesname)
+    seriesname = re.sub(r"[.](\D)", " \\1", seriesname)
     seriesname = seriesname.replace("_", " ")
     seriesname = re.sub("-$", "", seriesname)
     return seriesname.strip()
@@ -333,7 +333,7 @@ class FileParser(object):
                     # Multiple episodes, have episodenumber1 or 2 etc
                     epnos = []
                     for cur in namedgroups:
-                        epnomatch = re.match('episodenumber(\d+)', cur)
+                        epnomatch = re.match(r'episodenumber(\d+)', cur)
                         if epnomatch:
                             epnos.append(int(match.group(cur)))
                     epnos.sort()
@@ -442,7 +442,7 @@ def formatEpisodeName(names, join_with, multiep_format):
     found_name = ""
     numbers = []
     for cname in names:
-        match = re.match("(.*) \(([0-9]+)\)$", cname)
+        match = re.match(r"(.*) \(([0-9]+)\)$", cname)
         if found_name != "" and (not match or epname != found_name):
             # An episode didn't match
             return join_with.join(names)
@@ -668,7 +668,7 @@ class EpisodeInfo(object):
                         raise EpisodeNotFound(
                             "Ambigious air date %s, there were %s episodes on that day" % (
                             cepno, len(sr)))
-                    epnames.append(sr[0]['episodename'])
+                    epnames.append(sr[0]['episodeName'])
                 except tvdb_episodenotfound:
                     raise EpisodeNotFound(
                         "Episode that aired on %s could not be found" % (
@@ -701,14 +701,14 @@ class EpisodeInfo(object):
                     unsure = True
                     for e in sr:
                         if int(e['absoluteNumber']) == cepno:
-                            epnames.append(e['episodename'])
+                            epnames.append(e['episodeName'])
                             unsure = False
                     # If unsure error out
                     if unsure:
                         raise EpisodeNotFound(
                             "No episode actually matches %s, found %s results instead" % (cepno, len(sr)))
                 elif len(sr) == 1:
-                    epnames.append(sr[0]['episodename'])
+                    epnames.append(sr[0]['episodeName'])
                 else:
                     raise EpisodeNotFound(
                         "Episode %s of show %s, season %s could not be found (also tried searching by absolute episode number)" % (
@@ -720,7 +720,7 @@ class EpisodeInfo(object):
                 raise EpisodeNameNotFound(
                     "Could not find episode name for %s" % cepno)
             else:
-                epnames.append(episodeinfo['episodename'])
+                epnames.append(episodeinfo['episodeName'])
 
         self.episodename = epnames
 
