@@ -149,7 +149,7 @@ defaults = {
     # Patterns to parse input filenames with
     'filename_patterns': [
         # [group] Show - 01-02 [crc]
-        '''^\[(?P<group>.+?)\][ ]?               # group name, captured for [#100]
+        r'''^\[(?P<group>.+?)\][ ]?               # group name, captured for [#100]
         (?P<seriesname>.*?)[ ]?[-_][ ]?          # show name, padding, spaces?
         (?P<episodenumberstart>\d+)              # first episode number
         ([-_]\d+)*                               # optional repeating episodes
@@ -161,7 +161,7 @@ defaults = {
         [^\/]*$''',
 
         # [group] Show - 01 [crc]
-        '''^\[(?P<group>.+?)\][ ]?               # group name, captured for [#100]
+        r'''^\[(?P<group>.+?)\][ ]?               # group name, captured for [#100]
         (?P<seriesname>.*)                       # show name
         [ ]?[-_][ ]?                             # padding and seperator
         (?P<episodenumber>\d+)                   # episode number
@@ -172,7 +172,7 @@ defaults = {
         [^\/]*$''',
 
         # foo s01e23 s01e24 s01e25 *
-        '''
+        r'''
         ^((?P<seriesname>.+?)[ \._\-])?          # show name
         [Ss](?P<seasonnumber>[0-9]+)             # s01
         [\.\- ]?                                 # separator
@@ -188,7 +188,7 @@ defaults = {
         [^\/]*$''',
 
         # foo.s01e23e24*
-        '''
+        r'''
         ^((?P<seriesname>.+?)[ \._\-])?          # show name
         [Ss](?P<seasonnumber>[0-9]+)             # s01
         [\.\- ]?                                 # separator
@@ -199,7 +199,7 @@ defaults = {
         [^\/]*$''',
 
         # foo.1x23 1x24 1x25
-        '''
+        r'''
         ^((?P<seriesname>.+?)[ \._\-])?          # show name
         (?P<seasonnumber>[0-9]+)                 # first season number (1)
         [xX](?P<episodenumberstart>[0-9]+)       # first episode (x23)
@@ -212,7 +212,7 @@ defaults = {
         [^\/]*$''',
 
         # foo.1x23x24*
-        '''
+        r'''
         ^((?P<seriesname>.+?)[ \._\-])?          # show name
         (?P<seasonnumber>[0-9]+)                 # 1
         [xX](?P<episodenumberstart>[0-9]+)       # first x23
@@ -221,7 +221,7 @@ defaults = {
         [^\/]*$''',
 
         # foo.s01e23-24*
-        '''
+        r'''
         ^((?P<seriesname>.+?)[ \._\-])?          # show name
         [Ss](?P<seasonnumber>[0-9]+)             # s01
         [\.\- ]?                                 # separator
@@ -236,7 +236,7 @@ defaults = {
         [^\/]*$''',
 
         # foo.1x23-24*
-        '''
+        r'''
         ^((?P<seriesname>.+?)[ \._\-])?          # show name
         (?P<seasonnumber>[0-9]+)                 # 1
         [xX](?P<episodenumberstart>[0-9]+)       # first x23
@@ -250,7 +250,7 @@ defaults = {
         $)''',
 
         # foo.[1x09-11]*
-        '''^(?P<seriesname>.+?)[ \._\-]          # show name and padding
+        r'''^(?P<seriesname>.+?)[ \._\-]          # show name and padding
         \[                                       # [
             ?(?P<seasonnumber>[0-9]+)            # season
         [xX]                                     # x
@@ -262,20 +262,20 @@ defaults = {
         [^\\/]*$''',
 
         # foo - [012]
-        '''^((?P<seriesname>.+?)[ \._\-])?       # show name and padding
+        r'''^((?P<seriesname>.+?)[ \._\-])?       # show name and padding
         \[                                       # [ not optional (or too ambigious)
         (?P<episodenumber>[0-9]+)                # episode
         \]                                       # ]
         [^\\/]*$''',
         # foo.s0101, foo.0201
-        '''^(?P<seriesname>.+?)[ \._\-]
+        r'''^(?P<seriesname>.+?)[ \._\-]
         [Ss](?P<seasonnumber>[0-9]{2})
         [\.\- ]?
         (?P<episodenumber>[0-9]{2})
         [^0-9]*$''',
 
         # foo.1x09*
-        '''^((?P<seriesname>.+?)[ \._\-])?       # show name and padding
+        r'''^((?P<seriesname>.+?)[ \._\-])?       # show name and padding
         \[?                                      # [ optional
         (?P<seasonnumber>[0-9]+)                 # season
         [xX]                                     # x
@@ -284,7 +284,7 @@ defaults = {
         [^\\/]*$''',
 
         # foo.s01.e01, foo.s01_e01, "foo.s01 - e01"
-        '''^((?P<seriesname>.+?)[ \._\-])?
+        r'''^((?P<seriesname>.+?)[ \._\-])?
         \[?
         [Ss](?P<seasonnumber>[0-9]+)[ ]?[\._\- ]?[ ]?
         [Ee]?(?P<episodenumber>[0-9]+)
@@ -292,7 +292,7 @@ defaults = {
         [^\\/]*$''',
 
         # foo.2010.01.02.etc
-        '''
+        r'''
         ^((?P<seriesname>.+?)[ \._\-])?          # show name
         (?P<year>\d{4})                          # year
         [ \._\-]                                 # separator
@@ -302,7 +302,7 @@ defaults = {
         [^\/]*$''',
 
         # foo - [01.09]
-        '''^((?P<seriesname>.+?))                # show name
+        r'''^((?P<seriesname>.+?))                # show name
         [ \._\-]?                                # padding
         \[                                       # [
         (?P<seasonnumber>[0-9]+?)                # season
@@ -313,13 +313,13 @@ defaults = {
         [^\\/]*$''',
 
         # Foo - S2 E 02 - etc
-        '''^(?P<seriesname>.+?)[ ]?[ \._\-][ ]?
+        r'''^(?P<seriesname>.+?)[ ]?[ \._\-][ ]?
         [Ss](?P<seasonnumber>[0-9]+)[\.\- ]?
         [Ee]?[ ]?(?P<episodenumber>[0-9]+)
         [^\\/]*$''',
 
         # Show - Episode 9999 [S 12 - Ep 131] - etc
-        '''
+        r'''
         (?P<seriesname>.+)                       # Showname
         [ ]-[ ]                                  # -
         [Ee]pisode[ ]\d+                         # Episode 1234 (ignored)
@@ -333,7 +333,7 @@ defaults = {
         ''',
 
         # show name 2 of 6 - blah
-        '''^(?P<seriesname>.+?)                  # Show name
+        r'''^(?P<seriesname>.+?)                  # Show name
         [ \._\-]                                 # Padding
         (?P<episodenumber>[0-9]+)                # 2
         of                                       # of
@@ -343,7 +343,7 @@ defaults = {
         ''',
 
         # Show.Name.Part.1.and.Part.2
-        '''^(?i)
+        r'''(?i)^
         (?P<seriesname>.+?)                        # Show name
         [ \._\-]                                   # Padding
         (?:part|pt)?[\._ -]
@@ -359,32 +359,32 @@ defaults = {
         ''',
 
         # Show.Name.Part1
-        '''^(?P<seriesname>.+?)                  # Show name\n
+        r'''^(?P<seriesname>.+?)                  # Show name\n
         [ \\._\\-]                               # Padding\n
         [Pp]art[ ](?P<episodenumber>[0-9]+)      # Part 1\n
         [\\._ -][^\\/]*$                         # More padding, then anything\n
         ''',
 
         # show name Season 01 Episode 20
-        '''^(?P<seriesname>.+?)[ ]?               # Show name
+        r'''^(?P<seriesname>.+?)[ ]?               # Show name
         [Ss]eason[ ]?(?P<seasonnumber>[0-9]+)[ ]? # Season 1
         [Ee]pisode[ ]?(?P<episodenumber>[0-9]+)   # Episode 20
         [^\\/]*$''',                              # Anything
 
         # foo.103*
-        '''^(?P<seriesname>.+)[ \._\-]
+        r'''^(?P<seriesname>.+)[ \._\-]
         (?P<seasonnumber>[0-9]{1})
         (?P<episodenumber>[0-9]{2})
         [\._ -][^\\/]*$''',
 
         # foo.0103*
-        '''^(?P<seriesname>.+)[ \._\-]
+        r'''^(?P<seriesname>.+)[ \._\-]
         (?P<seasonnumber>[0-9]{2})
         (?P<episodenumber>[0-9]{2,3})
         [\._ -][^\\/]*$''',
 
         # show.name.e123.abc
-        '''^(?P<seriesname>.+?)                  # Show name
+        r'''^(?P<seriesname>.+?)                  # Show name
         [ \._\-]                                 # Padding
         [Ee](?P<episodenumber>[0-9]+)            # E123
         [\._ -][^\\/]*$                          # More padding, then anything
