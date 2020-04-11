@@ -6,3 +6,5 @@ htmlcov/*
 .coverage
 .coverage.*
 /.mypy_cache
+/.eggs
+/dist
