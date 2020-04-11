@@ -42,9 +42,5 @@ def expected_failure(test):
 
 
 def attr(name):
-    try:
-        from nosetest.attrib import attr as _a
-        return _a(name)
-    except ImportError:
-        import pytest
-        return getattr(pytest.mark, name)
+    import pytest
+    return getattr(pytest.mark, name)
