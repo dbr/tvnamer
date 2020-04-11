@@ -7,7 +7,9 @@ python:
   - 3.6
   - 3.7
 
-script: python setup.py test
+script:
+  - pip install pytest
+  - python -m pytest
 
 # Use container-based infrastructure, for no specific reason.
 # http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
