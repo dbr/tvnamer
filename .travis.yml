@@ -10,7 +10,3 @@ python:
 script:
   - pip install pytest==5.4
   - python -m pytest
-
-# Use container-based infrastructure, for no specific reason.
-# http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/
-sudo: false
