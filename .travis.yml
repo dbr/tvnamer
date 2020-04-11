@@ -8,7 +8,7 @@ python:
   - 3.7
 
 script:
-  - pip install pytest
+  - pip install pytest==5.4
   - python -m pytest
 
 # Use container-based infrastructure, for no specific reason.
