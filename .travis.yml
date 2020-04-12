@@ -9,4 +9,5 @@ python:
 
 script:
   - pip install pytest==5.4
+  - python setup.py develop
   - python -m pytest
