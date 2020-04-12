@@ -56,6 +56,7 @@ def getCommandlineParser(defaults):
         g.add_option("-n", "--name", action="store", dest = "force_name", help = "override the parsed series name with this (applies to all files)")
         g.add_option("--series-id", action="store", dest = "series_id", help = "explicitly set the show id for TVdb to use (applies to all files)")
         g.add_option("--order", action = "store", dest = "order", help = "set the TvDB episode order ('aired' [default] or 'dvd')")
+        g.add_option("-l", "--lang", action = "store", dest = "language", help = "set the language used to retrieve data")
 
     # Misc
     with Group(parser, "Misc") as g:
@@ -67,7 +68,7 @@ def getCommandlineParser(defaults):
 
         g.add_option("--force-move", action="store_true", dest = "overwrite_destination_on_move", help = "Force move and potentially overwrite existing files in destination folder")
         g.add_option("--force-rename", action="store_true", dest = "overwrite_destination_on_rename", help = "Force rename source file")
-        
+
         g.add_option("-d", "--movedestination", action="store", dest = "move_files_destination", help = "Destination to move files to. Variables: %(seriesname)s %(seasonnumber)d %(episodenumbers)s")
 
         g.add_option("-h", "--help", action="help", help = "show this help message and exit")
