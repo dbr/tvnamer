@@ -8,6 +8,7 @@ python:
   - 3.7
 
 script:
-  - pip install pytest==5.4
+  # pytest==4.6 fallback for Python 2.7/3.3/3.4
+  - pip install pytest==5.4 || pip install pytest==4.6
   - python setup.py develop
   - python -m pytest
