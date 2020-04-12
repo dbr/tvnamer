@@ -5,6 +5,11 @@
   ([PR #173](https://github.com/dbr/tvnamer/pull/173))
 - Files are now moved using `shutil.move` instead of custom logic around `os.rename`, which should make things more robust in situations with unusual partition setups (e.g Docker environments)
   ([PR #161](https://github.com/dbr/tvnamer/pull/161))
+- Add command line argument to override language, e.g `tvnamer --lang de [...]`
+  ([PR #165](https://github.com/dbr/tvnamer/pull/165))
+- New TheTVDB API key specifically for tvnamer
+- Various internal improvements to testing and compatability with later Python 3.x changes
+- Dropping explicit support for EOL Python 3.3 and 3.4 (may still work but not tested). 2.7 support remains for now
 
 # `2.5` - 2018-08-25
 - Began keeping a changelog
