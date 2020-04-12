@@ -140,6 +140,7 @@ def test_replacing_ands():
         "match": " & ",
         "replacement": " and "}
     ],
+    "custom_filename_character_blacklist": ":",
     "always_rename": true,
     "select_first": true
 }
