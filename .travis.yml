@@ -4,6 +4,9 @@ python:
   - 3.5
   - 3.6
   - 3.7
+  - 3.8
+  - pypy
+  - pypy3
 
 script:
   # pytest==4.6 fallback for Python 2.7
