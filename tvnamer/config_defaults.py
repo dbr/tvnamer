@@ -14,7 +14,7 @@ defaults = {
     'batch': False,
 
     # Fail if error finding show data (thetvdb.com is down etc)
-    # Only functions when always_rename is True
+    # Only functions when always_rename or always_hardlink are True
     'skip_file_on_error': True,
     
     # Fail if error finding show data (thetvdb.com is down etc)
@@ -145,6 +145,18 @@ defaults = {
 
     # Allow user to copy files to specified move location without renaming files.
     'move_files_only': False,
+
+    # Force the move-files feature to always copy the file.
+    'always_copy': False,
+
+    # If True, instead of copying files to be copied on the same partition,
+    # a hardlink will be created.
+    'prefer_hardlink_to_copy': False,
+
+    # Forces files to be hard-linked. Will raise an error if it is not possible
+    # (i.e. different partition, unsuported, etc.).
+    # This option is incompatible with always_move
+    'always_hardlink': False,
 
     # Patterns to parse input filenames with
     'filename_patterns': [

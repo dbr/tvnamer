@@ -99,7 +99,7 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
     if (destDir is None and destFilepath is None) or (destDir is not None and destFilepath is not None):
         raise ValueError("Specify only destDir or destFilepath")
 
-    if not Config['move_files_enable']:
+    if not (Config['move_files_enable'] or Config['always_copy'] or Config['always_hardlink']):
         raise ValueError("move_files feature is disabled but doMoveFile was called")
 
     if Config['move_files_destination'] is None:
@@ -110,6 +110,8 @@ def doMoveFile(cnamer, destDir = None, destFilepath = None, getPathPreview = Fal
             new_path = destDir,
             new_fullpath = destFilepath,
             always_move = Config['always_move'],
+            always_copy = Config['always_copy'],
+            always_hardlink=Config['always_hardlink'],
             leave_symlink = Config['leave_symlink'],
             getPathPreview = getPathPreview,
             force = Config['overwrite_destination_on_move'])
@@ -224,12 +226,14 @@ def processFile(tvdb_instance, episode):
                     p("%s will be moved to %s" % (newName, getMoveDestination(episode)))
                 return
             elif Config['always_rename']:
-                doRenameFile(cnamer, newName)
-                if Config['move_files_enable']:
+                if Config['move_files_enable'] or Config['always_copy'] or Config['always_hardlink']:
                     if Config['move_files_destination_is_filepath']:
                         doMoveFile(cnamer = cnamer, destFilepath = getMoveDestination(episode))
                     else:
                         doMoveFile(cnamer = cnamer, destDir = getMoveDestination(episode))
+                    doRenameFile(cnamer, newName)
+                else:
+                    doRenameFile(cnamer, newName)
                 return
 
             ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
@@ -249,31 +253,30 @@ def processFile(tvdb_instance, episode):
             else:
                 p("Invalid input, skipping")
 
-            if shouldRename:
-                doRenameFile(cnamer, newName)
+    if shouldRename:
+        if Config['move_files_enable'] or Config['always_copy'] or Config['always_hardlink']:
+            newPath = getMoveDestination(episode)
+            if Config['dry_run']:
+                p("%s will be moved to %s" % (newName, getMoveDestination(episode)))
+                return
 
-    if shouldRename and Config['move_files_enable']:
-        newPath = getMoveDestination(episode)
-        if Config['dry_run']:
-            p("%s will be moved to %s" % (newName, getMoveDestination(episode)))
-            return
+            if Config['move_files_destination_is_filepath']:
+                doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
+            else:
+                doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
 
-        if Config['move_files_destination_is_filepath']:
-            doMoveFile(cnamer = cnamer, destFilepath = newPath, getPathPreview = True)
-        else:
-            doMoveFile(cnamer = cnamer, destDir = newPath, getPathPreview = True)
+            if not Config['batch'] and Config['move_files_confirmation']:
+                ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
+            else:
+                ans = 'y'
 
-        if not Config['batch'] and Config['move_files_confirmation']:
-            ans = confirm("Move file?", options = ['y', 'n', 'q'], default = 'y')
-        else:
-            ans = 'y'
-
-        if ans == 'y':
-            p("Moving file")
-            doMoveFile(cnamer, newPath)
-        elif ans == 'q':
-            p("Quitting")
-            raise UserAbort("user exited with q")
+            if ans == 'y':
+                p("Moving file")
+                doMoveFile(cnamer, newPath)
+            elif ans == 'q':
+                p("Quitting")
+                raise UserAbort("user exited with q")
+        doRenameFile(cnamer, newName)
 
 
 def findFiles(paths):
