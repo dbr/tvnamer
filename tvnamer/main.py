@@ -15,9 +15,10 @@ except ImportError:
 
 import json
 
+import tvdb_api
 from tvdb_api import Tvdb
 
-from tvnamer import cliarg_parser
+from tvnamer import cliarg_parser, __version__
 from tvnamer.compat import PY2, raw_input
 from tvnamer.config_defaults import defaults
 
@@ -369,6 +370,11 @@ def main():
     opter = cliarg_parser.getCommandlineParser(defaults)
 
     opts, args = opter.parse_args()
+
+    if opts.show_version:
+        print("tvnamer version: %s" % (__version__,))
+        print("tvdb_api version: %s" % (tvdb_api.__version__,))
+        sys.exit(0)
 
     if opts.verbose:
         logging.basicConfig(

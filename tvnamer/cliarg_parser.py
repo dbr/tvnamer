@@ -72,6 +72,7 @@ def getCommandlineParser(defaults):
         g.add_option("-d", "--movedestination", action="store", dest = "move_files_destination", help = "Destination to move files to. Variables: %(seriesname)s %(seasonnumber)d %(episodenumbers)s")
 
         g.add_option("-h", "--help", action="help", help = "show this help message and exit")
+        g.add_option("--version", action="store_true", dest = "show_version", help = "show verison number and exit")
 
 
     return parser
