@@ -312,7 +312,7 @@ files['anime'] = [
     'parsedseriesname': 'victory gundam',
     'correctedseriesname': 'Mobile Suit Victory Gundam',
     'seasonnumber': None, 'episodenumbers': [3],
-    'episodenames': ['Uso\'s Fight']},
+    'episodenames': [u'\xdcso\'s Battle']},
 
     {'input': '[YuS-SHS]Gintama-24(H264)_[52CA4F8B].mkv',
     'parsedseriesname': 'gintama',
