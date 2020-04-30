@@ -383,7 +383,7 @@ def main():
     old_default_configuration = os.path.expanduser("~/.tvnamer.json")
 
     if opts.loadconfig is not None:
-        # Command line overrides loading ~/.config/tvnamer.json
+        # Command line overrides loading ~/.config/tvnamer/tvnamer.json
         configToLoad = opts.loadconfig
     elif os.path.isfile(default_configuration):
         # No --config arg, so load default config if it exists
