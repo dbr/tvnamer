@@ -8,8 +8,15 @@ python:
   - pypy
   - pypy3
 
-script:
+install:
+  - pip install codecov
   # pytest==4.6 fallback for Python 2.7
   - pip install pytest==5.4 || pip install pytest==4.6
+  - pip install pytest-cov
   - python setup.py develop
-  - python -m pytest
+
+script:
+  - python -m pytest --cov tvnamer
+
+after_success:
+  - codecov
