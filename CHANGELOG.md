@@ -3,6 +3,8 @@
 # unreleased
 - Fix `--dry-run` in `--batch` mode
   ([PR #173](https://github.com/dbr/tvnamer/pull/173))
+- Config has moved to `~/.config/tvnamer/tvnamer.json` to avoid home-directory clutter (previously located at `~/.tvnamer.json`)
+  ([PR #175](https://github.com/dbr/tvnamer/pull/175))
 - Files are now moved using `shutil.move` instead of custom logic around `os.rename`, which should make things more robust in situations with unusual partition setups (e.g Docker environments)
   ([PR #161](https://github.com/dbr/tvnamer/pull/161))
 - Add command line argument to override language, e.g `tvnamer --lang de [...]`
