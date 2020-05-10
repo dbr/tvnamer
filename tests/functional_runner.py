@@ -67,22 +67,6 @@ def make_temp_config(config):
     return fname
 
 
-def get_tvnamer_path():
-    """Gets the path to tvnamer/main.py
-    """
-    cur_location, _ = os.path.split(os.path.abspath(sys.path[0]))
-    for cdir in [".", ".."]:
-        tvnamer_location = os.path.abspath(
-            os.path.join(cur_location, cdir, "main.py"))
-
-        if os.path.isfile(tvnamer_location):
-            return tvnamer_location
-        else:
-            p(tvnamer_location)
-    else:
-        raise IOError("tvnamer/main.py could not be found in . or ..")
-
-
 def make_temp_dir():
     """Creates a temp folder and returns the path
     """
@@ -133,7 +117,6 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     Returns a dict with stdout, stderr and a list of files created
     """
     # Create dummy files (config and episodes)
-    tvnpath = get_tvnamer_path()
     episodes_location = make_temp_dir()
     dummy_files = make_dummy_files(with_files, episodes_location)
 
@@ -167,7 +150,7 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
         env['TVNAMER_COVERAGE_SUBPROCESS'] = ''
 
     # Construct command
-    cmd = [sys.executable, tvnpath] + conf_args + with_flags + files
+    cmd = [sys.executable, "-m", "tvnamer"] + conf_args + with_flags + files
 
     p("Running command:")
     p(" ".join(cmd))
