@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dev deps
       run: |
-        python setup.py develop
+        sudo python setup.py develop
         pip install codecov
         # pytest==4.6 fallback for Python 2.7
         pip install pytest==5.4 || pip install pytest==4.6
