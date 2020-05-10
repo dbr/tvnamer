@@ -156,7 +156,14 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     env = os.environ.copy()
     env['PYTHONPATH'] = ":".join(sys.path)
     if with_coverage:
-        env['COVERAGE_PROCESS_START'] = '.coveragerc'
+        # Get path to .coveragerc in parent dir
+        covconf = os.path.abspath(
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                ".coveragerc"))
+        # Set env vars to flag to tvnamer/__init__.py to configure coverage.py
+        env['COVERAGE_PROCESS_START'] = covconf
         env['TVNAMER_COVERAGE_SUBPROCESS'] = ''
 
     # Construct command
