@@ -28,7 +28,7 @@ Alternatively, the community have packaged tvnamer in various platform/distro sp
 3. [FreeBSD/DragonFlyBSD/MacPorts](https://www.freshports.org/multimedia/py-tvnamer) - `pkg install py36-tvnamer` etc
 
 
-# Installing development version
+## Installing development version
 
 If you wish to install the latest (non-stable) development version from source, download the latest version of the code, either from <http://github.com/dbr/tvnamer/tarball/master> or by running:
 
@@ -165,9 +165,9 @@ To write the default JSON configuration file, which is a good starting point for
 
     tvnamer --save=./mytvnamerconfig.json
 
-To use your custom configuration, you must either specify the location using `tvnamer --config=/path/to/mytvnamerconfig.json` or place the file at `~/.tvnamer.json` (a file named `.tvnamer.json` in your home directory)
+To use your custom configuration, you must either specify the location using `tvnamer --config=/path/to/mytvnamerconfig.json` or place the file at `~/.config/tvnamer/tvnamer.json`
 
-**Important:** If tvnamer's default settings change and your saved config contains the old settings, you may experience strange behaviour or bugs (the config may contain a buggy `filename_patterns` regex, for example). It is recommended you remove config options you are not altering (particularly `filename_patterns`). If you experience any strangeness, try disabling your custom configuration (moving it away from `~/.tvnamer.json`)
+**Important:** If tvnamer's default settings change and your saved config contains the old settings, you may experience strange behaviour or bugs (the config may contain a buggy `filename_patterns` regex, for example). It is recommended you remove config options you are not altering (particularly `filename_patterns`). If you experience any strangeness, try disabling your custom configuration (moving it away from `~/.config/tvnamer/tvnamer.json`)
 
 If for example you wish to change the default language used to retrieve data, change the option `language` to another two-letter language code, such as `fr` for French. Your config file would look like:
 
