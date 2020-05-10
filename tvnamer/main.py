@@ -403,7 +403,9 @@ def main():
 
     if configToLoad is not None:
         p("Loading config: %s" % (configToLoad))
-        if os.path.isfile(old_default_configuration): print("WARRNING: you have config file in ~/.tvnamer.json. config file move to ~/.config/tvnamer/tvnamer.js in new version so please move your config to new location if it dosn't exist")
+        if os.path.isfile(old_default_configuration):
+            p("WARNING: you have a config at deprecated ~/.tvnamer.json location.")
+            p("This must be moved to new location: ~/.config/tvnamer/tvnamer.json")
 
         try:
             loadedConfig = json.load(open(os.path.expanduser(configToLoad)))
