@@ -13,3 +13,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Pyflakes
       uses: lgeiger/pyflakes-action@v1.0.1
+    - name: Mypy Check
+      uses: jpetrucciani/mypy-check@0.761
+      with:
+        # File or directory to run mypy on
+        path: tvnamer
