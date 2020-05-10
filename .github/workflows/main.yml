@@ -6,15 +6,23 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    name: Test on ${{ matrix.python_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python_version: ['2.7', '3.5', '3.6', '3.7', '3.8']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
     - uses: actions/checkout@v1
-    - name: Pyflakes
-      uses: lgeiger/pyflakes-action@v1.0.1
-    - name: Mypy Check
-      uses: jpetrucciani/mypy-check@0.761
-      with:
-        # File or directory to run mypy on
-        path: tvnamer
+    - name: Install dev deps
+      run: |
+        python setup.py develop
+        pip install codecov
+        # pytest==4.6 fallback for Python 2.7
+        pip install pytest==5.4 || pip install pytest==4.6
+        pip install pytest-cov
+    - name: Run tests
+      run: python -m pytest --cov tvnamer
+    - name: Upload test results
+      run: codecov
