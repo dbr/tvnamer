@@ -385,20 +385,26 @@ def main():
 
     # If a config is specified, load it, update the defaults using the loaded
     # values, then reparse the options with the updated defaults.
-    default_configuration = os.path.expanduser("~/.tvnamer.json")
+    default_configuration = os.path.expanduser("~/.config/tvnamer/tvnamer.json")
+    old_default_configuration = os.path.expanduser("~/.tvnamer.json")
 
     if opts.loadconfig is not None:
-        # Command line overrides loading ~/.tvnamer.json
+        # Command line overrides loading ~/.config/tvnamer/tvnamer.json
         configToLoad = opts.loadconfig
     elif os.path.isfile(default_configuration):
         # No --config arg, so load default config if it exists
         configToLoad = default_configuration
+    elif os.path.isfile(old_default_configuration):
+        # No --config arg and neow defualt config so load old version if it exist
+        configToLoad = old_default_configuration
     else:
         # No arg, nothing at default config location, don't load anything
         configToLoad = None
 
     if configToLoad is not None:
         p("Loading config: %s" % (configToLoad))
+        if os.path.isfile(old_default_configuration): print("WARRNING: you have config file in ~/.tvnamer.json. config file move to ~/.config/tvnamer/tvnamer.js in new version so please move your config to new location if it dosn't exist")
+
         try:
             loadedConfig = json.load(open(os.path.expanduser(configToLoad)))
         except ValueError as e:
