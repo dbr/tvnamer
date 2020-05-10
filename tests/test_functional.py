@@ -299,3 +299,21 @@ def test_dvd_order():
         with_config = conf)
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_show_version():
+    """Tests the --version arg
+    """
+
+    input_files = ['scrubs.s01e01.avi']
+    # Shouldn't touch files
+    expected_files = ['scrubs.s01e01.avi']
+
+    out_data = run_tvnamer(
+        with_files = input_files,
+        with_flags = ["--version"])
+
+    print(out_data['output'])
+    import tvnamer
+    assert "%s" % (tvnamer.__version__,) in out_data['output']
