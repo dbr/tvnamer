@@ -452,10 +452,7 @@ def main():
     Config.update(opts.__dict__)
 
     if Config["move_files_only"] and not Config["move_files_enable"]:
-        p("#" * 20)
-        p("Parameter move_files_enable cannot be set to false while parameter move_only is set to true.")
-        p("#" * 20)
-        opter.exit(0)
+        opter.error("Parameter move_files_enable cannot be set to false while parameter move_only is set to true.")
 
     if Config['titlecase_filename'] and Config['lowercase_filename']:
         warnings.warn("Setting 'lowercase_filename' clobbers 'titlecase_filename' option")
