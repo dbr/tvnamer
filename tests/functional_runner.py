@@ -28,6 +28,8 @@ import tempfile
 import subprocess
 import unicodedata
 
+import coverage
+
 from tvnamer.unicode_helper import p
 from tvnamer.compat import PY2, string_type
 
@@ -121,7 +123,7 @@ def clear_temp_dir(location):
     shutil.rmtree(location)
 
 
-def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = None, run_on_directory = False):
+def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = None, run_on_directory = False, with_coverage = True):
     """Runs tvnamer on list of file-names in with_files.
     with_files is a list of strings.
     with_flags is a list of command line arguments to pass to tvnamer.
@@ -149,15 +151,19 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     else:
         files = dummy_files
 
-    # Construct command
-    cmd = [sys.executable, tvnpath] + conf_args + with_flags + files
-    p("Running command:")
-    p(" ".join(cmd))
-
     # Copy sys.path to PYTHONPATH so same modules are available as in
     # test environmen
     env = os.environ.copy()
     env['PYTHONPATH'] = ":".join(sys.path)
+    if with_coverage:
+        env['COVERAGE_PROCESS_START'] = '.coveragerc'
+        env['TVNAMER_COVERAGE_SUBPROCESS'] = ''
+
+    # Construct command
+    cmd = [sys.executable, tvnpath] + conf_args + with_flags + files
+
+    p("Running command:")
+    p(" ".join(cmd))
 
     proc = subprocess.Popen(
         cmd,
