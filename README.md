@@ -25,7 +25,7 @@ Alternatively, the community have packaged tvnamer in various platform/distro sp
 
 1. [Homebrew for OS X](https://formulae.brew.sh/formula/tvnamer) - `brew install tvnamer`
 2. [Debian](https://tracker.debian.org/pkg/tvnamer) - `apt-get install tvnamer`
-3. [FreeBSD/DragonFlyBSD/MacPorts](https://www.freshports.org/multimedia/py-tvnamer) - `pkg install py27-tvnamer` etc
+3. [FreeBSD/DragonFlyBSD/MacPorts](https://www.freshports.org/multimedia/py-tvnamer) - `pkg install py36-tvnamer` etc
 
 
 # Installing development version
