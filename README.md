@@ -10,8 +10,8 @@ TV information is provided by TheTVDB.com, but we are not endorsed or certified 
 
 [build-link]: https://travis-ci.org/dbr/tvnamer
 [build-img]: https://travis-ci.org/dbr/tvnamer.svg?branch=master
-[pypi-link]: https://pypi.org/project/tvdb-api/
-[pypi-img]: https://img.shields.io/pypi/v/tvdb_api
+[pypi-link]: https://pypi.org/project/tvnamer/
+[pypi-img]: https://img.shields.io/pypi/v/tvnamer
 [coverage-link]: https://codecov.io/gh/dbr/tvnamer
 [coverage-img]: https://codecov.io/gh/dbr/tvnamer/branch/master/graph/badge.svg
 
