@@ -168,9 +168,10 @@ def processFile(tvdb_instance, episode):
 
     p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
     
-    if Config['series_tvdb_ids'][episode.seriesname] is not None:
-        series_id=Config['series_tvdb_ids'][episode.seriesname]
-    else:
+    try:
+        if Config['series_tvdb_ids'][episode.seriesname] is not None:
+            series_id=Config['series_tvdb_ids'][episode.seriesname]
+    except KeyError:
         series_id=Config['series_id']
     
     try:
