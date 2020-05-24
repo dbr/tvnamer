@@ -453,6 +453,11 @@ defaults = {
     # filenames, for instance adding or removing the year, or expanding abbreviations
     'input_series_replacements': {},
 
+    # set what TVDB id to use for a given input series name
+    # these are queried after input_series_replacements are done
+    # but do not require an entry in that dictionary to be used
+    'series_tvdb_ids': {},
+
     # output replacements are for transforms of the TVDB series names
     # since these are perfectly predictable, they are simple strings
     # not regular expressions

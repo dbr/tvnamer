@@ -167,7 +167,12 @@ def processFile(tvdb_instance, episode):
         episode.seriesname = Config['force_name']
 
     p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
-
+    
+    if Config['series_tvdb_ids'][episode.seriesname] is not None:
+        series_id=Config['series_tvdb_ids'][episode.seriesname]
+    else:
+        series_id=Config['series_id']
+    
     try:
         episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
     except (DataRetrievalError, ShowNotFound) as errormsg:
