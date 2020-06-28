@@ -9,6 +9,8 @@
   ([PR #161](https://github.com/dbr/tvnamer/pull/161))
 - Add command line argument to override language, e.g `tvnamer --lang de [...]`
   ([PR #165](https://github.com/dbr/tvnamer/pull/165))
+- Add `tvnamer --version` to display useful debug info
+- Can now be run via `python -m tvnamer` as well as the usual `tvnamer` command
 - New TheTVDB API key specifically for tvnamer
 - Various internal improvements to testing and compatability with later Python 3.x changes
 - Dropping explicit support for EOL Python 3.3 and 3.4 (may still work but not tested). 2.7 support remains for now
