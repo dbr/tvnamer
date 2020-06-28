@@ -31,7 +31,7 @@ from tvnamer import __version__
 
 needed_pkgs = []
 
-needed_pkgs.append("tvdb_api>=2.0")
+needed_pkgs.append("tvdb_api>=2.0,<3")
 
 
 from setuptools import setup
