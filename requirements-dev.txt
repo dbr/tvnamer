@@ -1,0 +1,7 @@
+pytest==5.4; python_version > '3.0'
+pytest==4.6; python_version == '2.7'
+coverage
+pytest-cov==2.8
+pytest-env==0.6
+flake8==3.8
+pep8-naming==0.10
