@@ -46,7 +46,7 @@ defaults = {
     # into "foo" and ".eng.srt".
     # Note that extensions still pass 'valid_extensions' filter, '.eng.srt' passes
     # when 'srt' is specified in 'valid_extensions'.
-    'extension_pattern': '(\\.[a-zA-Z0-9]+)$',
+    'extension_pattern': '(\.[a-zA-Z0-9]+)$',
 
     # When non-empty, filter out filenames that match these expressions. Either simple
     # matches or regexs can be used. The following are near enough equivalent:

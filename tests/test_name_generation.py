@@ -8,6 +8,7 @@ import datetime
 
 from helpers import assertEquals
 
+from tvnamer.main import TVNAMER_API_KEY
 from tvnamer.compat import PY2
 from tvnamer.utils import (EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo)
 from test_files import files
@@ -51,7 +52,7 @@ def test_name_generation_on_testfiles():
     else:
         cache = True
 
-    tvdb_instance = Tvdb(search_all_languages=True, language='en', cache=cache)
+    tvdb_instance = Tvdb(search_all_languages=True, language='en', cache=cache, apikey=TVNAMER_API_KEY)
     for category, testcases in files.items():
         for curtest in testcases:
             verify_name_gen(curtest, tvdb_instance)
