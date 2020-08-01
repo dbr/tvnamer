@@ -3,7 +3,15 @@
 """Holds default config values
 """
 
+if False:
+    # For mypy annotations only
+    from typing import Dict, Any
+
+
 defaults = {
+    # Custom API key from www.thetvdb.com - if None, uses tvnamer's default key
+    'tvdb_api_key': None,
+
     # Select first series search result
     'select_first': False,
 
@@ -46,7 +54,7 @@ defaults = {
     # into "foo" and ".eng.srt".
     # Note that extensions still pass 'valid_extensions' filter, '.eng.srt' passes
     # when 'srt' is specified in 'valid_extensions'.
-    'extension_pattern': '(\.[a-zA-Z0-9]+)$',
+    'extension_pattern': '(\\.[a-zA-Z0-9]+)$',
 
     # When non-empty, filter out filenames that match these expressions. Either simple
     # matches or regexs can be used. The following are near enough equivalent:
@@ -460,4 +468,4 @@ defaults = {
 
     # use dvd episode order of tvdb, instead of aired order
     'order': 'aired',
-}
+} # type: Dict[str, Any]

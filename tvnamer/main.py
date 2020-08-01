@@ -32,6 +32,9 @@ EpisodeNameNotFound, UserAbort, InvalidPath, NoValidFilesFoundError, SkipBehavio
 InvalidFilename, DataRetrievalError)
 
 
+LOG = logging.getLogger(__name__)
+
+
 # Key for use in tvnamer only - other keys can easily be registered at https://thetvdb.com/api-information
 TVNAMER_API_KEY = "fb51f9b848ffac9750bada89ecba0225"
 
@@ -346,6 +349,13 @@ def tvnamer(paths):
         cache = False
     else:
         cache = True
+
+    if Config['tvdb_api_key'] is not None:
+        LOG.debug("Using custom API key from config")
+        api_key = Config['tvdb_api_key']
+    else:
+        LOG.debug("Using tvnamer default API key")
+        api_key = TVNAMER_API_KEY
 
     tvdb_instance = Tvdb(
         interactive = not Config['select_first'],
