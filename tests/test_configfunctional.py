@@ -190,6 +190,7 @@ def test_resolve_absoloute_episode():
     out_data = run_tvnamer(
         with_files = ['[Bleachverse]_BLEACH_310.avi'],
         with_config = conf,
+        with_flags=["--series-id=74796"], # Forcing series as `Bleach Kai` currently appears above Bleach in search results
         with_input = "")
 
     expected_files = ['[Bleachverse] Bleach - 310 - Ichigo\'s Resolution.avi']

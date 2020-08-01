@@ -195,11 +195,11 @@ files['multiple_episodes'] = [
     'seasonnumber': 1, 'episodenumbers': [1, 2],
     'episodenames': ['Children of the Gods (1)', 'Children of the Gods (2)']},
 
-    {'input': '[Lunar] Bleach - 11-12 [B937F496]',
-    'parsedseriesname': 'Bleach',
-    'correctedseriesname': 'Bleach',
+    {'input': '[Lunar] Victory Gundam - 11-12 [B937F496]',
+    'parsedseriesname': 'Victory Gundam',
+    'correctedseriesname': 'Mobile Suit Victory Gundam',
     'seasonnumber': None, 'episodenumbers': [11, 12],
-    'episodenames': ['The Legendary Quincy', 'A Gentle Right Arm']},
+    'episodenames': ['The Shrike Team Bulwark', 'Smash the Guillotine']},
 
     {'input': 'scrubs.s01e01e02e03',
     'parsedseriesname': 'scrubs',
@@ -331,12 +331,6 @@ files['anime'] = [
     'correctedseriesname': 'Tokyo Magnitude 8.0',
     'seasonnumber': None, 'episodenumbers': [2],
     'episodenames': ['Broken World']},
-
-    {'input': 'Bleach - [310] - Ichigo\'s Resolution.avi',
-    'parsedseriesname': 'Bleach',
-    'correctedseriesname': 'Bleach',
-    'seasonnumber': None, 'episodenumbers': [310],
-    'episodenames': ['Ichigo\'s Resolution']},
 ]
 
 files['date_based'] = [
