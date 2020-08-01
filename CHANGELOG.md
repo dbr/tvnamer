@@ -13,7 +13,8 @@
 - Can now be run via `python -m tvnamer` as well as the usual `tvnamer` command
 - New TheTVDB API key specifically for tvnamer
 - Various internal improvements to testing and compatability with later Python 3.x changes
-- Dropping explicit support for EOL Python 3.3 and 3.4 (may still work but not tested). 2.7 support remains for now
+- Dropping explicit support for EOL Python 3.3 and 3.4 (may still work but not tested)
+- This is the last major version which will support Python 2.7
 
 # `2.5` - 2018-08-25
 - Began keeping a changelog
