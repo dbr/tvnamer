@@ -11,7 +11,7 @@
   ([PR #165](https://github.com/dbr/tvnamer/pull/165))
 - Add `tvnamer --version` to display useful debug info
 - Can now be run via `python -m tvnamer` as well as the usual `tvnamer` command
-- New TheTVDB API key specifically for tvnamer
+- New TheTVDB API key specifically for tvnamer. Users can use their own API key by via the `tvdb_api_key` config option (keys can easily be registered at <https://thetvdb.com/api-information> )
 - Various internal improvements to testing and compatability with later Python 3.x changes
 - Dropping explicit support for EOL Python 3.3 and 3.4 (may still work but not tested)
 - This is the last major version which will support Python 2.7
