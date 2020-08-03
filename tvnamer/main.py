@@ -141,7 +141,7 @@ def confirm(question, options, default = "y"):
         print(question)
         print("(%s) " % (options_str), end="")
         try:
-            ans = raw_input().strip()
+            ans = input().strip()
         except KeyboardInterrupt as errormsg:
             print("\n", errormsg)
             raise UserAbort(errormsg)
