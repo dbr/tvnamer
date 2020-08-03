@@ -43,7 +43,7 @@ def test_name_generation_on_testfiles():
     # Test data stores episode names in English, language= is normally set
     # via the configuration, same with search_all_languages.
 
-    tvdb_instance = Tvdb(search_all_languages=True, language='en', apikey=TVNAMER_API_KEY)
+    tvdb_instance = Tvdb(search_all_languages=True, cache=True, language='en', apikey=TVNAMER_API_KEY)
     for category, testcases in files.items():
         for curtest in testcases:
             verify_name_gen(curtest, tvdb_instance)
