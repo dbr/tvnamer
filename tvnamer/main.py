@@ -140,12 +140,12 @@ def confirm(question, options, default = "y"):
     options_str = "/".join(options_str)
 
     while True:
-        p(question)
-        p("(%s) " % (options_str), end="")
+        print(question)
+        print("(%s) " % (options_str), end="")
         try:
             ans = raw_input().strip()
         except KeyboardInterrupt as errormsg:
-            p("\n", errormsg)
+            print("\n", errormsg)
             raise UserAbort(errormsg)
 
         if ans in options:
@@ -157,19 +157,19 @@ def confirm(question, options, default = "y"):
 def processFile(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
-    p("#" * 20)
-    p("# Processing file: %s" % episode.fullfilename)
+    print("#" * 20)
+    print("# Processing file: %s" % episode.fullfilename)
 
     if len(Config['input_filename_replacements']) > 0:
         replaced = applyCustomInputReplacements(episode.fullfilename)
-        p("# With custom replacements: %s" % (replaced))
+        print("# With custom replacements: %s" % (replaced))
 
     # Use force_name option. Done after input_filename_replacements so
     # it can be used to skip the replacements easily
     if Config['force_name'] is not None:
         episode.seriesname = Config['force_name']
 
-    p("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
+    print("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
 
     try:
         episode.populateFromTvdb(tvdb_instance, force_name=Config['force_name'], series_id=Config['series_id'])
@@ -206,26 +206,26 @@ def processFile(tvdb_instance, episode):
     else:
         newName = episode.generateFilename()
         if newName == episode.fullfilename:
-            p("#" * 20)
-            p("Existing filename is correct: %s" % episode.fullfilename)
-            p("#" * 20)
+            print("#" * 20)
+            print("Existing filename is correct: %s" % episode.fullfilename)
+            print("#" * 20)
 
             shouldRename = True
 
         else:
-            p("#" * 20)
-            p("Old filename: %s" % episode.fullfilename)
+            print("#" * 20)
+            print("Old filename: %s" % episode.fullfilename)
 
             if len(Config['output_filename_replacements']) > 0:
                 # Show filename without replacements
-                p("Before custom output replacements: %s" % (episode.generateFilename(preview_orig_filename = False)))
+                print("Before custom output replacements: %s" % (episode.generateFilename(preview_orig_filename = False)))
 
-            p("New filename: %s" % newName)
+            print("New filename: %s" % newName)
 
             if Config['dry_run']:
-                p("%s will be renamed to %s" % (episode.fullfilename, newName))
+                print("%s will be renamed to %s" % (episode.fullfilename, newName))
                 if Config['move_files_enable']:
-                    p("%s will be moved to %s" % (newName, getMoveDestination(episode)))
+                    print("%s will be moved to %s" % (newName, getMoveDestination(episode)))
                 return
             elif Config['always_rename']:
                 doRenameFile(cnamer, newName)
@@ -239,19 +239,19 @@ def processFile(tvdb_instance, episode):
             ans = confirm("Rename?", options = ['y', 'n', 'a', 'q'], default = 'y')
 
             if ans == "a":
-                p("Always renaming")
+                print("Always renaming")
                 Config['always_rename'] = True
                 shouldRename = True
             elif ans == "q":
-                p("Quitting")
+                print("Quitting")
                 raise UserAbort("User exited with q")
             elif ans == "y":
-                p("Renaming")
+                print("Renaming")
                 shouldRename = True
             elif ans == "n":
-                p("Skipping")
+                print("Skipping")
             else:
-                p("Invalid input, skipping")
+                print("Invalid input, skipping")
 
             if shouldRename:
                 doRenameFile(cnamer, newName)
@@ -259,7 +259,7 @@ def processFile(tvdb_instance, episode):
     if shouldRename and Config['move_files_enable']:
         newPath = getMoveDestination(episode)
         if Config['dry_run']:
-            p("%s will be moved to %s" % (newName, getMoveDestination(episode)))
+            print("%s will be moved to %s" % (newName, getMoveDestination(episode)))
             return
 
         if Config['move_files_destination_is_filepath']:
@@ -273,10 +273,10 @@ def processFile(tvdb_instance, episode):
             ans = 'y'
 
         if ans == 'y':
-            p("Moving file")
+            print("Moving file")
             doMoveFile(cnamer, newPath)
         elif ans == 'q':
-            p("Quitting")
+            print("Quitting")
             raise UserAbort("user exited with q")
 
 
@@ -310,8 +310,8 @@ def tvnamer(paths):
     """Main tvnamer function, takes an array of paths, does stuff.
     """
 
-    p("#" * 20)
-    p("# Starting tvnamer")
+    print("#" * 20)
+    print("# Starting tvnamer")
 
     episodes_found = []
 
@@ -331,7 +331,7 @@ def tvnamer(paths):
     if len(episodes_found) == 0:
         raise NoValidFilesFoundError()
 
-    p("# Found %d episode" % len(episodes_found) + ("s" * (len(episodes_found) > 1)))
+    print("# Found %d episode" % len(episodes_found) + ("s" * (len(episodes_found) > 1)))
 
     # Sort episodes by series name, season and episode number
     episodes_found.sort(key = lambda x: x.sortable_info())
@@ -368,10 +368,10 @@ def tvnamer(paths):
 
     for episode in episodes_found:
         processFile(tvdb_instance, episode)
-        p('')
+        print('')
 
-    p("#" * 20)
-    p("# Done")
+    print("#" * 20)
+    print("# Done")
 
 
 def main():
@@ -412,10 +412,10 @@ def main():
         configToLoad = None
 
     if configToLoad is not None:
-        p("Loading config: %s" % (configToLoad))
+        print("Loading config: %s" % (configToLoad))
         if os.path.isfile(old_default_configuration):
-            p("WARNING: you have a config at deprecated ~/.tvnamer.json location.")
-            p("This must be moved to new location: ~/.config/tvnamer/tvnamer.json")
+            print("WARNING: you have a config at deprecated ~/.tvnamer.json location.")
+            print("This must be moved to new location: ~/.config/tvnamer/tvnamer.json")
 
         try:
             loadedConfig = json.load(open(os.path.expanduser(configToLoad)))
@@ -435,7 +435,7 @@ def main():
 
     # Save config argument
     if opts.saveconfig is not None:
-        p("Saving config: %s" % (opts.saveconfig))
+        print("Saving config: %s" % (opts.saveconfig))
         configToSave = dict(opts.__dict__)
         del configToSave['saveconfig']
         del configToSave['loadconfig']

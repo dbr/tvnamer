@@ -33,7 +33,7 @@ def log():
 def warn(text):
     """Displays message to sys.stderr
     """
-    p(text, file = sys.stderr)
+    print(text, file = sys.stderr)
 
 
 def split_extension(filename):
@@ -996,7 +996,7 @@ def delete_file(fpath):
         items.delete()
 
 def rename_file(old, new):
-    p("rename %s to %s" % (old, new))
+    print("rename %s to %s" % (old, new))
     stat = os.stat(old)
     shutil.move(old, new)
     try:
@@ -1009,13 +1009,13 @@ def rename_file(old, new):
             raise
 
 def copy_file(old, new):
-    p("copy %s to %s" % (old, new))
+    print("copy %s to %s" % (old, new))
     shutil.copyfile(old, new)
     shutil.copystat(old, new)
 
 
 def symlink_file(target, name):
-    p("symlink %s to %s" % (name, target))
+    print("symlink %s to %s" % (name, target))
     os.symlink(target, name)
 
 
@@ -1059,11 +1059,11 @@ class Renamer(object):
 
 
         if len(Config['move_files_fullpath_replacements']) > 0:
-            p("Before custom full path replacements: %s" % (new_fullpath))
+            print("Before custom full path replacements: %s" % (new_fullpath))
             new_fullpath = applyCustomFullpathReplacements(new_fullpath)
             new_dir = os.path.dirname(new_fullpath)
 
-        p("New path: %s" % new_fullpath)
+        print("New path: %s" % new_fullpath)
 
         if getPathPreview:
             return new_fullpath
@@ -1075,7 +1075,7 @@ class Renamer(object):
                 if e.errno != 17:
                     raise
             else:
-                p("Created directory %s" % new_dir)
+                print("Created directory %s" % new_dir)
 
 
         if os.path.isfile(new_fullpath):

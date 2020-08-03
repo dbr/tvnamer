@@ -103,7 +103,7 @@ def make_dummy_files(files, location):
 def clear_temp_dir(location):
     """Removes file or directory at specified location
     """
-    p("Clearing %s" % string_type(location))
+    print("Clearing %s" % location)
     shutil.rmtree(location)
 
 
@@ -152,8 +152,8 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
     # Construct command
     cmd = [sys.executable, "-m", "tvnamer"] + conf_args + with_flags + files
 
-    p("Running command:")
-    p(" ".join(cmd))
+    print("Running command:")
+    print(" ".join(cmd))
 
     proc = subprocess.Popen(
         cmd,
@@ -208,14 +208,14 @@ def verify_out_data(out_data, expected_files, expected_returncode = 0):
     If an assertion fails, nosetest will handily print the stdout/etc.
     """
 
-    p("Return code: %d" % out_data['returncode'])
+    print("Return code: %d" % out_data['returncode'])
 
-    p("Expected files:", expected_files)
-    p("Got files:     ", [x for x in out_data['files']])
+    print("Expected files:", expected_files)
+    print("Got files:     ", [x for x in out_data['files']])
 
-    p("\n" + "*" * 20 + "\n")
-    p("output:\n")
-    p(out_data['output'])
+    print("\n" + "*" * 20 + "\n")
+    print("output:\n")
+    print(out_data['output'])
 
     # Check number of files
     if len(expected_files) != len(out_data['files']):
