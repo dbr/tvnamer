@@ -610,7 +610,7 @@ class EpisodeInfo(object):
 
     @property
     def fullfilename(self):
-        return u"%s%s" % (self.filename, self.extension)
+        return "%s%s" % (self.filename, self.extension)
 
     def sortable_info(self):
         """Returns a tuple of sortable information
@@ -787,7 +787,7 @@ class EpisodeInfo(object):
             replace_with = Config['replace_invalid_characters_with'])
 
     def __repr__(self):
-        return u"<%s: %r>" % (
+        return "<%s: %r>" % (
             self.__class__.__name__,
             self.generateFilename())
 
