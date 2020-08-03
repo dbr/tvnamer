@@ -15,9 +15,6 @@ import errno
 from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
 tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
 
-from tvnamer.unicode_helper import p
-from tvnamer.compat import string_type
-
 from tvnamer.config import Config
 from tvnamer.tvnamer_exceptions import (InvalidPath, InvalidFilename,
 ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
@@ -242,7 +239,7 @@ class FileFinder(object):
         fname, fext = split_extension(fullname)
 
         for fblacklist in self.with_blacklist:
-            if isinstance(fblacklist, string_type):
+            if isinstance(fblacklist, str):
                 if fullname == fblacklist:
                     return True
                 else:
@@ -275,7 +272,7 @@ class FileFinder(object):
             log().info("Skipping inaccessible path %s" % startpath)
             return allfiles
 
-        for subf in os.listdir(string_type(startpath)):
+        for subf in os.listdir(startpath):
             newpath = os.path.join(startpath, subf)
             newpath = os.path.abspath(newpath)
             if os.path.isfile(newpath):
@@ -532,7 +529,6 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
     # Replace accented characters with ASCII equivalent
     if normalize_unicode:
         import unicodedata
-        value = string_type(value) # cast data to unicode
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
         value = value.decode('utf-8')
 
@@ -649,7 +645,7 @@ class EpisodeInfo(object):
             # No such series found.
             raise ShowNotFound("Show %s not found on www.thetvdb.com" % self.seriesname)
         except tvdb_userabort as error:
-            raise UserAbort(string_type(error))
+            raise UserAbort("%s" % error)
         else:
             # Series was found, use corrected series name
             self.seriesname = replaceOutputSeriesName(show['seriesname'])

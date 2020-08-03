@@ -30,9 +30,6 @@ import unicodedata
 
 import coverage
 
-from tvnamer.unicode_helper import p
-from tvnamer.compat import PY2, string_type
-
 try:
     # os.path.relpath was added in 2.6, use custom implimentation if not found
     relpath = os.path.relpath
@@ -167,18 +164,9 @@ def run_tvnamer(with_files, with_flags = None, with_input = "", with_config = No
 
     output = output.decode("utf-8")
 
-    if PY2:
-        def unicodify(obj, encoding = "utf-8"):
-            if isinstance(obj, basestring):
-                if not isinstance(obj, unicode):
-                    obj = unicode(obj, encoding)
-            return obj
-        output = unicodify(output)
-
-
     created_files = []
 
-    for walkroot, walkdirs, walkfiles in os.walk(string_type(episodes_location)):
+    for walkroot, walkdirs, walkfiles in os.walk(episodes_location):
         curlist = [
             os.path.join(
                 walkroot,

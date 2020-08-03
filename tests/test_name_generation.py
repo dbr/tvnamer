@@ -9,7 +9,6 @@ import datetime
 from helpers import assertEquals
 
 from tvnamer.main import TVNAMER_API_KEY
-from tvnamer.compat import PY2
 from tvnamer.utils import (EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo)
 from test_files import files
 
@@ -44,15 +43,7 @@ def test_name_generation_on_testfiles():
     # Test data stores episode names in English, language= is normally set
     # via the configuration, same with search_all_languages.
 
-    if not PY2 and os.getenv("TRAVIS", "false") == "true":
-        # Disable caching on Travis-CI because in Python 3 it errors with:
-        #
-        # Can't pickle <class 'http.cookiejar.DefaultCookiePolicy'>: it's not the same object as http.cookiejar.DefaultCookiePolicy
-        cache = False
-    else:
-        cache = True
-
-    tvdb_instance = Tvdb(search_all_languages=True, language='en', cache=cache, apikey=TVNAMER_API_KEY)
+    tvdb_instance = Tvdb(search_all_languages=True, language='en', apikey=TVNAMER_API_KEY)
     for category, testcases in files.items():
         for curtest in testcases:
             verify_name_gen(curtest, tvdb_instance)

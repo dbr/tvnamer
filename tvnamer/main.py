@@ -19,10 +19,8 @@ import tvdb_api
 from tvdb_api import Tvdb
 
 from tvnamer import cliarg_parser, __version__
-from tvnamer.compat import PY2, raw_input
 from tvnamer.config_defaults import defaults
 
-from tvnamer.unicode_helper import p
 from tvnamer.utils import (Config, FileFinder, FileParser, Renamer, warn,
 applyCustomInputReplacements, formatEpisodeNumbers, makeValidFilename,
 DatedEpisodeInfo, NoSeasonEpisodeInfo)
@@ -342,14 +340,6 @@ def tvnamer(paths):
     else:
         dvdorder = False
 
-    if not PY2 and os.getenv("TRAVIS", "false") == "true":
-        # Disable caching on Travis-CI because in Python 3 it errors with:
-        #
-        # Can't pickle <class 'http.cookiejar.DefaultCookiePolicy'>: it's not the same object as http.cookiejar.DefaultCookiePolicy
-        cache = False
-    else:
-        cache = True
-
     if Config['tvdb_api_key'] is not None:
         LOG.debug("Using custom API key from config")
         api_key = Config['tvdb_api_key']
@@ -362,7 +352,7 @@ def tvnamer(paths):
         search_all_languages = Config['search_all_languages'],
         language = Config['language'],
         dvdorder = dvdorder,
-        cache=cache,
+        cache=True,
         apikey=TVNAMER_API_KEY,
     )
 
@@ -420,18 +410,13 @@ def main():
         try:
             loadedConfig = json.load(open(os.path.expanduser(configToLoad)))
         except ValueError as e:
-            p("Error loading config: %s" % e)
+            print("Error loading config: %s" % e)
             opter.exit(1)
         else:
             # Config loaded, update optparser's defaults and reparse
             defaults.update(loadedConfig)
             opter = cliarg_parser.getCommandlineParser(defaults)
             opts, args = opter.parse_args()
-
-    # Decode args using filesystem encoding (done after config loading
-    # as the args are reparsed when the config is loaded)
-    if PY2:
-        args = [x.decode(sys.getfilesystemencoding()) for x in args]
 
     # Save config argument
     if opts.saveconfig is not None:
