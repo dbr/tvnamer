@@ -85,11 +85,7 @@ def make_dummy_files(files, location):
         floc = os.path.join(location, f)
 
         dirnames, _ = os.path.split(floc)
-        try:
-            os.makedirs(dirnames)
-        except OSError as e:
-            if e.errno != 17:
-                raise
+        os.makedirs(dirnames, exist_ok=True)
 
         open(floc, "w").close()
         dummies.append(floc)

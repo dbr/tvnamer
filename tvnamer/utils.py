@@ -1065,14 +1065,8 @@ class Renamer(object):
             return new_fullpath
 
         if create_dirs:
-            try:
-                os.makedirs(new_dir)
-            except OSError as e:
-                if e.errno != 17:
-                    raise
-            else:
-                print("Created directory %s" % new_dir)
-
+            os.makedirs(new_dir, exist_ok=True)
+            print("Created directory %s" % new_dir)
 
         if os.path.isfile(new_fullpath):
             # If the destination exists, raise exception unless force is True
