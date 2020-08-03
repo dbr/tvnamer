@@ -1,6 +1,6 @@
 # Change log
 
-# unreleased
+# `3.0` - 2020-08-03
 - Fix `--dry-run` in `--batch` mode
   ([PR #173](https://github.com/dbr/tvnamer/pull/173))
 - Config has moved to `~/.config/tvnamer/tvnamer.json` to avoid home-directory clutter (previously located at `~/.tvnamer.json`)

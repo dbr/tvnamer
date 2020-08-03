@@ -13,7 +13,7 @@ from tvnamer import __version__
 from setuptools import setup
 setup(
 name = 'tvnamer',
-version=".".join(str(x) for x in __version__),
+version=__version__,
 
 author='dbr/Ben',
 description='Automatic TV episode namer',

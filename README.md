@@ -29,45 +29,16 @@ Alternatively, the community have packaged tvnamer in various platform/distro sp
 2. [Debian](https://tracker.debian.org/pkg/tvnamer) - `apt-get install tvnamer`
 3. [FreeBSD/DragonFlyBSD/MacPorts](https://www.freshports.org/multimedia/py-tvnamer) - `pkg install py36-tvnamer` etc
 
+Although not recommended for general use, see [`CONTRIBUTING.md`](./CONTRIBUTING.md) for details on installing the unstable development version.
 
-## Installing development version
+## Features
 
-If you wish to install the latest (non-stable) development version from source, download the latest version of the code, either from <http://github.com/dbr/tvnamer/tarball/master> or by running:
-
-    git clone git://github.com/dbr/tvnamer.git
-
-..then `cd` into the directory, and run:
-
-    python setup.py install
-
-You may wish to do this via virtualenv to avoid cluttering your global install
-
-Example terminal session:
-
-    $ virtualenv tvn-env
-    [...]
-    Installing setuptools, pip, wheel...done.
-    $ source tvn-env/bin/activate
-    (tvn-env) $ git clone git://github.com/dbr/tvnamer.git
-    Cloning into 'tvnamer'...
-    [...]
-    (tvn-env) $ cd tvnamer/
-    (tvn-env) $ python setup.py develop
-    [...]
-    (tvn-env) $ tvnamer --help
-    [...]
-    (tvn-env) $ deactivate
-    $ tvnamer
-    -bash: tvnamer: command not found
-
-## Improvements over v1
-
-tvnamer v2 is a near-complete rewrite of the tvnamer released as part of `tvdb_api`. There are many improvements thanks to the improved code structure, but the most important are:
-
+- Interactive command line based interface, with a non-interactive "batch" mode for automation.
+- Comprehensive set of file-name matching patterns
+- Handles non-ASCII names
 - Support for anime filenames, such as `[Shinsen-Subs] Beet - 19 [24DAB497].mkv`
 - Support for multi-episode files, such as `scrubs.s01e23e24.avi`
-- Custom configuration options (via a JSON config file) and improved command line argument handling
-- Better support for Unicode filenames
+- Extensive configuration options (via a JSON config file) and command-line arguments, including output name customising, series name replacements
 - Support for moving files to specific location after renaming (`/media/tv/{series name}/season {seasonnumber}/` for example)
 
 ## Bugs?
