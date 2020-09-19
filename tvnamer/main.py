@@ -353,7 +353,7 @@ def tvnamer(paths):
         language = Config['language'],
         dvdorder = dvdorder,
         cache=True,
-        apikey=TVNAMER_API_KEY,
+        apikey=api_key,
     )
 
     for episode in episodes_found:
