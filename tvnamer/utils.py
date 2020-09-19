@@ -615,7 +615,7 @@ class EpisodeInfo(object):
     def sortable_info(self):
         """Returns a tuple of sortable information
         """
-        return (self.seriesname, self.seasonnumber, self.episodenumbers)
+        return ("%s" % self.seriesname, self.seasonnumber, self.episodenumbers)
 
     def number_string(self):
         """Used in UI
@@ -827,7 +827,7 @@ class DatedEpisodeInfo(EpisodeInfo):
     def sortable_info(self):
         """Returns a tuple of sortable information
         """
-        return (self.seriesname, self.episodenumbers)
+        return ("%s" % (self.seriesname), self.episodenumbers)
 
     def number_string(self):
         """Used in UI
@@ -890,7 +890,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
     def sortable_info(self):
         """Returns a tuple of sortable information
         """
-        return (self.seriesname, self.episodenumbers)
+        return ("%s" % self.seriesname, self.episodenumbers)
 
     def number_string(self):
         """Used in UI
