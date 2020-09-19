@@ -24,9 +24,13 @@ class Group(object):
 
 
 def getCommandlineParser(defaults):
-    parser = optparse.OptionParser(usage = "%prog [options] <files>", add_help_option = False)
+    parser = optparse.OptionParser(
+        usage="%prog [options] <files>", add_help_option=False
+    )
 
     parser.set_defaults(**defaults)
+
+    # fmt: off
 
     # Console output
     with Group(parser, "Console output") as g:

@@ -12,13 +12,27 @@ import logging
 import platform
 import errno
 
-from tvdb_api import (tvdb_error, tvdb_shownotfound, tvdb_seasonnotfound,
-tvdb_episodenotfound, tvdb_attributenotfound, tvdb_userabort)
+from tvdb_api import (
+    tvdb_error,
+    tvdb_shownotfound,
+    tvdb_seasonnotfound,
+    tvdb_episodenotfound,
+    tvdb_attributenotfound,
+    tvdb_userabort,
+)
 
 from tvnamer.config import Config
-from tvnamer.tvnamer_exceptions import (InvalidPath, InvalidFilename,
-ShowNotFound, DataRetrievalError, SeasonNotFound, EpisodeNotFound,
-EpisodeNameNotFound, ConfigValueError, UserAbort)
+from tvnamer.tvnamer_exceptions import (
+    InvalidPath,
+    InvalidFilename,
+    ShowNotFound,
+    DataRetrievalError,
+    SeasonNotFound,
+    EpisodeNotFound,
+    EpisodeNameNotFound,
+    ConfigValueError,
+    UserAbort,
+)
 
 
 def log():
@@ -30,7 +44,7 @@ def log():
 def warn(text):
     """Displays message to sys.stderr
     """
-    print(text, file = sys.stderr)
+    print(text, file=sys.stderr)
 
 
 def split_extension(filename):
@@ -114,7 +128,7 @@ def replaceInputSeriesName(seriesname):
     This helps the TVDB query get the right match.
     """
     for pat, replacement in Config['input_series_replacements'].items():
-        if re.match(pat, seriesname, re.IGNORECASE|re.UNICODE):
+        if re.match(pat, seriesname, re.IGNORECASE | re.UNICODE):
             return replacement
     return seriesname
 
@@ -166,7 +180,9 @@ class FileFinder(object):
     filtering is done
     """
 
-    def __init__(self, path, with_extension = None, filename_blacklist = None, recursive = False):
+    def __init__(
+        self, path, with_extension=None, filename_blacklist=None, recursive=False
+    ):
         self.path = path
         if with_extension is None:
             self.with_extension = []
@@ -285,9 +301,9 @@ class FileFinder(object):
             else:
                 if self.recursive:
                     allfiles.extend(self._findFilesInPath(newpath))
-                #end if recursive
-            #end if isfile
-        #end for sf
+                # end if recursive
+            # end if isfile
+        # end for sf
         return allfiles
 
 
@@ -308,8 +324,10 @@ class FileParser(object):
             try:
                 cregex = re.compile(cpattern, re.VERBOSE)
             except re.error as errormsg:
-                warn("WARNING: Invalid episode_pattern (error: %s)\nPattern:\n%s" % (
-                    errormsg, cpattern))
+                warn(
+                    "WARNING: Invalid episode_pattern (error: %s)\nPattern:\n%s"
+                    % (errormsg, cpattern)
+                )
             else:
                 self.compiled_regexs.append(cregex)
 
@@ -341,7 +359,10 @@ class FileParser(object):
                     start = int(match.group('episodenumberstart'))
                     end = int(match.group('episodenumberend'))
                     if end - start > 5:
-                        warn("WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s" %(end - start, filename, start))
+                        warn(
+                            "WARNING: %s episodes detected in file: %s, confused by numeric episode name, using first match: %s"
+                            % (end - start, filename, start)
+                        )
                         episodenumbers = [start]
                     elif start > end:
                         # Swap start and end
@@ -351,32 +372,50 @@ class FileParser(object):
                         episodenumbers = list(range(start, end + 1))
 
                 elif 'episodenumber' in namedgroups:
-                    episodenumbers = [int(match.group('episodenumber')), ]
+                    episodenumbers = [
+                        int(match.group('episodenumber')),
+                    ]
 
-                elif 'year' in namedgroups or 'month' in namedgroups or 'day' in namedgroups:
-                    if not all(['year' in namedgroups, 'month' in namedgroups, 'day' in namedgroups]):
+                elif (
+                    'year' in namedgroups
+                    or 'month' in namedgroups
+                    or 'day' in namedgroups
+                ):
+                    if not all(
+                        [
+                            'year' in namedgroups,
+                            'month' in namedgroups,
+                            'day' in namedgroups,
+                        ]
+                    ):
                         raise ConfigValueError(
-                            "Date-based regex must contain groups 'year', 'month' and 'day'")
+                            "Date-based regex must contain groups 'year', 'month' and 'day'"
+                        )
                     match.group('year')
 
                     year = handleYear(match.group('year'))
 
-                    episodenumbers = [datetime.date(year,
-                                                    int(match.group('month')),
-                                                    int(match.group('day')))]
+                    episodenumbers = [
+                        datetime.date(
+                            year, int(match.group('month')), int(match.group('day'))
+                        )
+                    ]
 
                 else:
                     raise ConfigValueError(
                         "Regex does not contain episode number group, should"
                         "contain episodenumber, episodenumber1-9, or"
                         "episodenumberstart and episodenumberend\n\nPattern"
-                        "was:\n" + cmatcher.pattern)
+                        "was:\n" + cmatcher.pattern
+                    )
 
                 if 'seriesname' in namedgroups:
                     seriesname = match.group('seriesname')
                 else:
                     raise ConfigValueError(
-                        "Regex must contain seriesname. Pattern was:\n" + cmatcher.pattern)
+                        "Regex must contain seriesname. Pattern was:\n"
+                        + cmatcher.pattern
+                    )
 
                 if seriesname != None:
                     seriesname = cleanRegexedSeriesName(seriesname)
@@ -388,30 +427,38 @@ class FileParser(object):
                     seasonnumber = int(match.group('seasonnumber'))
 
                     episode = EpisodeInfo(
-                        seriesname = seriesname,
-                        seasonnumber = seasonnumber,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
-                elif 'year' in namedgroups and 'month' in namedgroups and 'day' in namedgroups:
+                        seriesname=seriesname,
+                        seasonnumber=seasonnumber,
+                        episodenumbers=episodenumbers,
+                        filename=self.path,
+                        extra=extra_values,
+                    )
+                elif (
+                    'year' in namedgroups
+                    and 'month' in namedgroups
+                    and 'day' in namedgroups
+                ):
                     episode = DatedEpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
+                        seriesname=seriesname,
+                        episodenumbers=episodenumbers,
+                        filename=self.path,
+                        extra=extra_values,
+                    )
                 elif 'group' in namedgroups:
                     episode = AnimeEpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
+                        seriesname=seriesname,
+                        episodenumbers=episodenumbers,
+                        filename=self.path,
+                        extra=extra_values,
+                    )
                 else:
                     # No season number specified, usually for Anime
                     episode = NoSeasonEpisodeInfo(
-                        seriesname = seriesname,
-                        episodenumbers = episodenumbers,
-                        filename = self.path,
-                        extra = extra_values)
+                        seriesname=seriesname,
+                        episodenumbers=episodenumbers,
+                        filename=self.path,
+                        extra=extra_values,
+                    )
 
                 return episode
         else:
@@ -446,16 +493,26 @@ def formatEpisodeName(names, join_with, multiep_format):
 
         if match:
             epname, epno = match.group(1), match.group(2)
-        else: # assume that this is the first episode, without number
+        else:  # assume that this is the first episode, without number
             epname = cname
             epno = 1
         found_name = epname
         numbers.append(int(epno))
 
-    return multiep_format % {'epname': found_name, 'episodemin': min(numbers), 'episodemax': max(numbers)}
+    return multiep_format % {
+        'epname': found_name,
+        'episodemin': min(numbers),
+        'episodemax': max(numbers),
+    }
 
 
-def makeValidFilename(value, normalize_unicode = False, windows_safe = False, custom_blacklist = None, replace_with = "_"):
+def makeValidFilename(
+    value,
+    normalize_unicode=False,
+    windows_safe=False,
+    custom_blacklist=None,
+    replace_with="_",
+):
     """
     Takes a string and makes it into a valid filename.
 
@@ -520,15 +577,37 @@ def makeValidFilename(value, normalize_unicode = False, windows_safe = False, cu
     # There are a bunch of filenames that are not allowed on Windows.
     # As with character blacklist, treat non Darwin/Linux platforms as Windows
     if sysname not in ['Darwin', 'Linux']:
-        invalid_filenames = ["CON", "PRN", "AUX", "NUL", "COM1", "COM2",
-        "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1",
-        "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"]
+        invalid_filenames = [
+            "CON",
+            "PRN",
+            "AUX",
+            "NUL",
+            "COM1",
+            "COM2",
+            "COM3",
+            "COM4",
+            "COM5",
+            "COM6",
+            "COM7",
+            "COM8",
+            "COM9",
+            "LPT1",
+            "LPT2",
+            "LPT3",
+            "LPT4",
+            "LPT5",
+            "LPT6",
+            "LPT7",
+            "LPT8",
+            "LPT9",
+        ]
         if value in invalid_filenames:
             value = "_" + value
 
     # Replace accented characters with ASCII equivalent
     if normalize_unicode:
         import unicodedata
+
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
         value = value.decode('utf-8')
 
@@ -559,7 +638,8 @@ def formatEpisodeNumbers(episodenumbers):
         epno = Config['episode_single'] % episodenumbers[0]
     else:
         epno = Config['episode_separator'].join(
-            Config['episode_single'] % x for x in episodenumbers)
+            Config['episode_single'] % x for x in episodenumbers
+        )
 
     return epno
 
@@ -572,13 +652,15 @@ class EpisodeInfo(object):
     CFG_KEY_WITH_EP = "filename_with_episode"
     CFG_KEY_WITHOUT_EP = "filename_without_episode"
 
-    def __init__(self,
+    def __init__(
+        self,
         seriesname,
         seasonnumber,
         episodenumbers,
-        episodename = None,
-        filename = None,
-        extra = None):
+        episodename=None,
+        filename=None,
+        extra=None,
+    ):
 
         self.seriesname = seriesname
         self.seasonnumber = seasonnumber
@@ -622,7 +704,8 @@ class EpisodeInfo(object):
         """
         return "season: %s, episode: %s" % (
             self.seasonnumber,
-            ", ".join([str(x) for x in self.episodenumbers]))
+            ", ".join([str(x) for x in self.episodenumbers]),
+        )
 
     def populateFromTvdb(self, tvdb_instance, force_name=None, series_id=None):
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
@@ -658,17 +741,18 @@ class EpisodeInfo(object):
                     sr = show.aired_on(cepno)
                     if len(sr) > 1:
                         # filter out specials if multiple episodes aired on the day
-                        sr = [ s for s in sr if s['seasonnumber'] != '0' ]
-                    
+                        sr = [s for s in sr if s['seasonnumber'] != '0']
+
                     if len(sr) > 1:
                         raise EpisodeNotFound(
-                            "Ambigious air date %s, there were %s episodes on that day" % (
-                            cepno, len(sr)))
+                            "Ambigious air date %s, there were %s episodes on that day"
+                            % (cepno, len(sr))
+                        )
                     epnames.append(sr[0]['episodeName'])
                 except tvdb_episodenotfound:
                     raise EpisodeNotFound(
-                        "Episode that aired on %s could not be found" % (
-                        cepno))
+                        "Episode that aired on %s could not be found" % (cepno)
+                    )
             self.episodename = epnames
             return
 
@@ -685,9 +769,9 @@ class EpisodeInfo(object):
 
             except tvdb_seasonnotfound:
                 raise SeasonNotFound(
-                    "Season %s of show %s could not be found" % (
-                    seasonnumber,
-                    self.seriesname))
+                    "Season %s of show %s could not be found"
+                    % (seasonnumber, self.seriesname)
+                )
 
             except tvdb_episodenotfound:
                 # Try to search by absolute number
@@ -702,19 +786,19 @@ class EpisodeInfo(object):
                     # If unsure error out
                     if unsure:
                         raise EpisodeNotFound(
-                            "No episode actually matches %s, found %s results instead" % (cepno, len(sr)))
+                            "No episode actually matches %s, found %s results instead"
+                            % (cepno, len(sr))
+                        )
                 elif len(sr) == 1:
                     epnames.append(sr[0]['episodeName'])
                 else:
                     raise EpisodeNotFound(
-                        "Episode %s of show %s, season %s could not be found (also tried searching by absolute episode number)" % (
-                            cepno,
-                            self.seriesname,
-                            seasonnumber))
+                        "Episode %s of show %s, season %s could not be found (also tried searching by absolute episode number)"
+                        % (cepno, self.seriesname, seasonnumber)
+                    )
 
             except tvdb_attributenotfound:
-                raise EpisodeNameNotFound(
-                    "Could not find episode name for %s" % cepno)
+                raise EpisodeNameNotFound("Could not find episode name for %s" % cepno)
             else:
                 epnames.append(episodeinfo['episodeName'])
 
@@ -739,15 +823,16 @@ class EpisodeInfo(object):
 
         epdata = {
             'seriesname': self.seriesname,
-            'seasonno': self.seasonnumber, # TODO: deprecated attribute, make this warn somehow
+            'seasonno': self.seasonnumber,  # TODO: deprecated attribute, make this warn somehow
             'seasonnumber': self.seasonnumber,
             'episode': epno,
             'episodename': self.episodename,
-            'ext': prep_extension}
+            'ext': prep_extension,
+        }
 
         return epdata
 
-    def generateFilename(self, lowercase = False, preview_orig_filename = False):
+    def generateFilename(self, lowercase=False, preview_orig_filename=False):
         epdata = self.getepdata()
 
         # Add in extra dict keys, without clobbering existing values in epdata
@@ -761,12 +846,14 @@ class EpisodeInfo(object):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    join_with = Config['multiep_join_name_with'],
-                    multiep_format = Config['multiep_format'])
+                    join_with=Config['multiep_join_name_with'],
+                    multiep_format=Config['multiep_format'],
+                )
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         if Config['titlecase_filename']:
             from tvnamer._titlecase import titlecase
+
             fname = titlecase(fname)
 
         if lowercase or Config['lowercase_filename']:
@@ -781,27 +868,23 @@ class EpisodeInfo(object):
 
         return makeValidFilename(
             fname,
-            normalize_unicode = Config['normalize_unicode_filenames'],
-            windows_safe = Config['windows_safe_filenames'],
-            custom_blacklist = Config['custom_filename_character_blacklist'],
-            replace_with = Config['replace_invalid_characters_with'])
+            normalize_unicode=Config['normalize_unicode_filenames'],
+            windows_safe=Config['windows_safe_filenames'],
+            custom_blacklist=Config['custom_filename_character_blacklist'],
+            replace_with=Config['replace_invalid_characters_with'],
+        )
 
     def __repr__(self):
-        return "<%s: %r>" % (
-            self.__class__.__name__,
-            self.generateFilename())
+        return "<%s: %r>" % (self.__class__.__name__, self.generateFilename())
 
 
 class DatedEpisodeInfo(EpisodeInfo):
     CFG_KEY_WITH_EP = "filename_with_date_and_episode"
     CFG_KEY_WITHOUT_EP = "filename_with_date_without_episode"
 
-    def __init__(self,
-        seriesname,
-        episodenumbers,
-        episodename = None,
-        filename = None,
-        extra = None):
+    def __init__(
+        self, seriesname, episodenumbers, episodename=None, filename=None, extra=None
+    ):
 
         self.seriesname = seriesname
         self.episodenumbers = episodenumbers
@@ -832,8 +915,7 @@ class DatedEpisodeInfo(EpisodeInfo):
     def number_string(self):
         """Used in UI
         """
-        return "episode: %s" % (
-            ", ".join([str(x) for x in self.episodenumbers]))
+        return "episode: %s" % (", ".join([str(x) for x in self.episodenumbers]))
 
     def getepdata(self):
         # Format episode number into string, or a list
@@ -841,8 +923,9 @@ class DatedEpisodeInfo(EpisodeInfo):
         if isinstance(self.episodename, list):
             prep_episodename = formatEpisodeName(
                 self.episodename,
-                join_with = Config['multiep_join_name_with'],
-                multiep_format = Config['multiep_format'])
+                join_with=Config['multiep_join_name_with'],
+                multiep_format=Config['multiep_format'],
+            )
         else:
             prep_episodename = self.episodename
 
@@ -856,7 +939,8 @@ class DatedEpisodeInfo(EpisodeInfo):
             'seriesname': self.seriesname,
             'episode': dates,
             'episodename': prep_episodename,
-            'ext': prep_extension}
+            'ext': prep_extension,
+        }
 
         return epdata
 
@@ -865,12 +949,9 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
     CFG_KEY_WITH_EP = "filename_with_episode_no_season"
     CFG_KEY_WITHOUT_EP = "filename_without_episode_no_season"
 
-    def __init__(self,
-        seriesname,
-        episodenumbers,
-        episodename = None,
-        filename = None,
-        extra = None):
+    def __init__(
+        self, seriesname, episodenumbers, episodename=None, filename=None, extra=None
+    ):
 
         self.seriesname = seriesname
         self.episodenumbers = episodenumbers
@@ -895,8 +976,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
     def number_string(self):
         """Used in UI
         """
-        return "episode: %s" % (
-            ", ".join([str(x) for x in self.episodenumbers]))
+        return "episode: %s" % (", ".join([str(x) for x in self.episodenumbers]))
 
     def getepdata(self):
         epno = formatEpisodeNumbers(self.episodenumbers)
@@ -911,7 +991,8 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
             'seriesname': self.seriesname,
             'episode': epno,
             'episodename': self.episodename,
-            'ext': prep_extension}
+            'ext': prep_extension,
+        }
 
         return epdata
 
@@ -923,7 +1004,7 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
     CFG_KEY_WITH_EP_NO_CRC = "filename_anime_with_episode_without_crc"
     CFG_KEY_WITHOUT_EP_NO_CRC = "filename_anime_without_episode_without_crc"
 
-    def generateFilename(self, lowercase = False, preview_orig_filename = False):
+    def generateFilename(self, lowercase=False, preview_orig_filename=False):
         epdata = self.getepdata()
 
         # Add in extra dict keys, without clobbering existing values in epdata
@@ -949,11 +1030,11 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
             if isinstance(self.episodename, list):
                 epdata['episodename'] = formatEpisodeName(
                     self.episodename,
-                    join_with = Config['multiep_join_name_with'],
-                    multiep_format = Config['multiep_format'])
+                    join_with=Config['multiep_join_name_with'],
+                    multiep_format=Config['multiep_format'],
+                )
 
         fname = Config[cfgkey] % epdata
-
 
         if lowercase or Config['lowercase_filename']:
             fname = fname.lower()
@@ -967,10 +1048,12 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
 
         return makeValidFilename(
             fname,
-            normalize_unicode = Config['normalize_unicode_filenames'],
-            windows_safe = Config['windows_safe_filenames'],
-            custom_blacklist = Config['custom_filename_character_blacklist'],
-            replace_with = Config['replace_invalid_characters_with'])
+            normalize_unicode=Config['normalize_unicode_filenames'],
+            windows_safe=Config['windows_safe_filenames'],
+            custom_blacklist=Config['custom_filename_character_blacklist'],
+            replace_with=Config['replace_invalid_characters_with'],
+        )
+
 
 def delete_file(fpath):
     """On OS X: Trashes a path using the Finder, via OS X's Scripting Bridge.
@@ -991,6 +1074,7 @@ def delete_file(fpath):
         items = finder.items().objectAtLocation_(targetfile)
         items.delete()
 
+
 def rename_file(old, new):
     print("rename %s to %s" % (old, new))
     stat = os.stat(old)
@@ -999,10 +1083,13 @@ def rename_file(old, new):
         os.utime(new, (stat.st_atime, stat.st_mtime))
     except OSError as ex:
         if ex.errno == errno.EPERM:
-            warn("WARNING: Could not preserve times for %s "
-                 "(owner UID mismatch?)" % new)
+            warn(
+                "WARNING: Could not preserve times for %s "
+                "(owner UID mismatch?)" % new
+            )
         else:
             raise
+
 
 def copy_file(old, new):
     print("copy %s to %s" % (old, new))
@@ -1022,7 +1109,17 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
 
-    def newPath(self, new_path = None, new_fullpath = None, force = False, always_copy = False, always_move = False, leave_symlink = False, create_dirs = True, getPathPreview = False):
+    def newPath(
+        self,
+        new_path=None,
+        new_fullpath=None,
+        force=False,
+        always_copy=False,
+        always_move=False,
+        leave_symlink=False,
+        create_dirs=True,
+        getPathPreview=False,
+    ):
         """Moves the file to a new path.
 
         If it is on the same partition, it will be moved (unless always_copy is True)
@@ -1036,7 +1133,9 @@ class Renamer(object):
         if always_copy and always_move:
             raise ValueError("Both always_copy and always_move cannot be specified")
 
-        if (new_path is None and new_fullpath is None) or (new_path is not None and new_fullpath is not None):
+        if (new_path is None and new_fullpath is None) or (
+            new_path is not None and new_fullpath is not None
+        ):
             raise ValueError("Specify only new_dir or new_fullpath")
 
         old_dir, old_filename = os.path.split(self.filename)
@@ -1052,7 +1151,6 @@ class Renamer(object):
             new_fullpath = os.path.abspath(os.path.join(old_dir, new_fullpath))
 
             new_dir = os.path.dirname(new_fullpath)
-
 
         if len(Config['move_files_fullpath_replacements']) > 0:
             print("Before custom full path replacements: %s" % (new_fullpath))
@@ -1071,8 +1169,10 @@ class Renamer(object):
         if os.path.isfile(new_fullpath):
             # If the destination exists, raise exception unless force is True
             if not force:
-                raise OSError("File %s already exists, not forcefully moving %s" % (
-                    new_fullpath, self.filename))
+                raise OSError(
+                    "File %s already exists, not forcefully moving %s"
+                    % (new_fullpath, self.filename)
+                )
 
         if always_copy:
             # Same partition, but forced to copy

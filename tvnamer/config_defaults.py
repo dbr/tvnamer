@@ -8,6 +8,7 @@ if False:
     from typing import Dict, Any
 
 
+# fmt: off
 defaults = {
     # Custom API key from www.thetvdb.com - if None, uses tvnamer's default key
     'tvdb_api_key': None,
@@ -24,7 +25,7 @@ defaults = {
     # Fail if error finding show data (thetvdb.com is down etc)
     # Only functions when always_rename is True
     'skip_file_on_error': True,
-    
+
     # Fail if error finding show data (thetvdb.com is down etc)
     # Changes the default behaviour for skip_file_on_error from skip to exit
     'skip_behaviour': 'skip',
@@ -402,38 +403,38 @@ defaults = {
     # Formats for renamed files. Variations for with/without episode,
     # and with/without season number.
     'filename_with_episode':
-     '%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s',
+        '%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s',
     'filename_without_episode':
-     '%(seriesname)s - [%(seasonnumber)02dx%(episode)s]%(ext)s',
+        '%(seriesname)s - [%(seasonnumber)02dx%(episode)s]%(ext)s',
 
     # Seasonless filenames.
     'filename_with_episode_no_season':
-      '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
+        '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
     'filename_without_episode_no_season':
-     '%(seriesname)s - [%(episode)s]%(ext)s',
+        '%(seriesname)s - [%(episode)s]%(ext)s',
 
     # Date based filenames.
     # Series - [2012-01-24] - Ep name.ext
     'filename_with_date_and_episode':
-     '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
+        '%(seriesname)s - [%(episode)s] - %(episodename)s%(ext)s',
     'filename_with_date_without_episode':
-     '%(seriesname)s - [%(episode)s]%(ext)s',
+        '%(seriesname)s - [%(episode)s]%(ext)s',
 
     # Anime filenames.
     # [AGroup] Series - 02 - Some Ep Name [CRC1234].ext
     # [AGroup] Series - 02 [CRC1234].ext
     'filename_anime_with_episode':
-     '[%(group)s] %(seriesname)s - %(episode)s - %(episodename)s [%(crc)s]%(ext)s',
+        '[%(group)s] %(seriesname)s - %(episode)s - %(episodename)s [%(crc)s]%(ext)s',
 
     'filename_anime_without_episode':
-     '[%(group)s] %(seriesname)s - %(episode)s [%(crc)s]%(ext)s',
+        '[%(group)s] %(seriesname)s - %(episode)s [%(crc)s]%(ext)s',
 
     # Same, without CRC value
     'filename_anime_with_episode_without_crc':
-     '[%(group)s] %(seriesname)s - %(episode)s - %(episodename)s%(ext)s',
+        '[%(group)s] %(seriesname)s - %(episode)s - %(episodename)s%(ext)s',
 
     'filename_anime_without_episode_without_crc':
-     '[%(group)s] %(seriesname)s - %(episode)s%(ext)s',
+        '[%(group)s] %(seriesname)s - %(episode)s%(ext)s',
 
 
 
@@ -451,10 +452,10 @@ defaults = {
     'episode_separator': '-',
 
     # Series ID to use instead of searching if the value is set
-    #'series_id': None,
+    # 'series_id': None,
 
     # Forced Name to use
-    #'forced_name': None,
+    # 'forced_name': None,
 
     # replace series names before/after passing to TVDB
     # input replacements are regular expressions for the series as parsed from
@@ -468,4 +469,6 @@ defaults = {
 
     # use dvd episode order of tvdb, instead of aired order
     'order': 'aired',
-} # type: Dict[str, Any]
+}  # type: Dict[str, Any]
+
+# fmt: on
