@@ -27,9 +27,9 @@ from tvnamer.utils import (
     FileParser,
     Renamer,
     warn,
-    applyCustomInputReplacements,
-    formatEpisodeNumbers,
-    makeValidFilename,
+    _apply_replacements_input,
+    format_episode_numbers,
+    make_valid_filename,
     DatedEpisodeInfo,
     NoSeasonEpisodeInfo,
 )
@@ -55,18 +55,18 @@ LOG = logging.getLogger(__name__)
 TVNAMER_API_KEY = "fb51f9b848ffac9750bada89ecba0225"
 
 
-def getMoveDestination(episode):
+def get_move_destination(episode):
     """Constructs the location to move/copy the file
     """
 
     # TODO: Write functional test to ensure this valid'ifying works
     def wrap_validfname(fname):
-        """Wrap the makeValidFilename function as it's called twice
+        """Wrap the make_valid_filename function as it's called twice
         and this is slightly long..
         """
         if Config["move_files_lowercase_destination"]:
             fname = fname.lower()
-        return makeValidFilename(
+        return make_valid_filename(
             fname,
             normalize_unicode=Config["normalize_unicode_filenames"],
             windows_safe=Config["windows_safe_filenames"],
@@ -74,42 +74,42 @@ def getMoveDestination(episode):
             replace_with=Config["replace_invalid_characters_with"],
         )
 
-    # Calls makeValidFilename on series name, as it must valid for a filename
+    # Calls make_valid_filename on series name, as it must valid for a filename
     if isinstance(episode, DatedEpisodeInfo):
-        destdir = Config["move_files_destination_date"] % {
-            "seriesname": makeValidFilename(episode.seriesname),
+        dest_dir = Config["move_files_destination_date"] % {
+            "seriesname": make_valid_filename(episode.seriesname),
             "year": episode.episodenumbers[0].year,
             "month": episode.episodenumbers[0].month,
             "day": episode.episodenumbers[0].day,
             "originalfilename": episode.originalfilename,
         }
     elif isinstance(episode, NoSeasonEpisodeInfo):
-        destdir = Config["move_files_destination"] % {
+        dest_dir = Config["move_files_destination"] % {
             "seriesname": wrap_validfname(episode.seriesname),
             "episodenumbers": wrap_validfname(
-                formatEpisodeNumbers(episode.episodenumbers)
+                format_episode_numbers(episode.episodenumbers)
             ),
             "originalfilename": episode.originalfilename,
         }
     else:
-        destdir = Config["move_files_destination"] % {
+        dest_dir = Config["move_files_destination"] % {
             "seriesname": wrap_validfname(episode.seriesname),
             "seasonnumber": episode.seasonnumber,
             "episodenumbers": wrap_validfname(
-                formatEpisodeNumbers(episode.episodenumbers)
+                format_episode_numbers(episode.episodenumbers)
             ),
             "originalfilename": episode.originalfilename,
         }
-    return destdir
+    return dest_dir
 
 
-def doRenameFile(cnamer, newName):
+def do_rename_file(cnamer, new_name):
     """Renames the file. cnamer should be Renamer instance,
-    newName should be string containing new filename.
+    new_name should be string containing new filename.
     """
     try:
-        cnamer.newPath(
-            new_fullpath=newName,
+        cnamer.new_path(
+            new_fullpath=new_name,
             force=Config["overwrite_destination_on_rename"],
             leave_symlink=Config["leave_symlink"],
         )
@@ -120,17 +120,17 @@ def doRenameFile(cnamer, newName):
         warn("Skipping file due to error: %s" % e)
 
 
-def doMoveFile(cnamer, destDir=None, destFilepath=None, getPathPreview=False):
-    """Moves file to destDir, or to destFilepath
+def do_move_file(cnamer, dest_dir=None, dest_filepath=None, get_path_preview=False):
+    """Moves file to dest_dir, or to dest_filepath
     """
 
-    if (destDir is None and destFilepath is None) or (
-        destDir is not None and destFilepath is not None
+    if (dest_dir is None and dest_filepath is None) or (
+        dest_dir is not None and dest_filepath is not None
     ):
-        raise ValueError("Specify only destDir or destFilepath")
+        raise ValueError("Specify only dest_dir or dest_filepath")
 
     if not Config["move_files_enable"]:
-        raise ValueError("move_files feature is disabled but doMoveFile was called")
+        raise ValueError("move_files feature is disabled but do_move_file was called")
 
     if Config["move_files_destination"] is None:
         raise ValueError(
@@ -138,12 +138,12 @@ def doMoveFile(cnamer, destDir=None, destFilepath=None, getPathPreview=False):
         )
 
     try:
-        return cnamer.newPath(
-            new_path=destDir,
-            new_fullpath=destFilepath,
+        return cnamer.new_path(
+            new_path=dest_dir,
+            new_fullpath=dest_filepath,
             always_move=Config["always_move"],
             leave_symlink=Config["leave_symlink"],
-            getPathPreview=getPathPreview,
+            get_path_preview=get_path_preview,
             force=Config["overwrite_destination_on_move"],
         )
 
@@ -183,14 +183,14 @@ def confirm(question, options, default="y"):
             return default
 
 
-def processFile(tvdb_instance, episode):
+def process_file(tvdb_instance, episode):
     """Gets episode name, prompts user for input
     """
     print("#" * 20)
     print("# Processing file: %s" % episode.fullfilename)
 
     if len(Config["input_filename_replacements"]) > 0:
-        replaced = applyCustomInputReplacements(episode.fullfilename)
+        replaced = _apply_replacements_input(episode.fullfilename)
         print("# With custom replacements: %s" % (replaced))
 
     # Use force_name option. Done after input_filename_replacements so
@@ -201,7 +201,7 @@ def processFile(tvdb_instance, episode):
     print("# Detected series: %s (%s)" % (episode.seriesname, episode.number_string()))
 
     try:
-        episode.populateFromTvdb(
+        episode.populate_from_tvdb(
             tvdb_instance,
             force_name=Config["force_name"],
             series_id=Config["series_id"],
@@ -228,21 +228,21 @@ def processFile(tvdb_instance, episode):
 
     cnamer = Renamer(episode.fullpath)
 
-    shouldRename = False
+    should_rename = False
 
     if Config["move_files_only"]:
 
-        newName = episode.fullfilename
-        shouldRename = True
+        new_name = episode.fullfilename
+        should_rename = True
 
     else:
-        newName = episode.generateFilename()
-        if newName == episode.fullfilename:
+        new_name = episode.generate_filename()
+        if new_name == episode.fullfilename:
             print("#" * 20)
             print("Existing filename is correct: %s" % episode.fullfilename)
             print("#" * 20)
 
-            shouldRename = True
+            should_rename = True
 
         else:
             print("#" * 20)
@@ -252,28 +252,28 @@ def processFile(tvdb_instance, episode):
                 # Show filename without replacements
                 print(
                     "Before custom output replacements: %s"
-                    % (episode.generateFilename(preview_orig_filename=False))
+                    % (episode.generate_filename(preview_orig_filename=False))
                 )
 
-            print("New filename: %s" % newName)
+            print("New filename: %s" % new_name)
 
             if Config["dry_run"]:
-                print("%s will be renamed to %s" % (episode.fullfilename, newName))
+                print("%s will be renamed to %s" % (episode.fullfilename, new_name))
                 if Config["move_files_enable"]:
                     print(
                         "%s will be moved to %s"
-                        % (newName, getMoveDestination(episode))
+                        % (new_name, get_move_destination(episode))
                     )
                 return
             elif Config["always_rename"]:
-                doRenameFile(cnamer, newName)
+                do_rename_file(cnamer, new_name)
                 if Config["move_files_enable"]:
                     if Config["move_files_destination_is_filepath"]:
-                        doMoveFile(
-                            cnamer=cnamer, destFilepath=getMoveDestination(episode)
+                        do_move_file(
+                            cnamer=cnamer, dest_filepath=get_move_destination(episode)
                         )
                     else:
-                        doMoveFile(cnamer=cnamer, destDir=getMoveDestination(episode))
+                        do_move_file(cnamer=cnamer, dest_dir=get_move_destination(episode))
                 return
 
             ans = confirm("Rename?", options=["y", "n", "a", "q"], default="y")
@@ -281,31 +281,31 @@ def processFile(tvdb_instance, episode):
             if ans == "a":
                 print("Always renaming")
                 Config["always_rename"] = True
-                shouldRename = True
+                should_rename = True
             elif ans == "q":
                 print("Quitting")
                 raise UserAbort("User exited with q")
             elif ans == "y":
                 print("Renaming")
-                shouldRename = True
+                should_rename = True
             elif ans == "n":
                 print("Skipping")
             else:
                 print("Invalid input, skipping")
 
-            if shouldRename:
-                doRenameFile(cnamer, newName)
+            if should_rename:
+                do_rename_file(cnamer, new_name)
 
-    if shouldRename and Config["move_files_enable"]:
-        newPath = getMoveDestination(episode)
+    if should_rename and Config["move_files_enable"]:
+        new_path = get_move_destination(episode)
         if Config["dry_run"]:
-            print("%s will be moved to %s" % (newName, getMoveDestination(episode)))
+            print("%s will be moved to %s" % (new_name, get_move_destination(episode)))
             return
 
         if Config["move_files_destination_is_filepath"]:
-            doMoveFile(cnamer=cnamer, destFilepath=newPath, getPathPreview=True)
+            do_move_file(cnamer=cnamer, dest_filepath=new_path, get_path_preview=True)
         else:
-            doMoveFile(cnamer=cnamer, destDir=newPath, getPathPreview=True)
+            do_move_file(cnamer=cnamer, dest_dir=new_path, get_path_preview=True)
 
         if not Config["batch"] and Config["move_files_confirmation"]:
             ans = confirm("Move file?", options=["y", "n", "q"], default="y")
@@ -314,13 +314,13 @@ def processFile(tvdb_instance, episode):
 
         if ans == "y":
             print("Moving file")
-            doMoveFile(cnamer, newPath)
+            do_move_file(cnamer, new_path)
         elif ans == "q":
             print("Quitting")
             raise UserAbort("user exited with q")
 
 
-def findFiles(paths):
+def find_files(paths):
     """Takes an array of paths, returns all files found
     """
     valid_files = []
@@ -334,7 +334,7 @@ def findFiles(paths):
         )
 
         try:
-            valid_files.extend(cur.findFiles())
+            valid_files.extend(cur.find_files())
         except InvalidPath:
             warn("Invalid path: %s" % cfile)
 
@@ -356,7 +356,7 @@ def tvnamer(paths):
 
     episodes_found = []
 
-    for cfile in findFiles(paths):
+    for cfile in find_files(paths):
         parser = FileParser(cfile)
         try:
             episode = parser.parse()
@@ -409,7 +409,7 @@ def tvnamer(paths):
     )
 
     for episode in episodes_found:
-        processFile(tvdb_instance, episode)
+        process_file(tvdb_instance, episode)
         print("")
 
     print("#" * 20)
@@ -419,7 +419,7 @@ def tvnamer(paths):
 def main():
     """Parses command line arguments, displays errors from tvnamer in terminal
     """
-    opter = cliarg_parser.getCommandlineParser(defaults)
+    opter = cliarg_parser.get_cli_parser(defaults)
 
     opts, args = opter.parse_args()
 
@@ -443,43 +443,43 @@ def main():
 
     if opts.loadconfig is not None:
         # Command line overrides loading ~/.config/tvnamer/tvnamer.json
-        configToLoad = opts.loadconfig
+        config_to_load = opts.loadconfig
     elif os.path.isfile(default_configuration):
         # No --config arg, so load default config if it exists
-        configToLoad = default_configuration
+        config_to_load = default_configuration
     elif os.path.isfile(old_default_configuration):
         # No --config arg and neow defualt config so load old version if it exist
-        configToLoad = old_default_configuration
+        config_to_load = old_default_configuration
     else:
         # No arg, nothing at default config location, don't load anything
-        configToLoad = None
+        config_to_load = None
 
-    if configToLoad is not None:
-        print("Loading config: %s" % (configToLoad))
+    if config_to_load is not None:
+        print("Loading config: %s" % (config_to_load))
         if os.path.isfile(old_default_configuration):
             print("WARNING: you have a config at deprecated ~/.tvnamer.json location.")
             print("This must be moved to new location: ~/.config/tvnamer/tvnamer.json")
 
         try:
-            loadedConfig = json.load(open(os.path.expanduser(configToLoad)))
+            loaded_config = json.load(open(os.path.expanduser(config_to_load)))
         except ValueError as e:
             print("Error loading config: %s" % e)
             opter.exit(1)
         else:
             # Config loaded, update optparser's defaults and reparse
-            defaults.update(loadedConfig)
-            opter = cliarg_parser.getCommandlineParser(defaults)
+            defaults.update(loaded_config)
+            opter = cliarg_parser.get_cli_parser(defaults)
             opts, args = opter.parse_args()
 
     # Save config argument
     if opts.saveconfig is not None:
         print("Saving config: %s" % (opts.saveconfig))
-        configToSave = dict(opts.__dict__)
-        del configToSave["saveconfig"]
-        del configToSave["loadconfig"]
-        del configToSave["showconfig"]
+        config_to_save = dict(opts.__dict__)
+        del config_to_save["saveconfig"]
+        del config_to_save["loadconfig"]
+        del config_to_save["showconfig"]
         json.dump(
-            configToSave,
+            config_to_save,
             open(os.path.expanduser(opts.saveconfig), "w+"),
             sort_keys=True,
             indent=4,

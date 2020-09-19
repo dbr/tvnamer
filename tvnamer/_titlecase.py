@@ -14,7 +14,7 @@ import re
 __all__ = ['titlecase']
 __version__ = '0.5.2'
 
-SMALL = 'a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v\.?|via|vs\.?'
+SMALL = 'a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v\\.?|via|vs\\.?'
 PUNCT = r"""!"#$%&'‘()*+,\-./:;?@[\\\]_`{|}~"""
 
 SMALL_WORDS = re.compile(r'^(%s)$' % SMALL, re.I)
@@ -71,10 +71,10 @@ def titlecase(text):
             match = MAC_MC.match(word)
             if match:
                 tc_line.append("%s%s" % (match.group(1).capitalize(),
-                                      match.group(2).capitalize()))
+                                         match.group(2).capitalize()))
                 continue
 
-            if "/" in word and not "//" in word:
+            if "/" in word and "//" not in word:
                 slashed = []
                 for item in word.split('/'):
                     slashed.append(CAPFIRST.sub(lambda m: m.group(0).upper(), item))

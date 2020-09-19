@@ -7,66 +7,66 @@ import platform
 
 from helpers import assertEquals
 
-from tvnamer.utils import makeValidFilename
+from tvnamer.utils import make_valid_filename
 
 
 def test_basic():
-    """Test makeValidFilename does not mess up simple filenames
+    """Test make_valid_filename does not mess up simple filenames
     """
-    assertEquals(makeValidFilename("test.avi"), "test.avi")
-    assertEquals(makeValidFilename("Test File.avi"), "Test File.avi")
-    assertEquals(makeValidFilename("Test"), "Test")
+    assertEquals(make_valid_filename("test.avi"), "test.avi")
+    assertEquals(make_valid_filename("Test File.avi"), "Test File.avi")
+    assertEquals(make_valid_filename("Test"), "Test")
 
 
 def test_dirseperators():
-    """Tests makeValidFilename removes directory separators
+    """Tests make_valid_filename removes directory separators
     """
-    assertEquals(makeValidFilename("Test/File.avi"), "Test_File.avi")
-    assertEquals(makeValidFilename("Test/File"), "Test_File")
+    assertEquals(make_valid_filename("Test/File.avi"), "Test_File.avi")
+    assertEquals(make_valid_filename("Test/File"), "Test_File")
 
 
 def test_windowsfilenames():
-    """Tests makeValidFilename windows_safe flag makes Windows-safe filenames
+    """Tests make_valid_filename windows_safe flag makes Windows-safe filenames
     """
-    assertEquals(makeValidFilename("Test/File.avi", windows_safe = True), "Test_File.avi")
-    assertEquals(makeValidFilename("\\/:*?<Evil>|\"", windows_safe = True), "______Evil___")
-    assertEquals(makeValidFilename("COM2.txt", windows_safe = True), "_COM2.txt")
-    assertEquals(makeValidFilename("COM2", windows_safe = True), "_COM2")
+    assertEquals(make_valid_filename("Test/File.avi", windows_safe = True), "Test_File.avi")
+    assertEquals(make_valid_filename("\\/:*?<Evil>|\"", windows_safe = True), "______Evil___")
+    assertEquals(make_valid_filename("COM2.txt", windows_safe = True), "_COM2.txt")
+    assertEquals(make_valid_filename("COM2", windows_safe = True), "_COM2")
 
 
 def test_dotfilenames():
-    """Tests makeValidFilename on filenames only consisting of .
+    """Tests make_valid_filename on filenames only consisting of .
     """
-    assertEquals(makeValidFilename("."), "_.")
-    assertEquals(makeValidFilename(".."), "_..")
-    assertEquals(makeValidFilename("..."), "_...")
-    assertEquals(makeValidFilename(".test.rc"), "_.test.rc")
+    assertEquals(make_valid_filename("."), "_.")
+    assertEquals(make_valid_filename(".."), "_..")
+    assertEquals(make_valid_filename("..."), "_...")
+    assertEquals(make_valid_filename(".test.rc"), "_.test.rc")
 
 
 def test_customblacklist():
-    """Test makeValidFilename custom_blacklist feature
+    """Test make_valid_filename custom_blacklist feature
     """
-    assertEquals(makeValidFilename("Test.avi", custom_blacklist="e"), "T_st.avi")
+    assertEquals(make_valid_filename("Test.avi", custom_blacklist="e"), "T_st.avi")
 
 
 def test_replacewith():
     """Tests replacing blacklisted character with custom characters
     """
-    assertEquals(makeValidFilename("My Test File.avi", custom_blacklist=" ", replace_with="."), "My.Test.File.avi")
+    assertEquals(make_valid_filename("My Test File.avi", custom_blacklist=" ", replace_with="."), "My.Test.File.avi")
 
 
 def _test_truncation(max_len, windows_safe):
     """Tests truncation works correctly.
     Called with different parameters for both Windows and Darwin/Linux.
     """
-    assertEquals(makeValidFilename("a" * 300, windows_safe = windows_safe), "a" * max_len)
-    assertEquals(makeValidFilename("a" * 255 + ".avi", windows_safe = windows_safe), "a" * (max_len-4) + ".avi")
-    assertEquals(makeValidFilename("a" * 251 + "b" * 10 + ".avi", windows_safe = windows_safe), "a" * (max_len-4) + ".avi")
-    assertEquals(makeValidFilename("test." + "a" * 255, windows_safe = windows_safe), "test." + "a" * (max_len-5))
+    assertEquals(make_valid_filename("a" * 300, windows_safe = windows_safe), "a" * max_len)
+    assertEquals(make_valid_filename("a" * 255 + ".avi", windows_safe = windows_safe), "a" * (max_len-4) + ".avi")
+    assertEquals(make_valid_filename("a" * 251 + "b" * 10 + ".avi", windows_safe = windows_safe), "a" * (max_len-4) + ".avi")
+    assertEquals(make_valid_filename("test." + "a" * 255, windows_safe = windows_safe), "test." + "a" * (max_len-5))
 
 
 def test_truncation_darwinlinux():
-    """Tests makeValidFilename truncates filenames to valid length
+    """Tests make_valid_filename truncates filenames to valid length
     """
 
     if platform.system() not in ['Darwin', 'Linux']:

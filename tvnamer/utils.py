@@ -53,7 +53,7 @@ def split_extension(filename):
     return base, ext
 
 
-def _applyReplacements(cfile, replacements):
+def _apply_replacements(cfile, replacements):
     """Applies custom replacements.
 
     Argument cfile is string.
@@ -80,34 +80,34 @@ def _applyReplacements(cfile, replacements):
     return cfile
 
 
-def applyCustomInputReplacements(cfile):
-    """Applies custom input filename replacements, wraps _applyReplacements
+def _apply_replacements_input(cfile):
+    """Applies custom input filename replacements, wraps _apply_replacements
     """
-    return _applyReplacements(cfile, Config['input_filename_replacements'])
+    return _apply_replacements(cfile, Config['input_filename_replacements'])
 
 
-def applyCustomOutputReplacements(cfile):
-    """Applies custom output filename replacements, wraps _applyReplacements
+def _apply_replacements_output(cfile):
+    """Applies custom output filename replacements, wraps _apply_replacements
     """
-    return _applyReplacements(cfile, Config['output_filename_replacements'])
+    return _apply_replacements(cfile, Config['output_filename_replacements'])
 
 
-def applyCustomFullpathReplacements(cfile):
-    """Applies custom replacements to full path, wraps _applyReplacements
+def _apply_replacements_fullpath(cfile):
+    """Applies custom replacements to full path, wraps _apply_replacements
     """
-    return _applyReplacements(cfile, Config['move_files_fullpath_replacements'])
+    return _apply_replacements(cfile, Config['move_files_fullpath_replacements'])
 
 
-def cleanRegexedSeriesName(seriesname):
+def _clean_extracted_series_name(seriesname):
     """Cleans up series name by removing any . and _
     characters, along with any trailing hyphens.
 
     Is basically equivalent to replacing all _ and . with a
     space, but handles decimal numbers in string, for example:
 
-    >>> cleanRegexedSeriesName("an.example.1.0.test")
+    >>> _clean_extracted_series_name("an.example.1.0.test")
     'an example 1.0 test'
-    >>> cleanRegexedSeriesName("an_example_1.0_test")
+    >>> _clean_extracted_series_name("an_example_1.0_test")
     'an example 1.0 test'
     """
     # TODO: Could this be made to clean "Hawaii.Five-0.2010" into "Hawaii Five-0 2010"?
@@ -119,7 +119,7 @@ def cleanRegexedSeriesName(seriesname):
     return seriesname.strip()
 
 
-def replaceInputSeriesName(seriesname):
+def _replace_input_series_name(seriesname):
     """allow specified replacements of series names
 
     in cases where default filenames match the wrong series,
@@ -133,7 +133,7 @@ def replaceInputSeriesName(seriesname):
     return seriesname
 
 
-def replaceOutputSeriesName(seriesname):
+def _replace_output_series_name(seriesname):
     """transform TVDB series names
 
     after matching from TVDB, transform the series name for desired abbreviation, etc.
@@ -144,7 +144,7 @@ def replaceOutputSeriesName(seriesname):
     return Config['output_series_replacements'].get(seriesname, seriesname)
 
 
-def handleYear(year):
+def intepret_year(year):
     """Handle two-digit years with heuristic-ish guessing
 
     Assumes 50-99 becomes 1950-1999, and 0-49 becomes 2000-2049
@@ -194,21 +194,21 @@ class FileFinder(object):
             self.with_blacklist = filename_blacklist
         self.recursive = recursive
 
-    def findFiles(self):
+    def find_files(self):
         """Returns list of files found at path
         """
         if os.path.isfile(self.path):
             path = os.path.abspath(self.path)
-            if self._checkExtension(path) and not self._blacklistedFilename(path):
+            if self._check_extension(path) and not self._blacklisted_filename(path):
                 return [path]
             else:
                 return []
         elif os.path.isdir(self.path):
-            return self._findFilesInPath(self.path)
+            return self._find_files_in_path(self.path)
         else:
             raise InvalidPath("%s is not a valid file/directory" % self.path)
 
-    def _checkExtension(self, fname):
+    def _check_extension(self, fname):
         """Checks if the file extension is blacklisted in valid_extensions
         """
         if len(self.with_extension) == 0:
@@ -223,7 +223,7 @@ class FileFinder(object):
         else:
             return False
 
-    def _blacklistedFilename(self, filepath):
+    def _blacklisted_filename(self, filepath):
         """Checks if the filename (optionally excluding extension)
         matches filename_blacklist
 
@@ -280,7 +280,7 @@ class FileFinder(object):
         else:
             return False
 
-    def _findFilesInPath(self, startpath):
+    def _find_files_in_path(self, startpath):
         """Finds files from startpath, could be called recursively
         """
         allfiles = []
@@ -292,15 +292,15 @@ class FileFinder(object):
             newpath = os.path.join(startpath, subf)
             newpath = os.path.abspath(newpath)
             if os.path.isfile(newpath):
-                if not self._checkExtension(subf):
+                if not self._check_extension(subf):
                     continue
-                elif self._blacklistedFilename(subf):
+                elif self._blacklisted_filename(subf):
                     continue
                 else:
                     allfiles.append(newpath)
             else:
                 if self.recursive:
-                    allfiles.extend(self._findFilesInPath(newpath))
+                    allfiles.extend(self._find_files_in_path(newpath))
                 # end if recursive
             # end if isfile
         # end for sf
@@ -314,9 +314,9 @@ class FileParser(object):
     def __init__(self, path):
         self.path = path
         self.compiled_regexs = []
-        self._compileRegexs()
+        self._compile_regexs()
 
-    def _compileRegexs(self):
+    def _compile_regexs(self):
         """Takes episode_patterns from config, compiles them all
         into self.compiled_regexs
         """
@@ -337,7 +337,7 @@ class FileParser(object):
         """
         _, filename = os.path.split(self.path)
 
-        filename = applyCustomInputReplacements(filename)
+        filename = _apply_replacements_input(filename)
 
         for cmatcher in self.compiled_regexs:
             match = cmatcher.match(filename)
@@ -393,7 +393,7 @@ class FileParser(object):
                         )
                     match.group('year')
 
-                    year = handleYear(match.group('year'))
+                    year = intepret_year(match.group('year'))
 
                     episodenumbers = [
                         datetime.date(
@@ -417,9 +417,9 @@ class FileParser(object):
                         + cmatcher.pattern
                     )
 
-                if seriesname != None:
-                    seriesname = cleanRegexedSeriesName(seriesname)
-                    seriesname = replaceInputSeriesName(seriesname)
+                if seriesname is not None:
+                    seriesname = _clean_extracted_series_name(seriesname)
+                    seriesname = _replace_input_series_name(seriesname)
 
                 extra_values = match.groupdict()
 
@@ -468,7 +468,7 @@ class FileParser(object):
             raise InvalidFilename(emsg)
 
 
-def formatEpisodeName(names, join_with, multiep_format):
+def format_episode_name(names, join_with, multiep_format):
     """
     Takes a list of episode names, formats them into a string.
 
@@ -506,7 +506,7 @@ def formatEpisodeName(names, join_with, multiep_format):
     }
 
 
-def makeValidFilename(
+def make_valid_filename(
     value,
     normalize_unicode=False,
     windows_safe=False,
@@ -524,7 +524,7 @@ def makeValidFilename(
     custom_blacklist specifies additional characters that will removed. This
     will not touch the extension separator:
 
-        >>> makeValidFilename("T.est.avi", custom_blacklist=".")
+        >>> make_valid_filename("T.est.avi", custom_blacklist=".")
         'T_est.avi'
     """
 
@@ -631,7 +631,7 @@ def makeValidFilename(
     return value + extension
 
 
-def formatEpisodeNumbers(episodenumbers):
+def format_episode_numbers(episodenumbers):
     """Format episode number(s) into string, using configured values
     """
     if len(episodenumbers) == 1:
@@ -707,7 +707,7 @@ class EpisodeInfo(object):
             ", ".join([str(x) for x in self.episodenumbers]),
         )
 
-    def populateFromTvdb(self, tvdb_instance, force_name=None, series_id=None):
+    def populate_from_tvdb(self, tvdb_instance, force_name=None, series_id=None):
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
         series name.
         If series cannot be found, it will warn the user. If the episode is not
@@ -731,7 +731,7 @@ class EpisodeInfo(object):
             raise UserAbort("%s" % error)
         else:
             # Series was found, use corrected series name
-            self.seriesname = replaceOutputSeriesName(show['seriesname'])
+            self.seriesname = _replace_output_series_name(show['seriesname'])
 
         if isinstance(self, DatedEpisodeInfo):
             # Date-based episode
@@ -813,7 +813,7 @@ class EpisodeInfo(object):
         episode_separator # used to join multiple episode numbers
         """
         # Format episode number into string, or a list
-        epno = formatEpisodeNumbers(self.episodenumbers)
+        epno = format_episode_numbers(self.episodenumbers)
 
         # Data made available to config'd output file format
         if self.extension is None:
@@ -832,7 +832,7 @@ class EpisodeInfo(object):
 
         return epdata
 
-    def generateFilename(self, lowercase=False, preview_orig_filename=False):
+    def generate_filename(self, lowercase=False, preview_orig_filename=False):
         epdata = self.getepdata()
 
         # Add in extra dict keys, without clobbering existing values in epdata
@@ -844,7 +844,7 @@ class EpisodeInfo(object):
             fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
         else:
             if isinstance(self.episodename, list):
-                epdata['episodename'] = formatEpisodeName(
+                epdata['episodename'] = format_episode_name(
                     self.episodename,
                     join_with=Config['multiep_join_name_with'],
                     multiep_format=Config['multiep_format'],
@@ -864,9 +864,9 @@ class EpisodeInfo(object):
             return fname
 
         if len(Config['output_filename_replacements']) > 0:
-            fname = applyCustomOutputReplacements(fname)
+            fname = _apply_replacements_output(fname)
 
-        return makeValidFilename(
+        return make_valid_filename(
             fname,
             normalize_unicode=Config['normalize_unicode_filenames'],
             windows_safe=Config['windows_safe_filenames'],
@@ -875,7 +875,7 @@ class EpisodeInfo(object):
         )
 
     def __repr__(self):
-        return "<%s: %r>" % (self.__class__.__name__, self.generateFilename())
+        return "<%s: %r>" % (self.__class__.__name__, self.generate_filename())
 
 
 class DatedEpisodeInfo(EpisodeInfo):
@@ -921,7 +921,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         # Format episode number into string, or a list
         dates = str(self.episodenumbers[0])
         if isinstance(self.episodename, list):
-            prep_episodename = formatEpisodeName(
+            prep_episodename = format_episode_name(
                 self.episodename,
                 join_with=Config['multiep_join_name_with'],
                 multiep_format=Config['multiep_format'],
@@ -979,7 +979,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
         return "episode: %s" % (", ".join([str(x) for x in self.episodenumbers]))
 
     def getepdata(self):
-        epno = formatEpisodeNumbers(self.episodenumbers)
+        epno = format_episode_numbers(self.episodenumbers)
 
         # Data made available to config'd output file format
         if self.extension is None:
@@ -1004,7 +1004,7 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
     CFG_KEY_WITH_EP_NO_CRC = "filename_anime_with_episode_without_crc"
     CFG_KEY_WITHOUT_EP_NO_CRC = "filename_anime_without_episode_without_crc"
 
-    def generateFilename(self, lowercase=False, preview_orig_filename=False):
+    def generate_filename(self, lowercase=False, preview_orig_filename=False):
         epdata = self.getepdata()
 
         # Add in extra dict keys, without clobbering existing values in epdata
@@ -1028,7 +1028,7 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
 
         if self.episodename is not None:
             if isinstance(self.episodename, list):
-                epdata['episodename'] = formatEpisodeName(
+                epdata['episodename'] = format_episode_name(
                     self.episodename,
                     join_with=Config['multiep_join_name_with'],
                     multiep_format=Config['multiep_format'],
@@ -1044,9 +1044,9 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
             return fname
 
         if len(Config['output_filename_replacements']) > 0:
-            fname = applyCustomOutputReplacements(fname)
+            fname = _apply_replacements_output(fname)
 
-        return makeValidFilename(
+        return make_valid_filename(
             fname,
             normalize_unicode=Config['normalize_unicode_filenames'],
             windows_safe=Config['windows_safe_filenames'],
@@ -1109,7 +1109,7 @@ class Renamer(object):
     def __init__(self, filename):
         self.filename = os.path.abspath(filename)
 
-    def newPath(
+    def new_path(
         self,
         new_path=None,
         new_fullpath=None,
@@ -1118,7 +1118,7 @@ class Renamer(object):
         always_move=False,
         leave_symlink=False,
         create_dirs=True,
-        getPathPreview=False,
+        get_path_preview=False,
     ):
         """Moves the file to a new path.
 
@@ -1154,12 +1154,12 @@ class Renamer(object):
 
         if len(Config['move_files_fullpath_replacements']) > 0:
             print("Before custom full path replacements: %s" % (new_fullpath))
-            new_fullpath = applyCustomFullpathReplacements(new_fullpath)
+            new_fullpath = _apply_replacements_fullpath(new_fullpath)
             new_dir = os.path.dirname(new_fullpath)
 
         print("New path: %s" % new_fullpath)
 
-        if getPathPreview:
+        if get_path_preview:
             return new_fullpath
 
         if create_dirs:

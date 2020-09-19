@@ -33,7 +33,7 @@ def test_episodeinfo_naming():
     """
     p = FileParser("scrubs.s01e01.avi").parse()
     assertType(p, EpisodeInfo)
-    assertEquals(p.generateFilename(), "scrubs - [01x01].avi")
+    assertEquals(p.generate_filename(), "scrubs - [01x01].avi")
 
 
 def test_datedepisodeinfo_naming():
@@ -41,7 +41,7 @@ def test_datedepisodeinfo_naming():
     """
     p = FileParser("scrubs.2009.06.05.avi").parse()
     assertType(p, DatedEpisodeInfo)
-    assertEquals(p.generateFilename(), "scrubs - [2009-06-05].avi")
+    assertEquals(p.generate_filename(), "scrubs - [2009-06-05].avi")
 
 
 def test_noseasonepisodeinfo_naming():
@@ -49,4 +49,4 @@ def test_noseasonepisodeinfo_naming():
     """
     p = FileParser("scrubs - e23.avi").parse()
     assertType(p, NoSeasonEpisodeInfo)
-    assertEquals(p.generateFilename(), "scrubs - [23].avi")
+    assertEquals(p.generate_filename(), "scrubs - [23].avi")

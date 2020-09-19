@@ -30,7 +30,7 @@ def verify_name_gen(curtest, tvdb_instance):
             seriesname = curtest['parsedseriesname'],
             episodenumbers = curtest['episodenumbers'])
 
-    ep.populateFromTvdb(tvdb_instance, force_name = curtest.get("force_name"))
+    ep.populate_from_tvdb(tvdb_instance, force_name = curtest.get("force_name"))
 
     assert ep.seriesname is not None, "Corrected series name was none"
     assert ep.episodename is not None, "Episode name was None"
@@ -60,7 +60,7 @@ def test_single_episode():
         filename = 'scrubs.example.file.avi')
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Scrubs - [01x02] - My Mentor.avi')
 
 
@@ -77,7 +77,7 @@ def test_multi_episodes_continuous():
         filename = 'stargate.example.file.avi')
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Stargate SG-1 - [01x01-02] - Children of the Gods (1-2).avi')
 
 
@@ -96,7 +96,7 @@ def test_episode_numeric_title():
         filename = 'STTNG-S01E15-11001001.avi')
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Star Trek TNG - [01x15] - 11001001.avi')
 
 
@@ -113,7 +113,7 @@ def test_multi_episodes_seperate():
         filename = 'stargate.example.file.avi')
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Stargate SG-1 - [01x02-03] - Children of the Gods (2), The Enemy Within.avi')
 
 
@@ -128,7 +128,7 @@ def test_simple_no_ext():
         filename = None)
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Scrubs - [01x02] - My Mentor')
 
 
@@ -143,7 +143,7 @@ def test_no_name():
         filename = 'scrubs.example.file.avi')
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Scrubs - [01x02].avi')
 
 
@@ -158,7 +158,7 @@ def test_episode_no_name_no_ext():
         filename = None)
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Scrubs - [01x02]')
 
 
@@ -172,7 +172,7 @@ def test_noseason_no_name_no_ext():
         filename = None)
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Scrubs - [02]')
 
 
@@ -186,7 +186,7 @@ def test_datedepisode_no_name_no_ext():
         filename = None)
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Scrubs - [2010-11-23]')
 
 
@@ -200,7 +200,7 @@ def test_no_series_number():
         filename = None)
 
     assertEquals(
-        ep.generateFilename(),
+        ep.generate_filename(),
         'Scrubs - [02] - My Mentor')
 
 
@@ -216,5 +216,5 @@ def test_downcase():
         filename = 'scrubs.example.file.avi')
 
     assertEquals(
-        ep.generateFilename(lowercase = True),
+        ep.generate_filename(lowercase = True),
         'scrubs - [01x02] - my mentor.avi')
