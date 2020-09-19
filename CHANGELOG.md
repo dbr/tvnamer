@@ -1,5 +1,9 @@
 # Change log
 
+# `3.0.1` - 2020-09-19
+- Backport fix for `tvdb_api_key` config option
+  ([Issue #187](https://github.com/dbr/tvnamer/issues/187))
+
 # `3.0` - 2020-08-03
 - Fix `--dry-run` in `--batch` mode
   ([PR #173](https://github.com/dbr/tvnamer/pull/173))
