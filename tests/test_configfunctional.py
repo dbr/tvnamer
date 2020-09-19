@@ -380,3 +380,28 @@ def test_titlecase():
     expected_files = ['This Is a Fake Episode - [01x01].avi']
 
     verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
+def test_own_api_key():
+    """Check overriding API key works
+    """
+
+    conf = r"""
+    {"always_rename": true,
+    "select_first": true,
+    "tvdb_api_key": "xxxxxxxxx",
+    "skip_behaviour": "error
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = conf,
+        with_input = "",
+        with_flags=['-vvv'],
+        run_on_directory = True)
+
+    expected_files = ['scrubs.s01e01.avi']
+
+    verify_out_data(out_data, expected_files, expected_returncode=1)
