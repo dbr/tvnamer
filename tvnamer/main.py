@@ -456,15 +456,15 @@ def main():
         config_to_load = None
 
     if config_to_load is not None:
-        print("Loading config: %s" % (config_to_load))
+        LOG.info("Loading config: %s" % (config_to_load))
         if os.path.isfile(old_default_configuration):
-            print("WARNING: you have a config at deprecated ~/.tvnamer.json location.")
-            print("This must be moved to new location: ~/.config/tvnamer/tvnamer.json")
+            LOG.warning("WARNING: you have a config at deprecated ~/.tvnamer.json location.")
+            LOG.warning("Config must be moved to new location: ~/.config/tvnamer/tvnamer.json")
 
         try:
             loaded_config = json.load(open(os.path.expanduser(config_to_load)))
         except ValueError as e:
-            print("Error loading config: %s" % e)
+            LOG.error("Error loading config: %s" % e)
             opter.exit(1)
         else:
             # Config loaded, update optparser's defaults and reparse
@@ -474,7 +474,7 @@ def main():
 
     # Save config argument
     if opts.saveconfig is not None:
-        print("Saving config: %s" % (opts.saveconfig))
+        LOG.info("Saving config: %s" % (opts.saveconfig))
         config_to_save = dict(opts.__dict__)
         del config_to_save["saveconfig"]
         del config_to_save["loadconfig"]
