@@ -16,7 +16,7 @@ except ImportError:
 import json
 
 import tvdb_api
-from typing import Union
+from typing import Union, Optional
 
 from tvnamer import cliarg_parser, __version__
 from tvnamer.config_defaults import defaults
@@ -32,6 +32,7 @@ from tvnamer.utils import (
     make_valid_filename,
 )
 from tvnamer.data import (
+    BaseInfo,
     EpisodeInfo,
     DatedEpisodeInfo,
     NoSeasonEpisodeInfo,
@@ -59,7 +60,7 @@ TVNAMER_API_KEY = "fb51f9b848ffac9750bada89ecba0225"
 
 
 def get_move_destination(episode):
-    # type: (Union[EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo]) -> str
+    # type: (BaseInfo) -> str
     """Constructs the location to move/copy the file
     """
 
@@ -95,7 +96,7 @@ def get_move_destination(episode):
             ),
             "originalfilename": episode.originalfilename,
         }
-    else:
+    elif isinstance(episode, EpisodeInfo):
         dest_dir = Config["move_files_destination"] % {
             "seriesname": wrap_validfname(episode.seriesname),
             "seasonnumber": episode.seasonnumber,
@@ -104,6 +105,9 @@ def get_move_destination(episode):
             ),
             "originalfilename": episode.originalfilename,
         }
+    else:
+        raise RuntimeError("Unhandled episode subtype of %s" % type(episode))
+
     return dest_dir
 
 
@@ -188,6 +192,7 @@ def confirm(question, options, default="y"):
 
 
 def process_file(tvdb_instance, episode):
+    # type: (tvdb_api.Tvdb, BaseInfo) -> None
     """Gets episode name, prompts user for input
     """
     print("#" * 20)

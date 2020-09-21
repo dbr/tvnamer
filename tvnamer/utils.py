@@ -120,6 +120,13 @@ def _apply_replacements_input(cfile):
     return _apply_replacements(cfile, Config['input_filename_replacements'])
 
 
+def _apply_replacements_fullpath(cfile):
+    # type: (str) -> str
+    """Applies custom replacements to full path, wraps _apply_replacements
+    """
+    return _apply_replacements(cfile, Config['move_files_fullpath_replacements'])
+
+
 def intepret_year(value):
     # type: (str) -> int
     """Handle two-digit years with heuristic-ish guessing

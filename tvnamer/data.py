@@ -46,14 +46,6 @@ def _apply_replacements_output(cfile):
     return _apply_replacements(cfile, Config['output_filename_replacements'])
 
 
-def _apply_replacements_fullpath(cfile):
-    # type: (str) -> str
-    """Applies custom replacements to full path, wraps _apply_replacements
-    """
-    return _apply_replacements(cfile, Config['move_files_fullpath_replacements'])
-
-
-
 class BaseInfo(object):
     """Base class for objects which store information (season, episode number, episode name), and contains
     logic to generate new name for each type of name
@@ -97,6 +89,12 @@ class BaseInfo(object):
 
     def getepdata(self):
         # type: () -> Dict[str, Optional[str]]
+        raise NotImplemented
+
+    def number_string(self):
+        # type: () -> str
+        """Used in UI
+        """
         raise NotImplemented
 
     def populate_from_tvdb(self, tvdb_instance, force_name=None, series_id=None):
