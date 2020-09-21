@@ -35,10 +35,8 @@ from tvnamer.tvnamer_exceptions import (
 )
 
 
-def log():
-    """Returns the logger for current file
-    """
-    return logging.getLogger(__name__)
+
+LOG = logging.getLogger(__name__)
 
 
 def warn(text):
@@ -285,7 +283,7 @@ class FileFinder(object):
         """
         allfiles = []
         if not os.access(startpath, os.R_OK):
-            log().info("Skipping inaccessible path %s" % startpath)
+            LOG.info("Skipping inaccessible path %s" % startpath)
             return allfiles
 
         for subf in os.listdir(startpath):
