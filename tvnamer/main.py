@@ -56,6 +56,7 @@ TVNAMER_API_KEY = "fb51f9b848ffac9750bada89ecba0225"
 
 
 def get_move_destination(episode):
+    # type: (str) -> str
     """Constructs the location to move/copy the file
     """
 

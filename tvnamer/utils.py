@@ -34,6 +34,8 @@ from tvnamer.tvnamer_exceptions import (
     UserAbort,
 )
 
+from typing import Any, Dict, List, Optional, Union, Tuple, Pattern
+from tvdb_api import Tvdb
 
 
 LOG = logging.getLogger(__name__)
@@ -46,12 +48,14 @@ def warn(text):
 
 
 def split_extension(filename):
+    # type: (str) -> Tuple[str, str]
     base = re.sub(Config["extension_pattern"], "", filename)
     ext = filename.replace(base, "")
     return base, ext
 
 
 def _apply_replacements(cfile, replacements):
+    # type: (str, List) -> str
     """Applies custom replacements.
 
     Argument cfile is string.
@@ -79,6 +83,7 @@ def _apply_replacements(cfile, replacements):
 
 
 def _apply_replacements_input(cfile):
+    # type: (str) -> str
     """Applies custom input filename replacements, wraps _apply_replacements
     """
     return _apply_replacements(cfile, Config['input_filename_replacements'])
@@ -97,6 +102,7 @@ def _apply_replacements_fullpath(cfile):
 
 
 def _clean_extracted_series_name(seriesname):
+    # type: (str) -> str
     """Cleans up series name by removing any . and _
     characters, along with any trailing hyphens.
 
@@ -118,6 +124,7 @@ def _clean_extracted_series_name(seriesname):
 
 
 def _replace_input_series_name(seriesname):
+    # type: (str) -> str
     """allow specified replacements of series names
 
     in cases where default filenames match the wrong series,
@@ -132,6 +139,7 @@ def _replace_input_series_name(seriesname):
 
 
 def _replace_output_series_name(seriesname):
+    # type: (str) -> str
     """transform TVDB series names
 
     after matching from TVDB, transform the series name for desired abbreviation, etc.
@@ -142,7 +150,8 @@ def _replace_output_series_name(seriesname):
     return Config['output_series_replacements'].get(seriesname, seriesname)
 
 
-def intepret_year(year):
+def intepret_year(value):
+    # type: (str) -> int
     """Handle two-digit years with heuristic-ish guessing
 
     Assumes 50-99 becomes 1950-1999, and 0-49 becomes 2000-2049
@@ -151,7 +160,7 @@ def intepret_year(year):
     a reasonable limitation
     """
 
-    year = int(year)
+    year = int(value)
 
     # No need to guess with 4-digit years
     if year > 999:
@@ -310,11 +319,13 @@ class FileParser(object):
     """
 
     def __init__(self, path):
+        # type: (str) -> None
         self.path = path
-        self.compiled_regexs = []
+        self.compiled_regexs = [] # type: List[Pattern]
         self._compile_regexs()
 
     def _compile_regexs(self):
+        # type: () -> None
         """Takes episode_patterns from config, compiles them all
         into self.compiled_regexs
         """
@@ -330,6 +341,7 @@ class FileParser(object):
                 self.compiled_regexs.append(cregex)
 
     def parse(self):
+        # type: () -> Any
         """Runs path via configured regex, extracting data from groups.
         Returns an EpisodeInfo instance containing extracted data.
         """
@@ -541,6 +553,7 @@ def make_valid_filename(
     custom_blacklist=None,
     replace_with="_",
 ):
+    # type: (str, bool, bool, Optional[str], str) -> str
     """
     Takes a string and makes it into a valid filename.
 
@@ -660,6 +673,7 @@ def make_valid_filename(
 
 
 def format_episode_numbers(episodenumbers):
+    # type: (List[int]) -> str
     """Format episode number(s) into string, using configured values
     """
     if len(episodenumbers) == 1:
@@ -682,13 +696,14 @@ class EpisodeInfo(object):
 
     def __init__(
         self,
-        seriesname,
-        seasonnumber,
-        episodenumbers,
-        episodename=None,
-        filename=None,
-        extra=None,
-    ):
+        seriesname,  # type: str
+        seasonnumber,  # type: Optional[int]
+        episodenumbers,  # type: List[int]
+        episodename=None,  # type: Union[List[str], None, str]
+        filename=None,  # type: Optional[str]
+        extra=None,  # type: Optional[Dict[str, str]]
+        ):
+        # type: (...) -> None
 
         self.seriesname = seriesname
         self.seasonnumber = seasonnumber
@@ -697,7 +712,7 @@ class EpisodeInfo(object):
         self.fullpath = filename
         if filename is not None:
             # Remains untouched, for use when renaming file
-            self.originalfilename = os.path.basename(filename)
+            self.originalfilename = os.path.basename(filename) # type: Optional[str]
         else:
             self.originalfilename = None
 
@@ -709,6 +724,7 @@ class EpisodeInfo(object):
         return self._fullpath
 
     def fullpath_set(self, value):
+        # type: (Optional[str]) -> None
         self._fullpath = value
         if value is None:
             self.filename, self.extension = None, None
@@ -723,11 +739,13 @@ class EpisodeInfo(object):
         return "%s%s" % (self.filename, self.extension)
 
     def sortable_info(self):
+        # type: () -> Tuple[str, int, int]
         """Returns a tuple of sortable information
         """
         return ("%s" % self.seriesname, self.seasonnumber, self.episodenumbers)
 
     def number_string(self):
+        # type: () -> str
         """Used in UI
         """
         return "season: %s, episode: %s" % (
@@ -736,6 +754,7 @@ class EpisodeInfo(object):
         )
 
     def populate_from_tvdb(self, tvdb_instance, force_name=None, series_id=None):
+        # type: (Tvdb, Optional[Any], Optional[Any]) -> None
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
         series name.
         If series cannot be found, it will warn the user. If the episode is not
@@ -833,6 +852,7 @@ class EpisodeInfo(object):
         self.episodename = epnames
 
     def getepdata(self):
+        # type: () -> Dict[str, Any]
         """
         Uses the following config options:
         filename_with_episode # Filename when episode name is found
@@ -861,6 +881,7 @@ class EpisodeInfo(object):
         return epdata
 
     def generate_filename(self, lowercase=False, preview_orig_filename=False):
+        # type: (bool, bool) -> str
         epdata = self.getepdata()
 
         # Add in extra dict keys, without clobbering existing values in epdata
@@ -911,8 +932,14 @@ class DatedEpisodeInfo(EpisodeInfo):
     CFG_KEY_WITHOUT_EP = "filename_with_date_without_episode"
 
     def __init__(
-        self, seriesname, episodenumbers, episodename=None, filename=None, extra=None
-    ):
+        self,
+        seriesname,  # type: str
+        episodenumbers,  # type: List[datetime.date]
+        episodename=None,  # type: Optional[Any]
+        filename=None,  # type: Optional[str]
+        extra=None,  # type: Optional[Dict[str, str]]
+        ):
+        # type: (...) -> None
 
         self.seriesname = seriesname
         self.episodenumbers = episodenumbers
@@ -946,6 +973,7 @@ class DatedEpisodeInfo(EpisodeInfo):
         return "episode: %s" % (", ".join([str(x) for x in self.episodenumbers]))
 
     def getepdata(self):
+        # type: () -> Dict[str, Optional[str]]
         # Format episode number into string, or a list
         dates = str(self.episodenumbers[0])
         if isinstance(self.episodename, list):
@@ -978,8 +1006,14 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
     CFG_KEY_WITHOUT_EP = "filename_without_episode_no_season"
 
     def __init__(
-        self, seriesname, episodenumbers, episodename=None, filename=None, extra=None
-    ):
+        self,
+        seriesname,  # type: str
+        episodenumbers,  # type: List[int]
+        episodename=None,  # type: Optional[str]
+        filename=None,  # type: Optional[str]
+        extra=None,  # type: Optional[Dict[str, str]]
+        ):
+        # type: (...) -> None
 
         self.seriesname = seriesname
         self.episodenumbers = episodenumbers
@@ -1007,6 +1041,7 @@ class NoSeasonEpisodeInfo(EpisodeInfo):
         return "episode: %s" % (", ".join([str(x) for x in self.episodenumbers]))
 
     def getepdata(self):
+        # type: () -> Dict[str, Optional[str]]
         epno = format_episode_numbers(self.episodenumbers)
 
         # Data made available to config'd output file format
