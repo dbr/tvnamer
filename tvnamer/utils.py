@@ -650,7 +650,6 @@ def make_valid_filename(
         import unicodedata
 
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-        value = value.decode('utf-8')
 
     # Truncate filenames to valid/sane length.
     # NTFS is limited to 255 characters, HFS+ and EXT3 don't seem to have
