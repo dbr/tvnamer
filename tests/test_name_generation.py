@@ -218,3 +218,31 @@ def test_downcase():
     assertEquals(
         ep.generate_filename(lowercase = True),
         'scrubs - [01x02] - my mentor.avi')
+
+
+def test_episode_number_formatting():
+    from tvnamer.utils import format_episode_name
+    fmt = "%(epname)s (%(episodemin)s-%(episodemax)s)"
+    joiner = ", "
+
+    # Simple cases
+    assert format_episode_name(['A test'], joiner, fmt) == 'A test'
+    assert format_episode_name(['A test (1)'], joiner, fmt) == 'A test (1)'
+    assert format_episode_name(['A test (1)', 'A test (2)'], joiner, fmt) == 'A test (1-2)'
+    assert format_episode_name(['A test (1)', 'A test (2)', 'A test (3)'], joiner, fmt) == 'A test (1-3)'
+
+    # Inconsistent episode names
+    assert format_episode_name(['A test (1)', "Weirdness (2)"], joiner, fmt) == 'A test (1), Weirdness (2)'
+
+    # Skip incomplete sequences
+    assert format_episode_name(['A test (1)', 'A test (8)'], joiner, fmt) == 'A test (1), A test (8)'
+
+    # Skip if numbers are duplicated
+    assert format_episode_name(['A test (1)', 'A test (1)'], joiner, fmt) == 'A test (1), A test (1)'
+
+    # First episode can miss name
+    assert format_episode_name(['A test', 'A test (2)', 'A test (3)'], joiner, fmt) == 'A test (1-3)'
+
+    # Different format options
+    assert format_episode_name(['Yep', 'Thing'], "!", fmt) == 'Yep!Thing'
+    assert format_episode_name(['A test (1)', 'A test (2)', 'A test (3)'], ",", "%(epname)s (%(episodemin)s to %(episodemax)s)") == 'A test (1 to 3)'

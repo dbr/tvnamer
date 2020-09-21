@@ -469,6 +469,7 @@ class FileParser(object):
 
 
 def format_episode_name(names, join_with, multiep_format):
+    # type: (List[str], str, str) -> str
     """
     Takes a list of episode names, formats them into a string.
 
@@ -480,29 +481,58 @@ def format_episode_name(names, join_with, multiep_format):
     If two different episode names are found, such as "The first", and
     "Something else" it will return "The first, Something else"
     """
+
     if len(names) == 1:
+        # Shortcut in simple case
         return names[0]
 
-    found_name = ""
-    numbers = []
-    for cname in names:
-        match = re.match(r"(.*) \(([0-9]+)\)$", cname)
-        if found_name != "" and (not match or epname != found_name):
-            # An episode didn't match
-            return join_with.join(names)
 
-        if match:
-            epname, epno = match.group(1), match.group(2)
-        else:  # assume that this is the first episode, without number
-            epname = cname
-            epno = 1
-        found_name = epname
-        numbers.append(int(epno))
+    all_names = [] # type: List[str]
+    all_numbers = [] # type: List[Optional[int]]
+
+    for curname in names:
+        match = re.match(r"(.*) \(([0-9]+)\)$", curname)
+        if match is None:
+            all_names.append(curname)
+            all_numbers.append(None)
+        else:
+            name, number = match.group(1), match.group(2)
+            assert name is not None
+            assert number is not None
+            all_names.append(name)
+            all_numbers.append(int(number))
+
+    if all_numbers.count(None) > 1:
+        # If more than one episode missed a number, simple join
+        # E.g ["Blah", "Blah (2)"] is fine, but not ["Blah", "Blah", "Blah (3)"]
+        print("too much none")
+        return join_with.join(names)
+
+    if len(set(all_names)) != 1:
+        # If for differing episodes names, simple join
+        # E.g "Yep (1)" "Strange (2)" shouldn't be joined into "Yep (1-2)"
+        print("non unqiue names")
+        return join_with.join(names)
+
+    # First missing number becomes 1
+    noneless_numbers = [(n if n is not None else 1) for n in all_numbers]
+
+    if len(set(noneless_numbers)) != len(noneless_numbers):
+        # Duplicate numbers - strange so perform simple join
+        print("Dup numbers")
+        return join_with.join(names)
+
+    if (max(noneless_numbers) - min(noneless_numbers)) != len(noneless_numbers) -  1:
+        # If missing numbers in sequence, simple join
+        # E.g ["Blah (1)", "Blah (4)"] should not become "Blah (1-4)"
+        print("Non consec")
+        return join_with.join(names)
+
 
     return multiep_format % {
-        'epname': found_name,
-        'episodemin': min(numbers),
-        'episodemax': max(numbers),
+        'epname': name,
+        'episodemin': min(noneless_numbers),
+        'episodemax': max(noneless_numbers),
     }
 
 
