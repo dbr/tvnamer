@@ -1083,26 +1083,6 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
         )
 
 
-def delete_file(fpath):
-    """On OS X: Trashes a path using the Finder, via OS X's Scripting Bridge.
-
-    On other platforms: unlinks file.
-    """
-
-    try:
-        from AppKit import NSURL
-        from ScriptingBridge import SBApplication
-    except ImportError:
-        log().debug("Deleting %r" % fpath)
-        os.unlink(fpath)
-    else:
-        log().debug("Trashing %r" % fpath)
-        targetfile = NSURL.fileURLWithPath_(fpath)
-        finder = SBApplication.applicationWithBundleIdentifier_("com.apple.Finder")
-        items = finder.items().objectAtLocation_(targetfile)
-        items.delete()
-
-
 def rename_file(old, new):
     print("rename %s to %s" % (old, new))
     stat = os.stat(old)
@@ -1145,7 +1125,6 @@ class Renamer(object):
         always_copy=False,
         always_move=False,
         leave_symlink=False,
-        create_dirs=True,
         get_path_preview=False,
     ):
         """Moves the file to a new path.
@@ -1190,7 +1169,7 @@ class Renamer(object):
         if get_path_preview:
             return new_fullpath
 
-        if create_dirs:
+        if not os.path.exists(new_dir):
             os.makedirs(new_dir, exist_ok=True)
             print("Created directory %s" % new_dir)
 
