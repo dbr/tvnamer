@@ -16,7 +16,7 @@ except ImportError:
 import json
 
 import tvdb_api
-from tvdb_api import Tvdb
+from typing import Union
 
 from tvnamer import cliarg_parser, __version__
 from tvnamer.config_defaults import defaults
@@ -30,6 +30,9 @@ from tvnamer.utils import (
     _apply_replacements_input,
     format_episode_numbers,
     make_valid_filename,
+)
+from tvnamer.data import (
+    EpisodeInfo,
     DatedEpisodeInfo,
     NoSeasonEpisodeInfo,
 )
@@ -56,7 +59,7 @@ TVNAMER_API_KEY = "fb51f9b848ffac9750bada89ecba0225"
 
 
 def get_move_destination(episode):
-    # type: (str) -> str
+    # type: (Union[EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo]) -> str
     """Constructs the location to move/copy the file
     """
 
@@ -400,7 +403,7 @@ def tvnamer(paths):
         LOG.debug("Using tvnamer default API key")
         api_key = TVNAMER_API_KEY
 
-    tvdb_instance = Tvdb(
+    tvdb_instance = tvdb_api.Tvdb(
         interactive=not Config["select_first"],
         search_all_languages=Config["search_all_languages"],
         language=Config["language"],

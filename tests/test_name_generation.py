@@ -9,7 +9,7 @@ import datetime
 from helpers import assertEquals
 
 from tvnamer.main import TVNAMER_API_KEY
-from tvnamer.utils import (EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo)
+from tvnamer.data import (EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo)
 from test_files import files
 
 from tvdb_api import Tvdb
@@ -124,7 +124,7 @@ def test_simple_no_ext():
         seriesname = 'Scrubs',
         seasonnumber = 1,
         episodenumbers = [2],
-        episodename = 'My Mentor',
+        episodename = ['My Mentor'],
         filename = None)
 
     assertEquals(
