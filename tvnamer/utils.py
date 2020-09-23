@@ -175,12 +175,6 @@ def make_valid_filename(
         if value in invalid_filenames:
             value = "_" + value
 
-    # Replace accented characters with ASCII equivalent
-    if normalize_unicode:
-        import unicodedata
-
-        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode("utf-8")
-
     # Truncate filenames to valid/sane length.
     # NTFS is limited to 255 characters, HFS+ and EXT3 don't seem to have
     # limits, FAT32 is 254. I doubt anyone will take issue with losing that

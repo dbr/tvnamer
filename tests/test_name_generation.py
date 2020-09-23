@@ -204,22 +204,6 @@ def test_no_series_number():
         'Scrubs - [02] - My Mentor')
 
 
-def test_downcase():
-    """Simple episode name, converted to lowercase
-    """
-
-    ep = EpisodeInfo(
-        seriesname = 'Scrubs',
-        seasonnumber = 1,
-        episodenumbers = [2],
-        episodename = 'My Mentor',
-        filename = 'scrubs.example.file.avi')
-
-    assertEquals(
-        ep.generate_filename(lowercase = True),
-        'scrubs - [01x02] - my mentor.avi')
-
-
 def test_episode_number_formatting():
     from tvnamer.data import format_episode_name
     fmt = "%(epname)s (%(episodemin)s-%(episodemax)s)"

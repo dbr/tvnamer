@@ -70,7 +70,6 @@ def get_move_destination(episode):
             fname = fname.lower()
         return make_valid_filename(
             fname,
-            normalize_unicode=Config["normalize_unicode_filenames"],
             windows_safe=Config["windows_safe_filenames"],
             custom_blacklist=Config["custom_filename_character_blacklist"],
             replace_with=Config["replace_invalid_characters_with"],

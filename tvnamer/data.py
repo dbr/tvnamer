@@ -1,6 +1,7 @@
 import os
 import re
 import datetime
+from abc import ABCMeta, abstractmethod
 from typing import Optional, Dict, List, Union, Tuple
 
 import tvdb_api
@@ -43,6 +44,24 @@ def _apply_replacements_output(cfile):
     """Applies custom output filename replacements, wraps _apply_replacements
     """
     return _apply_replacements(cfile, Config['output_filename_replacements'])
+
+
+def transform_filename(fname):
+    # type: (str) -> str
+
+    if Config['titlecase_filename']:
+        from tvnamer._titlecase import titlecase
+        fname = titlecase(fname)
+
+    if Config['lowercase_filename']:
+        fname = fname.lower()
+
+    # Replace accented characters with ASCII equivalent
+    if Config['normalize_unicode_filenames']:
+        import unicodedata
+        fname = unicodedata.normalize('NFKD', fname).encode('ascii', 'ignore').decode("utf-8")
+
+    return fname
 
 
 def format_episode_name(names, join_with, multiep_format):
@@ -113,10 +132,22 @@ def format_episode_name(names, join_with, multiep_format):
     }
 
 
-class BaseInfo(object):
+class BaseInfo(metaclass=ABCMeta):
     """Base class for objects which store information (season, episode number, episode name), and contains
     logic to generate new name for each type of name
     """
+
+    @property
+    @abstractmethod
+    def CFG_KEY_WITH_EP(self):
+        # type: () -> str
+        pass
+
+    @property
+    @abstractmethod
+    def CFG_KEY_WITHOUT_EP(self):
+        # type: () -> str
+        pass
 
     def __init__(
             self,
@@ -137,6 +168,7 @@ class BaseInfo(object):
         self.extra = extra
 
     def fullpath_get(self):
+        # type: () -> Optional[str]
         return self._fullpath
 
     def fullpath_set(self, value):
@@ -152,12 +184,15 @@ class BaseInfo(object):
 
     @property
     def fullfilename(self):
+        # type: () -> str
         return "%s%s" % (self.filename, self.extension)
 
+    @abstractmethod
     def getepdata(self):
         # type: () -> Dict[str, Optional[str]]
         raise NotImplemented
 
+    @abstractmethod
     def number_string(self):
         # type: () -> str
         """Used in UI
@@ -264,17 +299,17 @@ class BaseInfo(object):
 
         self.episodename = epnames
 
-    def generate_filename(self, lowercase=False, preview_orig_filename=False):
+    def generate_filename(self, preview_orig_filename=False):
         # type: (bool, bool) -> str
 
-        # FIXME: MOve this into each subclass - too much hasattr/isinstance
+        # FIXME: Move this into each subclass - too much hasattr/isinstance
 
-        epdata = self.getepdata()
+        original_epdata = self.getepdata()
 
-        # Add in extra dict keys, without clobbering existing values in epdata
-        extra = self.extra.copy()
-        extra.update(epdata)
-        epdata = extra
+        # Add in extra dict keys, without clobbering existing values from getepdata()
+        epdata = {} # type: Dict[str, Optional[str]]
+        epdata.update(self.extra.copy())
+        epdata.update(original_epdata)
 
         if self.episodename is None:
             fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
@@ -287,14 +322,7 @@ class BaseInfo(object):
                 )
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
-        if Config['titlecase_filename']:
-            from tvnamer._titlecase import titlecase
-
-            fname = titlecase(fname)
-
-        if lowercase or Config['lowercase_filename']:
-            fname = fname.lower()
-
+        fname = transform_filename(fname)
         if preview_orig_filename:
             # Return filename without custom replacements or filesystem-validness
             return fname
@@ -304,7 +332,6 @@ class BaseInfo(object):
 
         return make_valid_filename(
             fname,
-            normalize_unicode=Config['normalize_unicode_filenames'],
             windows_safe=Config['windows_safe_filenames'],
             custom_blacklist=Config['custom_filename_character_blacklist'],
             replace_with=Config['replace_invalid_characters_with'],
@@ -379,6 +406,7 @@ class EpisodeInfo(BaseInfo):
         return epdata
 
     def __repr__(self):
+        # type: () -> str
         return "<%s: %r>" % (self.__class__.__name__, self.generate_filename())
 
 
@@ -418,11 +446,13 @@ class DatedEpisodeInfo(BaseInfo):
         self.extra = extra
 
     def sortable_info(self):
+        # type: () -> Tuple[str, List[datetime.date]]
         """Returns a tuple of sortable information
         """
         return ("%s" % (self.seriesname), self.episodenumbers)
 
     def number_string(self):
+        # type: () -> str
         """Used in UI
         """
         return "episode: %s" % (", ".join([str(x) for x in self.episodenumbers]))
@@ -490,11 +520,13 @@ class NoSeasonEpisodeInfo(BaseInfo):
         self.extra = extra
 
     def sortable_info(self):
+        # type: () -> Tuple[str, List[int]]
         """Returns a tuple of sortable information
         """
         return ("%s" % self.seriesname, self.episodenumbers)
 
     def number_string(self):
+        # type: () -> str
         """Used in UI
         """
         return "episode: %s" % (", ".join([str(x) for x in self.episodenumbers]))
@@ -526,13 +558,14 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
     CFG_KEY_WITH_EP_NO_CRC = "filename_anime_with_episode_without_crc"
     CFG_KEY_WITHOUT_EP_NO_CRC = "filename_anime_without_episode_without_crc"
 
-    def generate_filename(self, lowercase=False, preview_orig_filename=False):
-        epdata = self.getepdata()
+    def generate_filename(self, preview_orig_filename=False):
+        # type: (bool) -> str
+        orig_epdata = self.getepdata()
 
         # Add in extra dict keys, without clobbering existing values in epdata
-        extra = self.extra.copy()
-        extra.update(epdata)
-        epdata = extra
+        epdata = {} # type: Dict[str, Optional[str]]
+        epdata.update(self.extra.copy())
+        epdata.update(orig_epdata)
 
         # Get appropriate config key, depending on if episode name was
         # found, and if crc value was found
@@ -558,8 +591,8 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
 
         fname = Config[cfgkey] % epdata
 
-        if lowercase or Config['lowercase_filename']:
-            fname = fname.lower()
+        # Lowercase/titlecase/etc
+        fname = transform_filename(fname)
 
         if preview_orig_filename:
             # Return filename without custom replacements or filesystem-validness
@@ -570,7 +603,6 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
 
         return make_valid_filename(
             fname,
-            normalize_unicode=Config['normalize_unicode_filenames'],
             windows_safe=Config['windows_safe_filenames'],
             custom_blacklist=Config['custom_filename_character_blacklist'],
             replace_with=Config['replace_invalid_characters_with'],
