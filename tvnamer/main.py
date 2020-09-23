@@ -16,7 +16,7 @@ except ImportError:
 import json
 
 import tvdb_api
-from typing import Union, Optional
+from typing import List, Union, Optional
 
 from tvnamer import cliarg_parser, __version__
 from tvnamer.config_defaults import defaults
@@ -62,6 +62,7 @@ def get_move_destination(episode):
 
     # TODO: Write functional test to ensure this valid'ifying works
     def wrap_validfname(fname):
+        # type: (str) -> str
         """Wrap the make_valid_filename function as it's called twice
         and this is slightly long..
         """
@@ -108,6 +109,7 @@ def get_move_destination(episode):
 
 
 def do_rename_file(cnamer, new_name):
+    # type: (Renamer, str) -> None
     """Renames the file. cnamer should be Renamer instance,
     new_name should be string containing new filename.
     """
@@ -125,12 +127,11 @@ def do_rename_file(cnamer, new_name):
 
 
 def do_move_file(cnamer, dest_dir=None, dest_filepath=None, get_path_preview=False):
+    # type: (Renamer, Optional[str], Optional[str], bool) -> str
     """Moves file to dest_dir, or to dest_filepath
     """
 
-    if (dest_dir is None and dest_filepath is None) or (
-        dest_dir is not None and dest_filepath is not None
-    ):
+    if (dest_dir, dest_filepath).count(None) != 1:
         raise ValueError("Specify only dest_dir or dest_filepath")
 
     if not Config["move_files_enable"]:
@@ -219,7 +220,7 @@ def process_file(tvdb_instance, episode):
             warn("Skipping file due to error: %s" % errormsg)
             return
         else:
-            warn(errormsg)
+            warn("%s" % (errormsg))
     except (SeasonNotFound, EpisodeNotFound, EpisodeNameNotFound) as errormsg:
         # Show was found, so use corrected series name
         if Config["always_rename"] and Config["skip_file_on_error"]:
@@ -229,7 +230,7 @@ def process_file(tvdb_instance, episode):
             warn("Skipping file due to error: %s" % errormsg)
             return
 
-        warn(errormsg)
+        warn("%s" % (errormsg))
 
     cnamer = Renamer(episode.fullpath)
 
@@ -326,6 +327,7 @@ def process_file(tvdb_instance, episode):
 
 
 def find_files(paths):
+    # type: (List[str]) -> List[str]
     """Takes an array of paths, returns all files found
     """
     valid_files = []
@@ -353,6 +355,7 @@ def find_files(paths):
 
 
 def tvnamer(paths):
+    # type: (List[str]) -> None
     """Main tvnamer function, takes an array of paths, does stuff.
     """
 
@@ -422,6 +425,7 @@ def tvnamer(paths):
 
 
 def main():
+    # type: () -> None
     """Parses command line arguments, displays errors from tvnamer in terminal
     """
     opter = cliarg_parser.get_cli_parser(defaults)

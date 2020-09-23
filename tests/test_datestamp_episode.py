@@ -54,7 +54,7 @@ def test_issue_31_twochar_year():
     """Fix for parsing rather ambigious dd.mm.yy being parsed as "0011"
     """
 
-    from tvnamer.utils import intepret_year
+    from tvnamer.files import intepret_year
 
     assert intepret_year("99") == 1999
     assert intepret_year("79") == 1979

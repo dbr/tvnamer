@@ -221,7 +221,7 @@ def test_downcase():
 
 
 def test_episode_number_formatting():
-    from tvnamer.utils import format_episode_name
+    from tvnamer.data import format_episode_name
     fmt = "%(epname)s (%(episodemin)s-%(episodemax)s)"
     joiner = ", "
 
