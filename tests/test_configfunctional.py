@@ -383,6 +383,27 @@ def test_titlecase():
 
 
 @attr("functional")
+def test_unicode_normalization():
+    conf = r"""
+    {"always_rename": true,
+    "select_first": true,
+    "skip_file_on_error": false,
+    "normalize_unicode_filenames": true
+    }
+    """
+
+    out_data = run_tvnamer(
+        with_files = ["Carniv\xe0le 1x11 - The Day of the Dead.avi"],
+        with_config = conf,
+        with_input = "",
+        run_on_directory = True)
+
+    expected_files = ["Carnivale - [01x11] - The Day of the Dead.avi"]
+
+    verify_out_data(out_data, expected_files)
+
+
+@attr("functional")
 def test_own_api_key():
     """Check overriding API key works
     """
