@@ -1,5 +1,8 @@
 # Change log
 
+# `4.0` - unreleased
+- Dropped support for EOL Python 2.7.
+
 # `3.0.1` - 2020-09-19
 - Backport fix for `tvdb_api_key` config option
   ([Issue #187](https://github.com/dbr/tvnamer/issues/187))
