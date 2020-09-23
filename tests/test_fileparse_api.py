@@ -3,7 +3,7 @@
 """Tests the FileParser API
 """
 
-from tvnamer.utils import FileParser
+from tvnamer.files import FileParser
 from tvnamer.data import EpisodeInfo, DatedEpisodeInfo, NoSeasonEpisodeInfo
 from helpers import assertType, assertEquals
 

@@ -20,14 +20,10 @@ from typing import Union, Optional
 
 from tvnamer import cliarg_parser, __version__
 from tvnamer.config_defaults import defaults
-
-from tvnamer.utils import (
-    Config,
-    FileFinder,
-    FileParser,
-    Renamer,
+from tvnamer.config import Config
+from .files import FileFinder, FileParser, Renamer, _apply_replacements_input
+from .utils import (
     warn,
-    _apply_replacements_input,
     format_episode_numbers,
     make_valid_filename,
 )
