@@ -126,7 +126,7 @@ def do_rename_file(cnamer, new_name):
 
 
 def do_move_file(cnamer, dest_dir=None, dest_filepath=None, get_path_preview=False):
-    # type: (Renamer, Optional[str], Optional[str], bool) -> str
+    # type: (Renamer, Optional[str], Optional[str], bool) -> Optional[str]
     """Moves file to dest_dir, or to dest_filepath
     """
 
@@ -156,21 +156,23 @@ def do_move_file(cnamer, dest_dir=None, dest_filepath=None, get_path_preview=Fal
             warn("Exiting due to error: %s" % e)
             raise SkipBehaviourAbort()
         warn("Skipping file due to error: %s" % e)
+        return None
 
 
 def confirm(question, options, default="y"):
+    # type: (str, List[str], str) -> str
     """Takes a question (string), list of options and a default value (used
     when user simply hits enter).
     Asks until valid option is entered.
     """
     # Highlight default option with [ ]
-    options_str = []
+    options_chunks = []
     for x in options:
         if x == default:
             x = "[%s]" % x
         if x != "":
-            options_str.append(x)
-    options_str = "/".join(options_str)
+            options_chunks.append(x)
+    options_str = "/".join(options_chunks)
 
     while True:
         print(question)

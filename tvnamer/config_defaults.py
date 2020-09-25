@@ -3,9 +3,73 @@
 """Holds default config values
 """
 
-if False:
-    # For mypy annotations only
-    from typing import Dict, Any
+import typing
+if typing.TYPE_CHECKING:
+    from typing import Dict, Any, List, Optional, Union, Literal
+    from mypy_extensions import TypedDict
+
+    TypedReplacement = TypedDict('TypedReplacement', {
+        "is_regex": bool,
+        "match": str,
+        "replacement": str,
+    })
+
+    TypedDefaults = TypedDict('TypedDefaults', {
+        'tvdb_api_key': Optional[str],
+        'select_first': bool,
+        'always_rename': bool,
+        'batch': bool,
+        'skip_file_on_error': bool,
+        'skip_behaviour': Literal['skip', 'error'],
+        'overwrite_destination_on_rename': bool,
+        'overwrite_destination_on_move': bool,
+        'verbose': bool,
+        'dry_run': bool,
+        'recursive': bool,
+        'valid_extensions': List[str],
+        'extension_pattern': str,
+        'filename_blacklist': List[str],
+        'windows_safe_filenames': bool,
+        'normalize_unicode_filenames': bool,
+        'lowercase_filename': bool,
+        'titlecase_filename': bool,
+        'custom_filename_character_blacklist': str,
+        'replace_invalid_characters_with': str,
+        'input_filename_replacements': List[TypedReplacement],
+        'output_filename_replacements': List[TypedReplacement],
+        'move_files_fullpath_replacements': List[TypedReplacement],
+        'language': str,
+        'search_all_languages': bool,
+        'move_files_enable': bool,
+        'move_files_confirmation': bool,
+        'move_files_lowercase_destination': bool,
+        'move_files_destination_is_filepath': bool,
+        'move_files_destination': str,
+        'move_files_destination_date': str,
+        'always_move': bool,
+        'leave_symlink': bool,
+        'move_files_only': bool,
+        'filename_patterns': List[str],
+        'filename_with_episode': str,
+        'filename_without_episode': str,
+        'filename_with_episode_no_season': str,
+        'filename_without_episode_no_season': str,
+        'filename_with_date_and_episode': str,
+        'filename_with_date_without_episode': str,
+        'filename_anime_with_episode': str,
+        'filename_anime_without_episode': str,
+        'filename_anime_with_episode_without_crc': str,
+        'filename_anime_without_episode_without_crc': str,
+        'multiep_join_name_with': str,
+        'multiep_format': str,
+        'episode_single': str,
+        'episode_separator': str,
+        'series_id': Optional[int],
+        'forced_name': Optional[str],
+        'input_series_replacements': Dict[str, Union[int, str]],
+        'output_series_replacements': Dict[str, str],
+        'order': Literal['dvd', 'aired'],
+    })
 
 
 # fmt: off
@@ -452,10 +516,10 @@ defaults = {
     'episode_separator': '-',
 
     # Series ID to use instead of searching if the value is set
-    # 'series_id': None,
+    'series_id': None,
 
     # Forced Name to use
-    # 'forced_name': None,
+    'forced_name': None,
 
     # replace series names before/after passing to TVDB
     # input replacements are regular expressions for the series as parsed from
@@ -469,6 +533,6 @@ defaults = {
 
     # use dvd episode order of tvdb, instead of aired order
     'order': 'aired',
-}  # type: Dict[str, Any]
+}  # type: TypedDefaults
 
 # fmt: on

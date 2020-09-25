@@ -4,6 +4,10 @@
 """
 
 import optparse
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .config_defaults import TypedDefaults
 
 
 class Group(object):
@@ -11,18 +15,22 @@ class Group(object):
     """
 
     def __init__(self, parser, name):
+        # type: (optparse.OptionParser, str) -> None
         self.parser = parser
         self.name = name
         self.group = optparse.OptionGroup(self.parser, name)
 
     def __enter__(self):
+        # type: () -> optparse.OptionGroup
         return self.group
 
     def __exit__(self, *k, **kw):
+        # type: (Any, Any) -> None
         self.parser.add_option_group(self.group)
 
 
 def get_cli_parser(defaults):
+    # type: (TypedDefaults) -> optparse.OptionParser
     parser = optparse.OptionParser(
         usage="%prog [options] <files>", add_help_option=False
     )
