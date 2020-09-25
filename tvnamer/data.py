@@ -152,6 +152,7 @@ class BaseInfo(metaclass=ABCMeta):
     def __init__(
             self,
             filename, # type: Optional[str]
+            episodename, # type: Optional[List[str]]
             extra,  # type: Optional[Dict[str, str]]
         ):
         # type: (...) -> None
@@ -162,6 +163,8 @@ class BaseInfo(metaclass=ABCMeta):
             self.originalfilename = os.path.basename(filename) # type: Optional[str]
         else:
             self.originalfilename = None
+
+        self.episodename = episodename
 
         if extra is None:
             extra = {}
@@ -190,14 +193,21 @@ class BaseInfo(metaclass=ABCMeta):
     @abstractmethod
     def getepdata(self):
         # type: () -> Dict[str, Optional[str]]
-        raise NotImplemented
+        raise NotImplemented # pragma: nocover
 
     @abstractmethod
     def number_string(self):
         # type: () -> str
         """Used in UI
         """
-        raise NotImplemented
+        raise NotImplemented # pragma: nocover
+
+    @abstractmethod
+    def sortable_info(self):
+        # type: () -> Any
+        """Returns a tuple of sortable information
+        """
+        raise NotImplemented # pragma: nocover
 
     def populate_from_tvdb(self, tvdb_instance, force_name=None, series_id=None):
         # ignore - type: (tvdb_api.Tvdb, Optional[Any], Optional[Any]) -> None
@@ -314,12 +324,11 @@ class BaseInfo(metaclass=ABCMeta):
         if self.episodename is None:
             fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
         else:
-            if isinstance(self.episodename, list):
-                epdata['episodename'] = format_episode_name(
-                    self.episodename,
-                    join_with=Config['multiep_join_name_with'],
-                    multiep_format=Config['multiep_format'],
-                )
+            epdata['episodename'] = format_episode_name(
+                self.episodename,
+                join_with=Config['multiep_join_name_with'],
+                multiep_format=Config['multiep_format'],
+            )
             fname = Config[self.CFG_KEY_WITH_EP] % epdata
 
         fname = transform_filename(fname)
@@ -348,13 +357,13 @@ class EpisodeInfo(BaseInfo):
         seriesname,  # type: str
         seasonnumber,  # type: int
         episodenumbers,  # type: List[int]
-        episodename=None,  # type: Union[List[Optional[str]], Optional[str]]
+        episodename=None,  # type: Optional[List[str]]
         filename=None,  # type: Optional[str]
         extra=None,  # type: Optional[Dict[str, str]]
         ):
         # type: (...) -> None
 
-        super(EpisodeInfo, self).__init__(filename=filename, extra=extra)
+        super(EpisodeInfo, self).__init__(filename=filename, episodename=episodename, extra=extra)
 
         self.seriesname = seriesname
         self.seasonnumber = seasonnumber
@@ -424,26 +433,11 @@ class DatedEpisodeInfo(BaseInfo):
         ):
         # type: (...) -> None
 
+        super(DatedEpisodeInfo, self).__init__(filename=filename, episodename=episodename, extra=extra)
+
         self.seriesname = seriesname
         self.episodenumbers = episodenumbers
-        self.episodename = episodename # type: Optional[List[str]]
-        self.fullpath = filename
 
-        if filename is not None:
-            # Remains untouched, for use when renaming file
-            self.originalfilename = os.path.basename(filename)
-        else:
-            self.originalfilename = None
-
-        if filename is not None:
-            # Remains untouched, for use when renaming file
-            self.originalfilename = os.path.basename(filename)
-        else:
-            self.originalfilename = None
-
-        if extra is None:
-            extra = {}
-        self.extra = extra
 
     def sortable_info(self):
         # type: () -> Tuple[str, List[datetime.date]]
@@ -498,26 +492,16 @@ class NoSeasonEpisodeInfo(BaseInfo):
         self,
         seriesname,  # type: str
         episodenumbers,  # type: List[int]
-        episodename=None,  # type: Optional[str]
+        episodename=None,  # type: Optional[List[str]]
         filename=None,  # type: Optional[str]
         extra=None,  # type: Optional[Dict[str, str]]
         ):
         # type: (...) -> None
 
+        super(NoSeasonEpisodeInfo, self).__init__(filename=filename, episodename=episodename, extra=extra)
         self.seriesname = seriesname
         self.episodenumbers = episodenumbers
-        self.episodename = episodename
         self.fullpath = filename
-
-        if filename is not None:
-            # Remains untouched, for use when renaming file
-            self.originalfilename = os.path.basename(filename)
-        else:
-            self.originalfilename = None
-
-        if extra is None:
-            extra = {}
-        self.extra = extra
 
     def sortable_info(self):
         # type: () -> Tuple[str, List[int]]
