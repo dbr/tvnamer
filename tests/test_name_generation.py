@@ -56,7 +56,7 @@ def test_single_episode():
         seriesname = 'Scrubs',
         seasonnumber = 1,
         episodenumbers = [2],
-        episodename = 'My Mentor',
+        episodename = ['My Mentor'],
         filename = 'scrubs.example.file.avi')
 
     assertEquals(
@@ -196,7 +196,7 @@ def test_no_series_number():
     ep = NoSeasonEpisodeInfo(
         seriesname = 'Scrubs',
         episodenumbers = [2],
-        episodename = 'My Mentor',
+        episodename = ['My Mentor'],
         filename = None)
 
     assertEquals(
