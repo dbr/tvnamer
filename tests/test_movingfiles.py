@@ -145,10 +145,10 @@ def test_with_invalid_seriesname():
     """
 
     out_data = run_tvnamer(
-        with_files = ['csi.miami.s01e01.avi'],
+        with_files = ['csi.cyber.s01e03.avi'],
         with_config = conf)
 
-    expected_files = ['CSI_ Miami/CSI_ Miami - [01x01] - Golden Parachute.avi']
+    expected_files = ['CSI_ Cyber/CSI_ Cyber - [01x03] - Killer En Route.avi']
 
     verify_out_data(out_data, expected_files)
 
