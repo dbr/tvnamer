@@ -5,6 +5,7 @@
 
 import os
 import datetime
+from typing import Any
 
 from helpers import assertEquals
 
@@ -16,6 +17,7 @@ from tvdb_api import Tvdb
 
 
 def verify_name_gen(curtest, tvdb_instance):
+    # type: (Any, Tvdb) -> None
     if "seasonnumber" in curtest:
         ep = EpisodeInfo(
             seriesname = curtest['parsedseriesname'],
@@ -40,6 +42,8 @@ def verify_name_gen(curtest, tvdb_instance):
 
 
 def test_name_generation_on_testfiles():
+    # type: () -> None
+
     # Test data stores episode names in English, language= is normally set
     # via the configuration, same with search_all_languages.
 
@@ -48,7 +52,9 @@ def test_name_generation_on_testfiles():
         for curtest in testcases:
             verify_name_gen(curtest, tvdb_instance)
 
+
 def test_single_episode():
+    # type: () -> None
     """Simple episode name, with show/season/episode/name/filename
     """
 
@@ -65,6 +71,7 @@ def test_single_episode():
 
 
 def test_multi_episodes_continuous():
+    # type: () -> None
     """A two-part episode should not have the episode name repeated
     """
     ep = EpisodeInfo(
@@ -82,6 +89,7 @@ def test_multi_episodes_continuous():
 
 
 def test_episode_numeric_title():
+    # type: () -> None
     """An episode with a name starting with a number should not be
     detected as a range
     """
@@ -101,6 +109,7 @@ def test_episode_numeric_title():
 
 
 def test_multi_episodes_seperate():
+    # type: () -> None
     """File with two episodes, but with different names
     """
     ep = EpisodeInfo(
@@ -118,6 +127,7 @@ def test_multi_episodes_seperate():
 
 
 def test_simple_no_ext():
+    # type: () -> None
     """Simple episode with out extension
     """
     ep = EpisodeInfo(
@@ -133,6 +143,7 @@ def test_simple_no_ext():
 
 
 def test_no_name():
+    # type: () -> None
     """Episode without a name
     """
     ep = EpisodeInfo(
@@ -148,6 +159,7 @@ def test_no_name():
 
 
 def test_episode_no_name_no_ext():
+    # type: () -> None
     """EpisodeInfo with no name or extension
     """
     ep = EpisodeInfo(
@@ -163,6 +175,7 @@ def test_episode_no_name_no_ext():
 
 
 def test_noseason_no_name_no_ext():
+    # type: () -> None
     """NoSeasonEpisodeInfo with no name or extension
     """
     ep = NoSeasonEpisodeInfo(
@@ -177,6 +190,7 @@ def test_noseason_no_name_no_ext():
 
 
 def test_datedepisode_no_name_no_ext():
+    # type: () -> None
     """DatedEpisodeInfo with no name or extension
     """
     ep = DatedEpisodeInfo(
@@ -191,6 +205,7 @@ def test_datedepisode_no_name_no_ext():
 
 
 def test_no_series_number():
+    # type: () -> None
     """Episode without season number
     """
     ep = NoSeasonEpisodeInfo(
@@ -205,6 +220,7 @@ def test_no_series_number():
 
 
 def test_episode_number_formatting():
+    # type: () -> None
     from tvnamer.data import format_episode_name
     fmt = "%(epname)s (%(episodemin)s-%(episodemax)s)"
     joiner = ", "
