@@ -435,3 +435,23 @@ def test_own_api_key():
     expected_files = ['scrubs.s01e01.avi']
 
     verify_out_data(out_data, expected_files, expected_returncode=1)
+
+
+@attr("functional")
+def test_dry_run_basic():
+    """Test dry run mode
+    """
+
+    conf = """
+    {"batch": true,
+    "dry_run": true}
+    """
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi'],
+        with_config = conf,
+        with_input = "")
+
+    expected_files = ['scrubs.s01e01.avi',]
+
+    verify_out_data(out_data, expected_files)
