@@ -408,12 +408,18 @@ def tvnamer(paths):
         LOG.debug("Using tvnamer default API key")
         api_key = TVNAMER_API_KEY
 
+    if os.getenv("TVNAMER_TEST_MODE", "0") == "1":
+        from .test_cache import get_test_cache_session
+        cache = get_test_cache_session()
+    else:
+        cache = True
+
     tvdb_instance = tvdb_api.Tvdb(
         interactive=not Config["select_first"],
         search_all_languages=Config["search_all_languages"],
         language=Config["language"],
         dvdorder=dvdorder,
-        cache=True,
+        cache=cache,
         apikey=api_key,
     )
 
