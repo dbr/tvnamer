@@ -29,85 +29,94 @@ def test_batchconfig():
 
 
 @attr("functional")
-def test_skip_file_on_error():
-    """Test the "skip file on error" config option works
+def test_never_skip_file():
+    """Test default of skipping file on error
     """
 
     conf = """
-    {"skip_file_on_error": true,
-    "always_rename": true}
+    {"batch": true}
     """
 
     out_data = run_tvnamer(
-        with_files = ['a.fake.episode.s01e01.avi'],
+        with_files = ['scrubs.s01e01.avi', 'a.nonsense.fake.episode.s01e01.avi'],
         with_config = conf,
         with_input = "")
 
-    expected_files = ['a.fake.episode.s01e01.avi']
+    expected_files = ['Scrubs - [01x01] - My First Day.avi', 'a.nonsense.fake.episode.s01e01.avi']
 
     verify_out_data(out_data, expected_files)
 
 
 @attr("functional")
-def test_do_not_skip_file_on_error():
-    """Test setting "skip file on error" config option to False
+def test_never_skip_file():
+    """Test for using skip_file_on_error to always do best-effort rename of file without TVDB data
     """
 
     conf = """
-    {"skip_file_on_error": false,
-    "always_rename": true}
+    {"batch": true,
+    "skip_file_on_error": false}
     """
 
     out_data = run_tvnamer(
-        with_files = ['a.fake.episode.s01e01.avi'],
+        with_files = ['scrubs.s01e01.avi', 'a.nonsense.fake.episode.s01e01.avi'],
         with_config = conf,
         with_input = "")
 
-    expected_files = ['a fake episode - [01x01].avi']
+    expected_files = ['Scrubs - [01x01] - My First Day.avi', 'a nonsense fake episode - [01x01].avi']
 
     verify_out_data(out_data, expected_files)
 
 
 @attr("functional")
 def test_skip_behaviour_warn():
-    """skip_behaivour:warn should keep renaming other files
+    """skip_behaviour:warn should keep renaming other files
     """
 
     conf = """
-    {"skip_file_on_error": false,
-    "batch": true,
+    {"batch": true,
     "skip_behaviour": "warn"}
     """
 
     out_data = run_tvnamer(
-        with_files = ['scrubs.s01e01.avi', 'a.fake.episode.s01e01.avi', 'scrubs.s01e02.avi'],
+        with_files = ['scrubs.s01e01.avi', 'a.nonsense.fake.episode.s01e01.avi'],
         with_config = conf,
         with_input = "")
 
-    expected_files = ['a fake episode - [01x01].avi', 'Scrubs - [01x01] - My First Day.avi', 'Scrubs - [01x02] - My Mentor.avi']
+    expected_files = ['Scrubs - [01x01] - My First Day.avi', 'a.nonsense.fake.episode.s01e01.avi']
 
     verify_out_data(out_data, expected_files)
 
 
 @attr("functional")
 def test_skip_behaviour_error():
-    """With skip_behaviour:error, should end process
+    """An error with skip_behaviour 'exit' should end process
     """
 
     conf = """
-    {"skip_file_on_error": false,
-    "batch": true,
-    "skip_behaviour": "warn"}
+    {"batch": true,
+    "skip_behaviour": "exit"}
     """
 
     out_data = run_tvnamer(
-        with_files = ['scrubs.s01e01.avi', 'a.fake.episode.s01e01.avi', 'scrubs.s01e02.avi'],
+        with_files = ['scrubs.s01e01.avi', 'a.nonsense.fake.episode.s01e01.avi'],
         with_config = conf,
         with_input = "")
 
-    expected_files = ['a fake episode - [01x01].avi', 'Scrubs - [01x01] - My First Day.avi', 'Scrubs - [01x02] - My Mentor.avi']
+    # Files are processed alphabetically, so file starting wiht S is never touched
+    expected_files = ['scrubs.s01e01.avi', 'a.nonsense.fake.episode.s01e01.avi']
 
-    verify_out_data(out_data, expected_files)
+    verify_out_data(out_data, expected_files, expected_returncode=2)
+
+
+    out_data = run_tvnamer(
+        with_files = ['scrubs.s01e01.avi', 'z.fake.episode.s01e01.avi'],
+        with_config = conf,
+        with_input = "")
+
+    # Files are processed alphabetically, so file starting wiht S is never touched
+    expected_files = ['Scrubs - [01x01] - My First Day.avi', 'z.fake.episode.s01e01.avi']
+
+    verify_out_data(out_data, expected_files, expected_returncode=2)
 
 
 @attr("functional")
