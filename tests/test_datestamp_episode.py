@@ -29,7 +29,7 @@ def test_issue_56_dated_episode():
 
 
 @attr("functional")
-@pytest.mark.xfail
+@pytest.mark.xfail(reason="dependant on episode objects all having consistent data - issue #125")
 def test_date_in_s01e01_out():
     """File with date-stamp, outputs s01e01-ish name
     """
@@ -37,7 +37,7 @@ def test_date_in_s01e01_out():
     conf = """
     {"always_rename": true,
     "select_first": true,
-    "filename_with_episode": "%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s"}
+    "filename_with_date_and_episode": "%(seriesname)s - [%(seasonnumber)02dx%(episode)s] - %(episodename)s%(ext)s"}
     """
 
     out_data = run_tvnamer(
