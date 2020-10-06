@@ -2,7 +2,7 @@ import os
 import re
 import datetime
 from abc import ABCMeta, abstractmethod
-from typing import Optional, Dict, List, Union, Tuple, Any, Literal
+from typing import Optional, Dict, List, Union, Tuple, Any
 
 import tvdb_api
 

@@ -5,7 +5,8 @@
 
 import typing
 if typing.TYPE_CHECKING:
-    from typing import Dict, Any, List, Optional, Union, Literal
+    from typing import Dict, Any, List, Optional, Union
+    from typing import Literal # Note: Python 3.8+ only, but mypy can check this in older Python versions
     from mypy_extensions import TypedDict
 
     TypedReplacement = TypedDict('TypedReplacement', {
