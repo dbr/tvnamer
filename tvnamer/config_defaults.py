@@ -65,7 +65,7 @@ if typing.TYPE_CHECKING:
         'episode_single': str,
         'episode_separator': str,
         'series_id': Optional[int],
-        'forced_name': Optional[str],
+        'force_name': Optional[str],
         'input_series_replacements': Dict[str, Union[int, str]],
         'output_series_replacements': Dict[str, str],
         'order': Literal['dvd', 'aired'],
@@ -519,7 +519,7 @@ defaults = {
     'series_id': None,
 
     # Forced Name to use
-    'forced_name': None,
+    'force_name': None,
 
     # replace series names before/after passing to TVDB
     # input replacements are regular expressions for the series as parsed from

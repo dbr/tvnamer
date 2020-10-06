@@ -2,7 +2,7 @@ import os
 import re
 import datetime
 from abc import ABCMeta, abstractmethod
-from typing import Optional, Dict, List, Union, Tuple
+from typing import Optional, Dict, List, Union, Tuple, Any, Literal
 
 import tvdb_api
 
@@ -137,18 +137,6 @@ class BaseInfo(metaclass=ABCMeta):
     logic to generate new name for each type of name
     """
 
-    @property
-    @abstractmethod
-    def CFG_KEY_WITH_EP(self):
-        # type: () -> str
-        pass
-
-    @property
-    @abstractmethod
-    def CFG_KEY_WITHOUT_EP(self):
-        # type: () -> str
-        pass
-
     def __init__(
             self,
             filename, # type: Optional[str]
@@ -210,7 +198,7 @@ class BaseInfo(metaclass=ABCMeta):
         raise NotImplemented # pragma: nocover
 
     def populate_from_tvdb(self, tvdb_instance, force_name=None, series_id=None):
-        # ignore - type: (tvdb_api.Tvdb, Optional[Any], Optional[Any]) -> None
+        # mypy: ignore # type: (tvdb_api.Tvdb, Optional[Any], Optional[Any]) -> None
         """Queries the tvdb_api.Tvdb instance for episode name and corrected
         series name.
         If series cannot be found, it will warn the user. If the episode is not
@@ -309,8 +297,12 @@ class BaseInfo(metaclass=ABCMeta):
 
         self.episodename = epnames
 
+    def format_name(self, epdata):
+        # type: (Dict[str, Optional[str]]) -> str
+        raise NotImplemented
+
     def generate_filename(self, preview_orig_filename=False):
-        # type: (bool, bool) -> str
+        # type: (bool) -> str
 
         # FIXME: Move this into each subclass - too much hasattr/isinstance
 
@@ -322,14 +314,14 @@ class BaseInfo(metaclass=ABCMeta):
         epdata.update(original_epdata)
 
         if self.episodename is None:
-            fname = Config[self.CFG_KEY_WITHOUT_EP] % epdata
+            fname = self.format_name(epdata)
         else:
             epdata['episodename'] = format_episode_name(
                 self.episodename,
                 join_with=Config['multiep_join_name_with'],
                 multiep_format=Config['multiep_format'],
             )
-            fname = Config[self.CFG_KEY_WITH_EP] % epdata
+            fname = self.format_name(epdata)
 
         fname = transform_filename(fname)
         if preview_orig_filename:
@@ -348,9 +340,6 @@ class BaseInfo(metaclass=ABCMeta):
 
 
 class EpisodeInfo(BaseInfo):
-
-    CFG_KEY_WITH_EP = "filename_with_episode"
-    CFG_KEY_WITHOUT_EP = "filename_without_episode"
 
     def __init__(
         self,
@@ -414,15 +403,19 @@ class EpisodeInfo(BaseInfo):
 
         return epdata
 
+    def format_name(self, epdata):
+        # type: (Dict[str, Optional[str]]) -> str
+        if self.episodename is not None:
+            return Config["filename_with_episode"] % epdata
+        else:
+            return Config["filename_without_episode"] % epdata
+
     def __repr__(self):
         # type: () -> str
         return "<%s: %r>" % (self.__class__.__name__, self.generate_filename())
 
 
 class DatedEpisodeInfo(BaseInfo):
-    CFG_KEY_WITH_EP = "filename_with_date_and_episode"
-    CFG_KEY_WITHOUT_EP = "filename_with_date_without_episode"
-
     def __init__(
         self,
         seriesname,  # type: str
@@ -483,6 +476,13 @@ class DatedEpisodeInfo(BaseInfo):
 
         return epdata
 
+    def format_name(self, epdata,):
+        # type: (Dict[str, Optional[str]]) -> str
+        if self.episodename is not None:
+            return Config["filename_with_date_and_episode"] % epdata
+        else:
+            return Config["filename_with_date_without_episode"] % epdata
+
 
 class NoSeasonEpisodeInfo(BaseInfo):
     CFG_KEY_WITH_EP = "filename_with_episode_no_season"
@@ -534,6 +534,13 @@ class NoSeasonEpisodeInfo(BaseInfo):
 
         return epdata
 
+    def format_name(self, epdata):
+        # type: (Dict[str, Optional[str]]) -> str
+        if self.episodename is not None:
+            return Config["filename_with_episode_no_season"] % epdata
+        else:
+            return Config["filename_without_episode_no_season"] % epdata
+
 
 class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
     CFG_KEY_WITH_EP = "filename_anime_with_episode"
@@ -541,6 +548,22 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
 
     CFG_KEY_WITH_EP_NO_CRC = "filename_anime_with_episode_without_crc"
     CFG_KEY_WITHOUT_EP_NO_CRC = "filename_anime_without_episode_without_crc"
+
+    def format_name(self, epdata):
+        # type: (Dict[str, Optional[str]]) -> str
+        if self.episodename is None:
+            if self.extra.get('crc') is None:
+                fmt = Config["filename_anime_without_episode_without_crc"]
+            else:
+                # Have crc, but no ep name
+                fmt = Config["filename_anime_without_episode"]
+        else:
+            if self.extra.get('crc') is None:
+                fmt = Config["filename_anime_with_episode_without_crc"]
+            else:
+                fmt = Config["filename_anime_with_episode"]
+
+        return fmt % epdata
 
     def generate_filename(self, preview_orig_filename=False):
         # type: (bool) -> str
@@ -551,20 +574,6 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
         epdata.update(self.extra.copy())
         epdata.update(orig_epdata)
 
-        # Get appropriate config key, depending on if episode name was
-        # found, and if crc value was found
-        if self.episodename is None:
-            if self.extra.get('crc') is None:
-                cfgkey = self.CFG_KEY_WITHOUT_EP_NO_CRC
-            else:
-                # Have crc, but no ep name
-                cfgkey = self.CFG_KEY_WITHOUT_EP
-        else:
-            if self.extra.get('crc') is None:
-                cfgkey = self.CFG_KEY_WITH_EP_NO_CRC
-            else:
-                cfgkey = self.CFG_KEY_WITH_EP
-
         if self.episodename is not None:
             if isinstance(self.episodename, list):
                 epdata['episodename'] = format_episode_name(
@@ -573,7 +582,7 @@ class AnimeEpisodeInfo(NoSeasonEpisodeInfo):
                     multiep_format=Config['multiep_format'],
                 )
 
-        fname = Config[cfgkey] % epdata
+        fname = self.format_name(epdata)
 
         # Lowercase/titlecase/etc
         fname = transform_filename(fname)
