@@ -442,6 +442,7 @@ def main():
     if opts.show_version:
         print("tvnamer version: %s" % (__version__,))
         print("tvdb_api version: %s" % (tvdb_api.__version__,))
+        print("python version: %s" % (sys.version,))
         sys.exit(0)
 
     if opts.verbose:
