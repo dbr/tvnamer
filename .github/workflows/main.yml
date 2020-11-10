@@ -10,19 +10,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python_version: ['2.7', '3.5', '3.6', '3.7', '3.8']
+        python_version: [3.5', '3.6', '3.7', '3.8']
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
     - uses: actions/checkout@v1
     - name: Install dev deps
       run: |
-        sudo python setup.py develop
         pip install codecov
-        # pytest==4.6 fallback for Python 2.7
-        pip install pytest==5.4 || pip install pytest==4.6
-        pip install pytest-cov
+        pip install -r requirements-dev.txt
+        python setup.py develop
     - name: Run tests
-      run: python -m pytest --cov tvnamer
+      run: python -m pytest
     - name: Upload test results
       run: codecov
