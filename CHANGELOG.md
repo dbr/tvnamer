@@ -2,6 +2,12 @@
 
 # `4.0` - unreleased
 - Dropped support for EOL Python 2.7.
+- Fix `TypeError: '<' not supported between instances of 'int' and 'str'` error when using series replacements with show-ID
+  ([Issue #150](https://github.com/dbr/tvnamer/issues/150))
+
+# `3.0.2` - 2020-11-09
+- Backport: Fix `TypeError: '<' not supported between instances of 'int' and 'str'` error when using series replacements with show-ID
+  ([Issue #150](https://github.com/dbr/tvnamer/issues/150))
 
 # `3.0.1` - 2020-09-19
 - Backport fix for `tvdb_api_key` config option
