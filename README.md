@@ -9,7 +9,7 @@ It supports Python 3.5 onwards. The last version of tvnamer to support Python 2.
 TV information is provided by TheTVDB.com, but we are not endorsed or certified by TheTVDB.com or its affiliates.
 
 [build-link]: https://travis-ci.org/dbr/tvnamer
-[build-img]: https://travis-ci.org/dbr/tvnamer.svg?branch=master
+[build-img]: https://github.com/dbr/tvnamer/workflows/CI/badge.svg
 [pypi-link]: https://pypi.org/project/tvnamer/
 [pypi-img]: https://img.shields.io/pypi/v/tvnamer
 [coverage-link]: https://codecov.io/gh/dbr/tvnamer
