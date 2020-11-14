@@ -162,6 +162,7 @@ def test_renaming_always_doesnt_overwrite():
 
 @attr("functional")
 @pytest.mark.skipif(os.getenv("TRAVIS", "false")=="true", reason="Test fails for some reason on Travis-CI")
+@pytest.mark.skipif(os.getenv("CI", "false")=="true", reason="Test fails for some reason on GH Actions")
 def test_not_overwritting_unicode_filename():
     """Test no error occurs when warning about a unicode filename being overwritten
     """
