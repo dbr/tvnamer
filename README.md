@@ -28,6 +28,7 @@ Alternatively, the community have packaged tvnamer in various platform/distro sp
 1. [Homebrew for OS X](https://formulae.brew.sh/formula/tvnamer) - `brew install tvnamer`
 2. [Debian](https://tracker.debian.org/pkg/tvnamer) - `apt-get install tvnamer`
 3. [FreeBSD/DragonFlyBSD/MacPorts](https://www.freshports.org/multimedia/py-tvnamer) - `pkg install py36-tvnamer` etc
+4. [Nix package manager](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/python-modules/tvnamer/default.nix) - `nix-env -iA nixpkgs.python37Packages.tvnamer`
 
 Although not recommended for general use, see [`CONTRIBUTING.md`](./CONTRIBUTING.md) for details on installing the unstable development version.
 
