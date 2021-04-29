@@ -5,6 +5,10 @@
 - Fix `TypeError: '<' not supported between instances of 'int' and 'str'` error when using series replacements with show-ID
   ([Issue #150](https://github.com/dbr/tvnamer/issues/150))
 
+# `3.0.3` - 2021-04-29
+- Fix compat with tvdb_api 3.1 - use 'seriesName' instead of long-deprecated 'seriesname' (as per TheTVDB API change in API v2)
+  ([Issue #201](https://github.com/dbr/tvnamer/issues/201))
+
 # `3.0.2` - 2020-11-09
 - Backport: Fix `TypeError: '<' not supported between instances of 'int' and 'str'` error when using series replacements with show-ID
   ([Issue #150](https://github.com/dbr/tvnamer/issues/150))
