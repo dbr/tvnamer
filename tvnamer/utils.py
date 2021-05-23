@@ -652,7 +652,7 @@ class EpisodeInfo(object):
             raise UserAbort(string_type(error))
         else:
             # Series was found, use corrected series name
-            self.seriesnami = replaceOutputSeriesName(show['seriesName'])
+            self.seriesname = replaceOutputSeriesName(show['seriesName'])
 
         if isinstance(self, DatedEpisodeInfo):
             # Date-based episode
