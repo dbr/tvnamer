@@ -1,5 +1,9 @@
 # Change log
 
+# `3.0.4` - 2021-05-23
+- Fix typo causing series name to not be corrected
+  ([PR #203](https://github.com/dbr/tvnamer/pull/203))
+
 # `3.0.3` - 2021-04-29
 - Fix compat with tvdb_api 3.1 - use 'seriesName' instead of long-deprecated 'seriesname' (as per TheTVDB API change in API v2)
   ([Issue #201](https://github.com/dbr/tvnamer/issues/201))
