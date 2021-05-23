@@ -35,7 +35,7 @@ class FileCacheDict(MutableMapping):
                 return data
         except FileNotFoundError:
             if not ALLOW_CACHE_WRITE:
-                raise RuntimeError("No cache file found %s" % path)
+                raise RuntimeError("No cache file found %s (and %s is not active)" % (path, ALLOW_CACHE_WRITE_ENV_VAR))
             raise KeyError
 
     def __setitem__(self, key, item):
