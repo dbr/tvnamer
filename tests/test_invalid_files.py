@@ -33,3 +33,20 @@ def test_no_series_name():
     expected_files = ['s01e01 Some File.avi']
 
     verify_out_data(out_data, expected_files, expected_returncode = 2)
+
+
+@attr("functional")
+def test_ambigious():
+    invalid_files = [
+        'show.123.avi', # Maybe s01e23 but too ambigious. #140
+        'Scrubs.0101.avi', # Ambigious. #140
+    ]
+
+    for f in invalid_files:
+        out_data = run_tvnamer(
+            with_files = [f],
+            with_flags = ["--batch"])
+
+        expected_files = [f]
+
+        verify_out_data(out_data, expected_files, expected_returncode = 2)

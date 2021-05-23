@@ -39,7 +39,6 @@ def test_autogen_names():
         '%(seriesname)s [%(seasno)dx%(epno)d] - the wrong ep name.avi',   # seriesname [01x02] - the wrong ep name.avi
         '%(seriesname)s - [%(seasno)dx%(epno)d] - the wrong ep name.avi', # seriesname - [01x02] - the wrong ep name.avi
         '%(seriesname)s.%(seasno)dx%(epno)d.The_Wrong_ep_name.avi',       # seriesname.01x02.epname.avi
-        '%(seriesname)s.%(seasno)d%(epno)02d.The Wrong_ep.names.avi',     # seriesname.102.epname.avi
         '%(seriesname)s_s%(seasno)de%(epno)d_The_Wrong_ep_na-me.avi',     # seriesname_s1e02_epname.avi
         '%(seriesname)s - s%(seasno)de%(epno)d - dsr.nf.avi',             # seriesname - s01e02 - dsr.nf.avi
         '%(seriesname)s - s%(seasno)de%(epno)d - the wrong ep name.avi',  # seriesname - s01e02 - the wrong ep name.avi

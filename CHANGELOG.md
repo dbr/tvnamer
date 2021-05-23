@@ -4,6 +4,10 @@
 - Dropped support for EOL Python 2.7.
 - Fix `TypeError: '<' not supported between instances of 'int' and 'str'` error when using series replacements with show-ID
   ([Issue #150](https://github.com/dbr/tvnamer/issues/150))
+- No longer supported filename patterns. These are ambigious and cause incorrect matches with things like `H.264` in filenames
+  - `show.123.avi` (previously parsed as episode 23 of season 1)
+  - `show.0123.avi`
+  ([Issue #140](https://github.com/dbr/tvnamer/issues/140))
 
 # `3.0.4` - 2021-05-23
 - Fix typo causing series name to not be corrected

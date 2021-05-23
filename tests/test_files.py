@@ -89,12 +89,6 @@ files['s01e01_format'] = [
     'seasonnumber': 2001, 'episodenumbers': [3],
     'episodenames': ['Spring winds in the Bay City']},
 
-    {'input': 'Scrubs.0101.avi',
-    'parsedseriesname': 'Scrubs',
-    'correctedseriesname': 'Scrubs',
-    'seasonnumber': 1, 'episodenumbers': [1],
-    'episodenames': ['My First Day']},
-
     {'input': 'Scrubs 1x01-720p.avi',
     'parsedseriesname': 'Scrubs',
     'correctedseriesname': 'Scrubs',

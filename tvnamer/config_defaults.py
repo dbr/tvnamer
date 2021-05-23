@@ -445,18 +445,6 @@ defaults = {
         [Ee]pisode[ ]?(?P<episodenumber>[0-9]+)   # Episode 20
         [^\\/]*$''',                              # Anything
 
-        # foo.103*
-        r'''^(?P<seriesname>.+)[ \._\-]
-        (?P<seasonnumber>[0-9]{1})
-        (?P<episodenumber>[0-9]{2})
-        [\._ -][^\\/]*$''',
-
-        # foo.0103*
-        r'''^(?P<seriesname>.+)[ \._\-]
-        (?P<seasonnumber>[0-9]{2})
-        (?P<episodenumber>[0-9]{2,3})
-        [\._ -][^\\/]*$''',
-
         # show.name.e123.abc
         r'''^(?P<seriesname>.+?)                  # Show name
         [ \._\-]                                 # Padding
