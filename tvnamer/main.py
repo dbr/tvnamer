@@ -259,7 +259,7 @@ def process_file(tvdb_instance, episode):
                 # Show filename without replacements
                 print(
                     "Before custom output replacements: %s"
-                    % (episode.generate_filename(preview_orig_filename=False))
+                    % (episode.generate_filename(preview_orig_filename=True))
                 )
 
             print("New filename: %s" % new_name)
